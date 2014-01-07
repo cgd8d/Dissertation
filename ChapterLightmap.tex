@@ -1,0 +1,41 @@
+
+\renewcommand{\thechapter}{1}
+\chapter{The Lightmap}
+
+The EXO detector was designed with roughly 450 APDs ganged into 74 channels of six to seven APDs each.  These APDs were set into the two endcaps of the cylindrical EXO detector.  Three of the APD ganged channels were disabled due to noisy components before physics data collection began; a fourth channel was disabled in February 2012 due to increasing noise in its components.  Additional stepwise changes in APD behavior come from changes to the electronics which have been implemented multiple times during the course of the experiment.
+
+The different positions of the APDs means that given the same amount of energy deposited into the detector, a channel may show a larger or smaller signal depending on the location of the energy deposit.  Additionally, there will be time-dependent changes: gain will drift in each APD at independent rates, and stepwise changes to the APD signals comes from changes to electronics and disabling of channels.
+
+As a result, when we attempt to characterize the APD response of our detector, it is critical to map out the time and space dependence of that response.  Early attempts to do this focused on periodic campaigns to collect large amounts of known-energy data and characterize the APD response at a moment in time.  These campaigns would generally consist of days of source data.  The strong Thorium source would be used, and an expert would be on-site to position the source in a wide range of locations, to ensure that a single campaign was independently sufficient to characterize the APD response.  The 2615-keV single-site gamma line of the Thallium 208 daughter product of Thorium 228 was isolated in offline analysis, and signals from these events were used to measure the signal magnitude from a known-energy single-position deposit in the detector.
+
+Even with such a significant quantity of source data, statistics were found to be insufficient.  Some regions of the detector were difficult to illuminate, and signals on individual channels were small.  To simplify the problem, signals on each endcap were summed together (without gain corrections) so that the 70-71 active APD channels could be treated as two large-magnitude APD channels instead.  This increased the size of the signals; it also made the spatial dependence of the response smoother, so that a sparser distribution of data can still be sufficient to characterize the response.  This permitted the creation of an APD-plane lightmap which allowed EXO to produce its first position-dependent corrections to scintillation energy.
+
+Although the APD-plane lightmap produced significant improvements in the energy resolution achieved by the EXO detector, inevitably it was only an incomplete characterization of the APD response.  Indeed, because for $\beta\beta0\nu$ studies we place our fiducial cut as close to the edges of the detector as possible, in certain regions of the detector our scintillation signal might be highly concentrated on one or a small number of channels.  Summing together multiple channels is, in this sense, a lossy form of compression of the data, and it is tempting to see whether we can extract better physics if it is avoided.  Thus, characterizing the APD yield on individual APD-gang channels is not in itself an important component of our analysis, but may be expected to provide a critical tool for more advanced scintillation analysis.
+
+\section{Four-Dimensional Lightmap}
+
+As described above, in constructing an individual-APD lightmap we face two conflicting needs: we must use as much data as possible to handle the faster spatial dependence and smaller signals expected, but if too much data is included then we run the risk of combining data taken when an APD had a different gain.  If we truly wish to use all available data, then we will need to simultaneously understand the full time-dependence of the gain.  In other words, rather than forming a small number of independently-measured three-dimensional lightmaps, we will need to measure a four-dimensional lightmap $L(x,y,z,t)$.
+
+This may at first seem infeasible.  After all, by adding an independent time argument it appears that rather than measuring a lightmap independently from each calibration campaign, we must measure one independently for each time bin.  But we can make a key simplifying assumption that the lightmap is separable.  In a physical sense, we can assume that:
+\begin{itemize}
+\item From a given position $(x,y,z)$ photons deposit on each APD channel at a constant rate.
+\item Each APD channel in turn magnifies and shapes its signal with a gain which may vary in time, but does not depend on the point of origin of the photons.
+\end{itemize}
+So, we demand that the lightmap have the much simpler form
+\begin{equation}
+L(x,y,z,y) = R(x,y,z)S(t)
+\end{equation}
+
+Is this simplification fully motivated by the detector?  It must be admitted that it is not.  The first point is fairly accurate:  we must trust that the electric field and the reflectivity of detector surfaces are constant in time, but basically these conditions are assumed to hold within EXO-200.  However, each channel can draw its signal from multiple APDs, each of which has an independent time-varying gain.  Photons from a deposit may preferentially sample the gain from the closest APD within a channel, so deposits in different locations may track more closely the gain of the closest APD within a channel.
+
+On a finer scale, it is known that the gain of an APD is not spatially uniform; it may reasonably be expected that the gain applied to a photon in the center of an APD may change at a different rate compared to the gain of a photon on the edge of an APD.
+
+
+
+
+
+
+
+
+
+
