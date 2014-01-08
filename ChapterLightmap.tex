@@ -17,21 +17,41 @@ Although the APD-plane lightmap produced significant improvements in the energy 
 As described above, in constructing an individual-APD lightmap we face two conflicting needs: we must use as much data as possible to handle the faster spatial dependence and smaller signals expected, but if too much data is included then we run the risk of combining data taken when an APD had a different gain.  If we truly wish to use all available data, then we will need to simultaneously understand the full time-dependence of the gain.  In other words, rather than forming a small number of independently-measured three-dimensional lightmaps, we will need to measure a four-dimensional lightmap $L(x,y,z,t)$.
 
 This may at first seem infeasible.  After all, by adding an independent time argument it appears that rather than measuring a lightmap independently from each calibration campaign, we must measure one independently for each time bin.  But we can make a key simplifying assumption that the lightmap is separable.  In a physical sense, we can assume that:
-\begin{itemize}
+\begin{enumerate}
 \item From a given position $(x,y,z)$ photons deposit on each APD channel at a constant rate.
 \item Each APD channel in turn magnifies and shapes its signal with a gain which may vary in time, but does not depend on the point of origin of the photons.
-\end{itemize}
+\end{enumerate}
 So, we demand that the lightmap have the much simpler form
-\begin{equation}
-L(x,y,z,y) = R(x,y,z)S(t)
+\begin{equation} \label{eq:SeparableLightmap}
+L(x,y,z,t) = R(x,y,z)S(t)
 \end{equation}
 
-Is this simplification fully motivated by the detector?  It must be admitted that it is not.  The first point is fairly accurate:  we must trust that the electric field and the reflectivity of detector surfaces are constant in time, but basically these conditions are assumed to hold within EXO-200.  However, each channel can draw its signal from multiple APDs, each of which has an independent time-varying gain.  Photons from a deposit may preferentially sample the gain from the closest APD within a channel, so deposits in different locations may track more closely the gain of the closest APD within a channel.
+Is this simplification fully motivated by the detector?  It must be admitted that it is not.  The first point is fairly accurate:  we must trust that the electric field and the reflectivity of detector surfaces are constant in time, but basically these conditions are assumed to hold within EXO-200.
 
-On a finer scale, it is known that the gain of an APD is not spatially uniform; it may reasonably be expected that the gain applied to a photon in the center of an APD may change at a different rate compared to the gain of a photon on the edge of an APD.
+However, each channel can draw its signal from multiple APDs, each of which has an independent time-varying gain.  Photons from a deposit may preferentially sample the gain from the closest APD within a channel, so deposits in different locations may track more closely the gain of the closest APD within a channel, and the second point may not be accurate.  Studying the impact of this effect should be a topic for future study, particularly to understand to what degree it limits the effectiveness of a lightmap; it may be relevant to nEXO planning to understand how ganging together APDs limits scintillation resolution.  Currently it is assumed to be a small effect and ignored.
+
+So, treating equation ~\ref{eq:SeparableLightmap} as valid, one simple general scheme to find $R$ and $S$ iteratively is:
+\begin{enumerate}
+\item \label{item:FormingListOfHits} Compile, as well as possible, a list of single-site 2615-keV events from Thorium-228 source data.  Some Compton-scattered events will inevitably leak into this dataset, but the selection criteria should be designed to minimize this leakage while maximizing the fraction of true 2615-keV events accepted.
+\item Initially, assume a constant function $S(t) = 1$ for all APD channels.
+\item \label{item:ReentryForLightmapAlg} For each APD channel, estimate $R(x,y,z) = L(x,y,z,t)/S(t)$ from the set of events tabulated in step ~\ref{item:FormingListOfHits}.
+\item For each APD channel, estimate $S(t) = L(x,y,z,t)/R(x,y,z)$ from the set of events tabulated in step ~\ref{item:FormingListOfHits}.
+\item If convergence has not yet been reached, return to step ~\ref{item:ReentryForLightmapAlg}.
+\end{enumerate}
+Although this algorithm is not necessarily guaranteed to achieve convergence at all, in practice $S(t)$ is close to constant, resulting in fairly rapid convergence.
+
+\section{Algorithm Details}
+
+The previous section outlines a general algorithm for computing a four-dimensional lightmap from source data.  In this section I will specify the implementation choices which are made in the code currently being used.  In attempt to encourage future experimentation, alternative options will also be listed in some detail, along with some motivations for these alternatives.  Time has not permitted testing of all of these options, but it is hoped that they will be explored in the future.
+
+\subsection{Event Selection}
+
+The single-site Thorium-228 spectrum is well-peaked at 2615 keV, making it an excellent monoenergetic calibration line.  Our challenge is to select truly 2615-keV events as efficiently as possible, while simultaneously avoiding near-2615-keV events which may leak into the dataset.
+
+This is an inherently iterative process.  The first lightmap had to be constructed from an ionization-only spectrum because no useful position-corrected scintillation measurement existed; the resolution of the ionization-only spectrum was quite poor, roughly 3.5\% (sigma) of the energy, as described in Steve Herrin's thesis ~\cite{ThesisSteve}, and severe compromises had to be made to keep the Compton-shoulder leakage down to acceptable levels.
 
 
-
+The EXO collaboration has standard scripts in place (DESCRIBE ELSEWHERE?) which are designed to locate the position and width of this peak;
 
 
 
