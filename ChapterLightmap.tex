@@ -48,11 +48,35 @@ The previous section outlines a general algorithm for computing a four-dimension
 
 The single-site Thorium-228 spectrum is well-peaked at 2615 keV, making it an excellent monoenergetic calibration line.  Our challenge is to select truly 2615-keV events as efficiently as possible, while simultaneously avoiding near-2615-keV events which may leak into the dataset.
 
-This is an inherently iterative process.  The first lightmap had to be constructed from an ionization-only spectrum because no useful position-corrected scintillation measurement existed; the resolution of the ionization-only spectrum was quite poor, roughly 3.5\% (sigma) of the energy, as described in Steve Herrin's thesis ~\cite{ThesisSteve}, and severe compromises had to be made to keep the Compton-shoulder leakage down to acceptable levels.
+This is an inherently iterative process.  The first lightmap had to be constructed from an ionization-only spectrum because no useful position-corrected scintillation measurement existed; the resolution of the ionization-only spectrum was quite poor, roughly $3.5\%$ (sigma) of the energy, as described in Steve Herrin's thesis, and severe compromises had to be made to keep the Compton-shoulder leakage down to acceptable levels.  That work required events to have ionization between $0.33\sigma$ and $3\sigma$ to the right of the ionization peak.~\cite{ThesisSteve}
 
+Such a strongly asymmetric cut was chosen to avoid leakage from compton shoulder events, which it did successfully.  However, because of anticorrelation between scintillation and ionization, choosing events whose ionization had oscillated high means this cut was also preferring events whose scintillation had oscillated low, introducing a bias in the lightmap magnitude.  Additionally, the cut permits less than $37\%$ of desired events to be accepted, which is a substantial loss of efficiency that has a significant impact in certain low-statistics regions of the detector.
 
-The EXO collaboration has standard scripts in place (DESCRIBE ELSEWHERE?) which are designed to locate the position and width of this peak;
+The current work has had the benefit of an existing position-corrected scintillation measurement, leading to a rotated energy spectrum with resolution of roughly $1.8\%$.  As a result, it is possible to accept a wider cut (in sigmas) while still keeping Compton shoulder leakage small.  We currently accept all events within $2\sigma$ of the peak, with better than $95\%$ acceptance and only small leakage.  An additional benefit is that this improved resolution allows us to use a symmetric acceptance region, avoiding the implicit bias introduced from the earlier asymmetric cut window.
 
+Preliminary investigations have been conducted to see what impact is observed from using the denoised scintillation measurements which are the subject of this work.  Presently the improvement in resolution (to roughly $1.4\%$) has not demonstrated any significant improvement in the quality of the lightmap; however, this is a topic of continuing study which will certainly be revisited.
+
+Beyond the cuts described above (single-site within an appropriate energy window), other basic cuts are applied to ensure only well-behaved scintillation signals are selected:
+\begin{itemize}
+\item Charge and light must individually lie within a reasonable range.
+\item The charge-to-light ratio must not identify an event as an alpha decay.
+\item The scintillation time must be well-separated from any other scintillation signals in same event frame.
+\item All charge signals which are assigned to this scintillation signal must be assigned unambiguously.
+\item All three position coordinates must be known.  (No fiducial cut is placed, since that would restrict the volume where the lightmap is specified.)
+\end{itemize}
+Many of these cuts are probably no longer necessary -- as the resolution has improved, the chances of contamination have decreased and we can be a bit less cautious about accepting events.  It is worth remembering, though, that our main analysis only accepts events with a single scintillation signal, something which we cannot afford to do.  (The statistics from strong Thorium source runs are too valuable, particularly because they are the primary source of statistics in some regions of the detector.)  As a result, it is important to maintain some caution with cuts designed to handle those events more robustly.
+
+\subsection{Function Parametrization}
+
+Because we are attempting to empirically measure the functions $R(x,y,z)$ and $S(t)$ from a finite dataset, we need to specify some more limited form for them to take.  All current approaches to describing $R(x,y,z)$ first bin the detector volume into three-dimensional voxels, and then define $R(x,y,z)$ to interpolate linearly between known values at the center of the voxels.  The size of these voxels must be chosen with some care; if they are too small, then low per-voxel statistics will cause the statistical errors on the signal magnitude to dominate, whereas if the voxels are too large then the spatial variation of the lightmap will not be fully captured.
+
+In the current lightmap, the detector is binned into $1 cm^3$ voxels; the detector is easily contained within a box with sides $40 cm$ long, leading to $64,000$ voxels (many of which lie outside the detector and will be empty).  The choice of voxel size was made based on the size of an individual APD.  The APDs are roughly $2.5 cm$ in diameter, so very near the anode we would like for the size of a voxel to be much smaller than $2.5 cm$.  When this is done, much of the detector has entirely sufficient statistics per voxel; however, there are some regions of the detector with fewer than ten hits per voxel, indicating that these regions may have quite significant statistical error.
+
+It is possible to justify a choice of larger voxels.  The APDs lie at $\pm 204 mm$ from the cathode, which means that there is more than $1 cm$ (WHAT IS IT?) between our fiducial volume and the APDs.  At this distance, the dependence of the lightmap on $x$ and $y$ is expected to be much slower than at the APD plane, indicating that perhaps $2 cm$ binning in $x$ and $y$ may be sufficient.  Additionally, $z$-dependence of the lightmap is expected to be fairly smooth throughout the detector; since we interpolate linearly between voxels, it may be possible to use a $z$-binning much coarser than $1 cm$.  This may be a topic for future investigation.
+
+It is also worth mentioning that less intuitive voxel geometries have been tried in the past.  The older APD-plane lightmap~\ref{ThesisSteve} used a cylindrical-coordinate binning; binning in $r$ was selected to make the bin volumes roughly constant along the $r$ axis, binning in the angular coordinate was uniform, and binning in $z$ was chosen to be coarser near the anodes and finer near the cathode to reflect faster variation there.  In all cases the binning is coarser than with the current cubic voxels being used; this is made possible by the larger quantity of available statistics from running much longer, and is justified by the potential for the yield on a single APD gang to vary more rapidly than the yield averaged across an entire APD plane.
+
+Finally:  describe unbinned options for the future.
 
 
 
