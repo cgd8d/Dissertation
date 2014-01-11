@@ -90,7 +90,32 @@ Alternatively, often there will be a long string of consecutive source runs whic
 
 The choice of binning or parametrization for $R(x,y,z)$ and $S(t)$ can have a profound impact on the accuracy of the lightmap, and the current analysis has only skimmed the surface in trying options.  It is hoped that further work on the lightmap will include significant investigation in these topics.
 
+\subsection{Convergence and Error Estimation}
 
+The topics of convergence and error estimation for the lightmap are perhaps the most rudimentary; a full analysis of the lightmap cannot be complete without them.  However, for the current analysis they are approached essentially by a series of guesses; the lightmap is then used in further analysis, and the validity of the lightmap is established by its successful use in that downstream work.
+
+Error estimation is not attempted on the current lightmap.  We do study the number of hits observed in each position voxel of the detector (see section ~\ref{sec:LightmapVisualization}), and presume that the most significant source of error comes from low-statistics regions of the detector.  However, no explicit estimation of the lightmap uncertainty has been attempted.
+
+One difficulty with estimating the errors in the lightmap function $L(x,y,z,t)$ comes from the correlation between errors in $R(x,y,z)$ and $S(t)$.  If one of those two components were known perfectly, then we could treat the fit uncertainties of each hit as independent errors, and propagate those errors into an uncertainty for each voxel of $R(x,y,z)$ (if $S(t)$ is assumed to be perfectly known) or $S(t)$ (if $R(x,y,z)$ is assumed to be perfectly known).  But in reality, all of the measurements of $R(x,y,z)$ are correlated with all of the measurements of $S(t)$, meaning that even the errors of different voxels of $R(x,y,z)$ or different times in $S(t)$ are correlated with each other.  Fully characterizing these errors could evolve into a significant project in itself, and it is not clear that the payoff could justify such an investment of effort or computation.
+
+Although a full estimate of lightmap errors with correlations would probably be computationally quite intensive to produce, it might be possible to estimate the independent errors of each voxel of the position lightmap $R(x,y,z)$ or each independent run making up $S(t)$ by treating the other function as perfectly known, as described above.  This would generally produce an underestimate of the uncertainty in each, but the estimate might still give some benefit.
+
+To produce a more accurate estimate of errors, it would probably be necessary to do a simultaneous fit by varying both $R(x,y,z)$ and $S(t)$ together.  In the current scheme, $R(x,y,z)$ contains far more complexity than $S(t)$ with roughly $50,000$ non-empty voxels, so for each APD gang we would need to simultaneously vary roughly $50,000$ parameters to obtain the optimal lightmap.  It is exactly this time-intensive process which was avoided by choosing the iterative approach for measuring the lightmap; however, this is still the sort of problem which is routinely managed in large-scale applications, and it would only need to be solved occasionally when it is necessary to derive a new lightmap, so it is not infeasible to imagine attempting it.  The prospect of feeding in a high-quality guess obtained from the iterative method presents an additional significant time-saver.  This method would not fully account for the correlations between errors of the different voxels of $R(x,y,z)$ or runs in $S(t)$, but it would come closer than the previous naive method.
+
+However, it is also possible that identifying the error of each voxel or run is heading down the wrong path.  As described earlier, it is likely that the optimal (lowest-error) method for estimating the lightmap will be an unbinned method such as a locally-adaptive kernel regression method.  Error estimation in kernel regression presents significant additional challenges compared to errors from binned parametrizations.  At present, I am not aware of any simple scheme to manage this difficulty, meaning that there may be the paradoxical tradeoff that the best method for minimizing lightmap errors simultaneously makes those errors infeasible to estimate.
+
+Note that under the iterative method, the most naive method for estimating errors is not valid.  It might appear that when $S(t)$ is initialized to a constant value of $1$, we could also assign to it some constant error.  Then when we compute $R(x,y,z)$, we could propagate independent errors from the fit uncertainties of signals and from $S(t)$; and when we compute $S(t)$ we could propagate independent errors from the fit uncertainties and from $R(x,y,z)$; and so forth.  However, such a scheme provides no compensating feedback mechanism to force the iterated errors to a reasonable or accurate value, so there is no reason to believe the errors from such a system (if, that is, they converge at all).  This difficulty may underscore the fundamental challenge associated with measuring the lightmap errors within our scheme -- iterative methods are well-suited to solving a system, but when correlated errors are mistreated as uncorrelated an iterative method can easily magnify the impact of that mistreatment.
+
+On the topic of convergence, it has been mentioned already that by starting with a generally accurate initial guess for $S(t)$ as constant, the iterative solution method tends to converge rapidly.  As a result, and because iterations take only a few hours to perform, we currently perform three to four iterations and claim that convergence is generally roughly reached.  Ideally, we would require that none of the position voxels or runs change value within an iteration by more than some fraction of their estimated errors; but in the absence of estimated errors, this is of course impossible.
+
+It would be possible, in a conservative approach, to require each value to converge to some small fraction of an ADC unit, ensuring that the convergence is better than our ability to measure signals.  Such a requirement might force us to compute more iterations than are truly warranted by our lightmap errors, but given the reasonable speed of each iteration, such a method still might not be unreasonable.  
+
+
+\section{Visualization} \label{sec:LightmapVisualization}
+
+
+
+\section{Implications for Energy Resolution}
 
 
 
