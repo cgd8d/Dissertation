@@ -24,3 +24,6 @@
 *.ptp
 *~
 *.d
+*.make
+*.fls
+*.pdf
