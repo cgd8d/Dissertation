@@ -1,0 +1,84 @@
+\renewcommand{\thechapter}{1}
+\chapter{Theory of $\beta\beta 0\nu$ Decay}
+
+\tikzstyle{ParticleInteraction}=[circle]
+\tikzstyle{ParticleLabel}=[]
+
+\begin{figure}
+% Generate figure. (in progress)
+\begin{tikzpicture}
+\node[ParticleLabel] (d1) {d};
+\node[ParticleInteraction] (Strong1) [right of=d1] {};
+\node[ParticleLabel] (u1) [right of=Strong1] {u};
+\node[ParticleInteraction] (Weak1) [below of=Strong1] {};
+\node[ParticleLabel] (e1) [right of=Weak1] {$e^{-}$};
+\node[ParticleLabel] (nu1) [below of=e1] {$\overline{\nu}$};
+
+\node[ParticleLabel] (nu2) [below of=nu1] {$\overline{\nu}$};
+\node[ParticleLabel] (e2) [below of=nu2] {$e^{-}$};
+\node[ParticleInteraction] (Weak2) [left of=e2] {};
+\node[ParticleInteraction] (Strong2) [below of=Weak2] {};
+\node[ParticleLabel] (u2) [right of=Strong2] {u};
+\node[ParticleLabel] (d2) [left of=Strong2] {d};
+
+\draw [->] (d1) -- (Strong1);
+\draw [->] (Strong1) -- (u1);
+
+
+\end{tikzpicture}
+\caption{Feynman diagram for $\beta\beta 2 \nu$ decay.  The reaction products are equivalent to two $\beta$ decays in succession, but this reaction can occur even if a single $\beta$ decay would be energetically forbidden.}
+\label{fig:FeynmanBetaBeta2Nu}
+\end{figure}
+
+\begin{figure}
+% Generate figure.
+\caption{Feynman diagram for $\beta\beta 0 \nu$ decay.  A virtual neutrino mediates the exchange.  This is only possible if $\overline{\nu}_R$ can oscillate to $\nu_L$, and the interaction that induces this oscillation also generates neutrino mass.}
+\label{fig:FeynmanBetaBeta0Nu}
+\end{figure}
+
+Standard-model $\beta\beta$ decay is the result of the particle interaction $2d \rightarrow 2u + 2e^- + 2\bar{\nu}_e$ mediated by $W^-$-exchange, as depicted in Figure~\ref{fig:FeynmanBetaBeta2Nu}.  It is effectively the simultaneous occurance of two $\beta$ decays from the same nucleus.
+
+$\beta\beta$ decay is the result of a second-order weak interaction, so it has a remarkably long half-life; however, it does not violate any symmetries and is, in this sense, a mundane prediction of the Standard Model.  Although many nuclei are expected to decay by $\beta\beta$, the process is thoroughly masked by conventional $\beta$ decay in most of them.  There are, however, isotopes which are forbidden from undergoing $\beta$ decay by energy conservation, yet permitted to undergo $\beta\beta$ decay.  These are in all known instances isotopes with even-even proton-neutron numbers; $\beta$ decay would take these isotopes to odd-odd, which is energetically disfavored due to the loss of pairing forces between like nuclei, while $\beta\beta$ decay permits these isotopes to remain in a favorable even-even state.  Isotopes which follow this pattern are considered $\beta\beta$ candidates.
+
+The detection and study of $\beta\beta$ decay provides an opportunity to test a new class of nuclear matrix computations, and also a chance for experimentalists to push the boundaries of low-background experiments; however, the primary appeal of $\beta\beta$ decay is through the opportunity it provides to probe the nature of neutrinos.  It has been suggested as early as 1937 that neutrinos could possess mass through a novel neutrino-antineutrino interaction, provided that the neutrino be its own antiparticle~\cite{Majorana}.  As evidence mounted through the 1990's that neutrinos must have nonzero mass (see, in particular, the observation of neutrino oscillation in ~\cite{SuperK}), interest in possible mass-generating mechanisms has increased -- including Majorana's mechanism.
+
+If neutrinos do have Majorana mass interactions, then any isotope that undergoes $\beta\beta$ decay can also undergo the related process $2d \rightarrow 2u + 2e^-$, depicted in Figure~\ref{fig:FeynmanBetaBeta0Nu}, in which the two outgoing neutrinos in $\beta\beta$ decay are replaced by one virtual neutrino.  This is only possible if neutrinos are their own antiparticles because the timelike arrow of the neutrino cannot be specified.  We refer to the standard process as $\beta\beta 2\nu$ decay and the novel process as $\beta\beta 0\nu$ decay.
+
+A clear observation of $\beta\beta 0\nu$ would immediately yield a number of interesting physical insights.  The existence of the process automatically demonstrates non-conservation of total lepton number, since the lepton number increases by 2.  Numerous theories have suggested that lepton number may not be conserved~\cite{ProtonDecay}\cite{MuonToPositron}, but none have yet reported a positive result.  In the conventional Standard Model with massless neutrinos, lepton number conservation is an accidental symmetry~\cite{LeptonConservation}, but since neutrinos are known to have mass, there is no longer \textit{a priori} any reason to expect conservation or non-conservation.
+
+A second conclusion, as discussed above, would be that neutrino mass comes from a Majorana mass term.  This term appears in the lagrangian (for each mass eigenstate) as 
+\begin{eqnarray*}
+\mathcal{L}_{Maj}&=& -\frac{m_{L}}{2} \left( \overline{\Psi_L^c} \Psi_L^{} + \overline{\Psi_L^{}} \Psi_L^c \right)\\
+                 & & -\frac{m_{R}}{2} \left( \overline{\Psi_R^c} \Psi_R^{} + \overline{\Psi_R^{}} \Psi_R^c \right),
+\end{eqnarray*}
+where the superscript-$c$ represents charge conjugation.  (This is the reason that Majorana mass terms are only possible for a chargeless lepton.)  The masses $m_L$ and $m_R$ may be tuned independently; since there has never been an observation of right-handed neutrinos or left-handed anti-neutrinos, it is possible that $m_R = 0$ and that the fields $\Psi_R^{}$ and $\Psi_R^c$ do not exist in nature~\cite{PDG}.
+
+\begin{figure}
+% Generate figure.}
+\caption{A generic $\beta\beta 0\nu$ process, with no assumptions of the underlying mechanism.  If $\beta\beta 0\nu$ is observed, it requires that this reaction is possible even though it does not strictly imply that the oscillation in Figure~\ref{fig:FeynmanBetaBeta0Nu} is the cause.}
+\label{fig:FeynmanBetaBeta0NuBlob}
+\end{figure}
+
+\begin{figure}
+% Generate figure.
+\caption{Since $\beta\beta 0\nu$ requires that the reaction in Figure~\ref{fig:FeynmanBetaBeta0NuBlob} occurs, we can insert that diagram into this larger one and assert that regardless of the underlying mechanism, $\beta\beta 0\nu$ implies an effective neutrino mass generated by $\overline{\nu}$-$\nu$ oscillation as a higher-order process.}
+\label{fig:FeynmanBetaBeta0NuImplication}
+\end{figure}
+
+It is worth noting that the interaction term above assumes no mediating particles in the mechanism.  However, if $\beta\beta 0\nu$ decay is observed, it leads very generally to a conclusion that neutrinos have an \emph{effective} Majorana mass interaction~\cite{BlackBoxTheorem}.  We can see this by examining the generic diagram for $\beta\beta 0\nu$ decay in Figure~\ref{fig:FeynmanBetaBeta0NuBlob}.  No matter what the mechanism of the decay is, we can insert this diagram into the larger one in Figure~\ref{fig:FeynmanBetaBeta0NuImplication} and see that an effective neutrino-antineutrino mass vertex is implied by the existence of $\beta\beta 0\nu$ decay.
+
+If the mechanism of $\beta\beta 0\nu$ decay really is, at tree level, a neutrino mass term as shown in Figure~\ref{fig:FeynmanBetaBeta0Nu}, then it is possible to infer the mass scale of the neutrino from the observed rate of decay.  To lowest order we can assert that
+\[
+[T^{0\nu}_{1/2}]^{-1} \propto \left< m_{\beta\beta} \right>^2 = \left|\Sigma_k m_k U_{ek}^2\right|^2,
+\]
+where $U_{ek}$ is the neutrino mixing matrix and the $m_k$ identify the three neutrino mass eigenstates.  The constant of proportionality is isotope-dependent; state-of-the-art nuclear matrix computations can provide it within a factor of $2-3$~\cite{RMPbb0n}.  We will not consider the complex challenges of these computations here.
+
+\begin{figure}
+\includegraphics[scale=0.45]{PDGNeutrinoMassBounds.eps}
+\caption{The fundamental parameters $m_1$, $m_2$, $m_3$ of the three neutrino mass eigenstates are not directly measured; instead, experiments give different weighted sums of the three that allow these parameters to be constrained.  $M$ is the sum of the three mass values; $\left<m_\beta\right>$ is the effective mass relevant to $\beta$ decay, and $\left<m_{\beta\beta}\right>$ is the effective mass probed by $\beta\beta 0\nu$ decay.  The plots above indicate the relation, in the case of Majorana neutrinos, among these various parameters based on our current knowledge of $\Delta m^2$ and mixing angles (red lines if the smaller $\Delta m^2$ belongs to the lighter neutrinos, black lines if it belongs to the heavier neutrinos) and if these parameters were known exactly (hatched areas).  Image provided by~\cite{PDG}.}
+\label{fig:NeutrinoMassBounds}
+\end{figure}
+
+There are bounds on the values that may be seen, based on previous results in $\beta\beta 0\nu$ decay and other measurements.  Figure~\ref{fig:NeutrinoMassBounds} shows how the various mass parameters can be related to each other.  $M$, the combined masses of all three neutrino flavors, can be limited by cosmological observations; recent results from Planck combined with WMAP and baryon acoustic oscillations have restricted $M < 0.23$ eV ~\cite{CosmologicalLimits}.  Measurements of the $\beta$ decay spectrum of Tritium have yielded bounds on $\left< m_\beta \right>$, the weighted average mass of the electron-neutrino; this parameter is currently known to be less than $2.5$ eV~\cite{OldTritium}, and the KATRIN experiment is expected to begin data-taking in 2012 with a sensitivity down to $0.2$ eV~\cite{NewTritium}.
+
+The strongest limits on $\left< m_{\beta\beta} \right>$ have been published by the Heidelberg-Moscow experiment studying $^{76}$Ge.  The results of this experiment have been interpreted in conflicting ways by its collaboration:  the faction that asserts a positive detection of $\beta\beta 0\nu$ has most recently published a value of $\left< m_{\beta\beta} \right> = 0.32 \pm 0.03$ eV~\cite{Klapdor}, while the full collaboration's strongest limit was $\left< m_{\beta\beta} \right> < 0.35$ eV (both neglecting uncertainty in the nuclear matrix elements)~\cite{KlapdorDissent}.  In addition to the disagreement within the Heidelberg-Moscow collaboration, though, there is also widespread agreement that it is unreliable to draw conclusions on $\left< m_{\beta\beta} \right>$ from only one isotope due to the poorly-understood uncertainties in the nuclear matrix elements~\cite{RMPbb0n}.  All of this means that there is significant interest by many collaborations, working with many different isotopes in parallel, to probe below the threshold set by the Heidelberg-Moscow experiment to confirm or refute the claimed discovery.
