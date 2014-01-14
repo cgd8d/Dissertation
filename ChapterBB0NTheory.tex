@@ -1,37 +1,78 @@
 \renewcommand{\thechapter}{1}
 \chapter{Theory of $\beta\beta 0\nu$ Decay}
 
-\tikzstyle{ParticleInteraction}=[circle]
+\tikzstyle{ParticleInteraction}=[coordinate]
 \tikzstyle{ParticleLabel}=[]
 
 \begin{figure}
-% Generate figure. (in progress)
+\begin{center}
 \begin{tikzpicture}
-\node[ParticleLabel] (d1) {d};
-\node[ParticleInteraction] (Strong1) [right of=d1] {};
-\node[ParticleLabel] (u1) [right of=Strong1] {u};
-\node[ParticleInteraction] (Weak1) [below of=Strong1] {};
-\node[ParticleLabel] (e1) [right of=Weak1] {$e^{-}$};
+
+\node[ParticleLabel] (u1) {u};
+\node[ParticleLabel] (e1) [below of=u1] {$e^{-}$};
 \node[ParticleLabel] (nu1) [below of=e1] {$\overline{\nu}$};
+\node[ParticleInteraction] (Weak1) [left of=e1] {};
+\node[ParticleInteraction] (Strong1) [above left of=Weak1] {};
+\node[ParticleLabel] (d1) [left of=Strong1] {d};
 
 \node[ParticleLabel] (nu2) [below of=nu1] {$\overline{\nu}$};
 \node[ParticleLabel] (e2) [below of=nu2] {$e^{-}$};
+\node[ParticleLabel] (u2) [below of=e2] {u};
 \node[ParticleInteraction] (Weak2) [left of=e2] {};
-\node[ParticleInteraction] (Strong2) [below of=Weak2] {};
-\node[ParticleLabel] (u2) [right of=Strong2] {u};
+\node[ParticleInteraction] (Strong2) [below left of=Weak2] {};
 \node[ParticleLabel] (d2) [left of=Strong2] {d};
 
-\draw [->] (d1) -- (Strong1);
-\draw [->] (Strong1) -- (u1);
+\draw (Weak1) -- (nu1) node[midway,sloped] {$<$};
+\draw (Strong1) -- (u1) node[midway,sloped] {$>$};
+\draw[snake=snake] (Strong1) -- (Weak1) node[midway,below left] {$W^{-}$};
+\draw (Weak1) -- (e1) node[midway,sloped] {$>$};
+\draw (d1) -- (Strong1) node[midway,sloped] {$>$};
 
+\draw (Weak2) -- (nu2) node[midway,sloped] {$<$};
+\draw (Strong2) -- (u2) node[midway,sloped] {$>$};
+\draw[snake=snake] (Strong2) -- (Weak2) node[midway,above left] {$W^{-}$};
+\draw (Weak2) -- (e2) node[midway,sloped] {$>$};
+\draw (d2) -- (Strong2) node[midway,sloped] {$>$};
 
 \end{tikzpicture}
+\end{center}
 \caption{Feynman diagram for $\beta\beta 2 \nu$ decay.  The reaction products are equivalent to two $\beta$ decays in succession, but this reaction can occur even if a single $\beta$ decay would be energetically forbidden.}
 \label{fig:FeynmanBetaBeta2Nu}
 \end{figure}
 
 \begin{figure}
-% Generate figure.
+\begin{center}
+\begin{tikzpicture}
+
+\node[ParticleLabel] (u1) {u};
+\node[ParticleLabel] (e1) [below of=u1] {$e^{-}$};
+\node[ParticleInteraction] (Weak1) [left of=e1] {};
+\node[ParticleInteraction] (Strong1) [above left of=Weak1] {};
+\node[ParticleLabel] (d1) [left of=Strong1] {d};
+
+\node[ParticleLabel] (nu) [below of=Weak1] {$\times$};
+
+\node[ParticleInteraction] (Weak2) [below of=nu] {};
+\node[ParticleLabel] (e2) [right of=Weak2] {$e^{-}$};
+\node[ParticleLabel] (u2) [below of=e2] {u};
+\node[ParticleInteraction] (Strong2) [below left of=Weak2] {};
+\node[ParticleLabel] (d2) [left of=Strong2] {d};
+
+\draw (Strong1) -- (u1) node[midway,sloped] {$>$};
+\draw[snake=snake] (Strong1) -- (Weak1) node[midway,below left] {$W^{-}$};
+\draw (Weak1) -- (e1) node[midway,sloped] {$>$};
+\draw (d1) -- (Strong1) node[midway,sloped] {$>$};
+
+\draw[dashed] (Weak1) -- (nu) node[at end,right] {$\nu_M$};
+\draw[dashed] (Weak2) -- (nu);
+
+\draw (Strong2) -- (u2) node[midway,sloped] {$>$};
+\draw[snake=snake] (Strong2) -- (Weak2) node[midway,above left] {$W^{-}$};
+\draw (Weak2) -- (e2) node[midway,sloped] {$>$};
+\draw (d2) -- (Strong2) node[midway,sloped] {$>$};
+
+\end{tikzpicture}
+\end{center}
 \caption{Feynman diagram for $\beta\beta 0 \nu$ decay.  A virtual neutrino mediates the exchange.  This is only possible if $\overline{\nu}_R$ can oscillate to $\nu_L$, and the interaction that induces this oscillation also generates neutrino mass.}
 \label{fig:FeynmanBetaBeta0Nu}
 \end{figure}
@@ -54,13 +95,53 @@ A second conclusion, as discussed above, would be that neutrino mass comes from 
 where the superscript-$c$ represents charge conjugation.  (This is the reason that Majorana mass terms are only possible for a chargeless lepton.)  The masses $m_L$ and $m_R$ may be tuned independently; since there has never been an observation of right-handed neutrinos or left-handed anti-neutrinos, it is possible that $m_R = 0$ and that the fields $\Psi_R^{}$ and $\Psi_R^c$ do not exist in nature~\cite{PDG}.
 
 \begin{figure}
-% Generate figure.}
+\begin{center}
+\begin{tikzpicture}
+
+\node[circle,fill=black,pattern=dots,minimum size=100] (BlackBox) {};
+\node (e1) at ([shift={(30:3)}]BlackBox) {$e^{-}$};
+\node (e2) at ([shift={(-30:3)}]BlackBox) {$e^{-}$};
+\node (u1) at ([shift={(60:3)}]BlackBox) {u};
+\node (u2) at ([shift={(-60:3)}]BlackBox) {u};
+\node (d1) at ([shift={(120:3)}]BlackBox) {d};
+\node (d2) at ([shift={(-120:3)}]BlackBox) {d};
+
+\draw (d1) -- (BlackBox) node[midway,sloped] {$>$};
+\draw (d2) -- (BlackBox) node[midway,sloped] {$>$};
+\draw (BlackBox) -- (u1) node[midway,sloped] {$>$};
+\draw (BlackBox) -- (u2) node[midway,sloped] {$>$};
+\draw (BlackBox) -- (e1) node[midway,sloped] {$>$};
+\draw (BlackBox) -- (e2) node[midway,sloped] {$>$};
+\end{tikzpicture}
+\end{center}
 \caption{A generic $\beta\beta 0\nu$ process, with no assumptions of the underlying mechanism.  If $\beta\beta 0\nu$ is observed, it requires that this reaction is possible even though it does not strictly imply that the oscillation in Figure~\ref{fig:FeynmanBetaBeta0Nu} is the cause.}
 \label{fig:FeynmanBetaBeta0NuBlob}
 \end{figure}
 
 \begin{figure}
-% Generate figure.
+\begin{center}
+\begin{tikzpicture}
+\node[circle,fill=black,pattern=dots,minimum size=30] (BlackBox) {};
+\node[coordinate] (Strong1) at ([shift={(180:2)}]BlackBox) {};
+\node[coordinate] (Strong2) at ([shift={(0:2)}]BlackBox) {};
+\node[coordinate] (Weak1) [left of=Strong1] {};
+\node[coordinate] (Weak2) [right of=Strong2] {};
+\node (Nu1) [left of=Weak1] {$\overline{\nu}$};
+\node (Nu2) [right of=Weak2] {$\nu$};
+
+\draw[-,out=120,in=90] (BlackBox) to node[midway,sloped]{$<$} node[above]{$\overline{u}$} (Strong1) ;
+\draw[-,out=-90,in=-120] (Strong1) to node[midway,sloped]{$>$} node[above]{d} (BlackBox);
+\draw[-,out=60,in=90] (BlackBox) to node[midway,sloped]{$<$} node[above]{$\overline{d}$} (Strong2) ;
+\draw[-,out=-90,in=-60] (Strong2) to node[midway,sloped]{$>$} node[above]{u} (BlackBox);
+\draw[snake=snake] (Strong1) to node[above]{$W^{-}$} (Weak1);
+\draw[snake=snake] (Strong2) to node[above]{$W^{+}$} (Weak2);
+\draw[-,out=-100,in=-90] (BlackBox) to node[midway,sloped]{$>$} node[below]{$e^{+}$} (Weak1);
+\draw[-,out=-80,in=-90] (BlackBox) to node[midway,sloped]{$>$} node[below]{$e^{-}$} (Weak2);
+\draw[-] (Weak1) to node[midway,sloped]{$<$} (Nu1);
+\draw[-] (Weak2) to node[midway,sloped]{$>$} (Nu2);
+
+\end{tikzpicture}
+\end{center}
 \caption{Since $\beta\beta 0\nu$ requires that the reaction in Figure~\ref{fig:FeynmanBetaBeta0NuBlob} occurs, we can insert that diagram into this larger one and assert that regardless of the underlying mechanism, $\beta\beta 0\nu$ implies an effective neutrino mass generated by $\overline{\nu}$-$\nu$ oscillation as a higher-order process.}
 \label{fig:FeynmanBetaBeta0NuImplication}
 \end{figure}
