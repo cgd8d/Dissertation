@@ -121,7 +121,7 @@ It would be possible, in a conservative approach, to require each value to conve
 \small\normalsize
 \begin{quote}
 \caption{Lightmap position-dependence $R(x,y,z)$ for selected APD gangs.}
-\label{fig1.1}
+\label{fig:Lightmap3DPlot_unzoomed}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
@@ -135,15 +135,29 @@ It would be possible, in a conservative approach, to require each value to conve
 \small\normalsize
 \begin{quote}
 \caption{Lightmap position-dependence $R(x,y,z)$ for selected APD gangs.  Here extreme anode positions are omitted to permit better contrast for the lightmap in the fiducial volume.}
-\label{fig1.2}
+\label{fig:Lightmap3DPlot_zoomed}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-\section{Implications for Energy Resolution}
+Although it is not strictly necessary to be able to visually inspect the lightmap for it to be useful, nevertheless it is reassuring to see that the lightmap is qualitatively similar to intuitive expectations of how light should propagate through the detector.  We have chosen to store the position-dependent $R(x,y,z)$ for each APD gang as a set of ROOT TH3D objects, and fortunately ROOT provides a number of excellent plotting features suitable for a three-dimensional dataset.  In figure~\ref{fig:Lightmap3DPlot_unzoomed}, it is possible to view the values of $R(x,y,z)$ for a sample of gangs on top of each other.  Larger boxes and denser color indicates a higher yield on the APD gang in question, and it is immediately apparent that events near the anodes produce light which is highly concentrated on a single APD gang.
+
+Figure~\ref{fig:Lightmap3DPlot_unzoomed} shows the highest yield on the very boundary of the detector, well outside of our fiducial volume; to permit us to more easily view contrast inside of the detector, figure~\ref{fig:Lightmap3DPlot_zoomed} shows the same map while omitting the most extreme bin near either anode.  Viewing this map, we can see more interesting characteristics of the lightmap:
+\begin{itemize}
+\item Events near the anodes show a high signal concentration on the one gang nearest to their position; however, even deep into the detector near the cathode it is still possible to see the higher concentration of signal on the gang directly aligned with the event.
+\item We can also see, from gang 201 (green), that events can produce significant signal on APD gangs which which they are not directly aligned (in the Z direction); yield on gang 201 can be seen to decrease smoothly in all directions.
+\item APD gangs in the corners of the detector, such as gang 195 (red), are not effective at measuring light from events which are far away; even directly above gang 195, it is clear that gang 198 is more effective at collecting light farther away than about five to ten centimeters.
+\end{itemize}
+
+ALSO TALK ABOUT GAIN VS. TIME, HITS PER VOXEL, OTHERS?
 
 
+\section{Implications for Signal Reconstruction}
+
+Prior to this work, it was standard to sum all of the scintillation waveforms from gangs on a single anode plane.  The lightmap we have produced provides a trove of information about how light propagates through the detector, and as such it can be used to identify qualitatively how scintillation signal reconstruction might be improved.
+
+Most significantly, figure~\ref{fig:Lightmap3DPlot_zoomed} demonstrates that 
 
 
 
