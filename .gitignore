@@ -26,4 +26,4 @@
 *.d
 *.make
 *.fls
-*.pdf
+*converted-to.pdf
