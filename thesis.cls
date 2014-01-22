@@ -525,7 +525,8 @@
 \newcounter{figure}[chapter]
 \renewcommand \thefigure
      {\ifnum \c@chapter>\z@ \thechapter.\fi \@arabic\c@figure}
-\def\fps@figure{tbp}
+%\def\fps@figure{tbp}
+\def\fps@figure{tb} % The p above forces figures onto their own pages, which I dislike.
 \def\ftype@figure{1}
 \def\ext@figure{lof}
 \def\fnum@figure{\figurename~\thefigure}
