@@ -2,27 +2,78 @@
 \renewcommand{\thechapter}{4}
 \chapter{Denoising Theory}
 
+As has been discussed, the performance of double-beta experiments like EXO-200 is partially determined by their energy resolution.  In EXO-200, the energy resolution is limited by the scintillation energy resolution, which in turn is dominated by electronic noise in the APDs.  Significant effort must therefore be expended to understand and reduce the noise in the scintillation signals.
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{APDNoisePowerSpectrum.png}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Coherent and incoherent noise power spectra for a sample set of APD channels without signal shaping.~\cite{ElectronicsUpgradeReport}}
+\label{fig:APDNoisePowerSpectrum}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+When the noise in the APDs is studied, it was found that the individual APD channels met targetted root-mean-square noise levels of 2000 electrons.  However, rather than observing the noise on summed APD channels increase proportionally to the square root of the number of channels, the summed APD noise is roughly two to three times higher than projected.  This worse-than-expected scaling of the noise with channels indicates that noise across different channels is correlated, and further analysis confirms that the bulk of the noise on an unshaped APD waveform is correlated with other channels, as shown in Figure~\ref{fig:APDNoisePowerSpectrum}.  There are many possible sources of coherent noise in the hardware, and reducing the amount of coherent noise is a topic for further research.~\cite{ElectronicsUpgradeReport}
+
+However, the observation that coherent noise is the dominant source of noise in the APDs, and thus also the limiting factor in EXO-200's energy resolution, means that it should be possible to exploit these correlations and reduce the level of noise in offline analysis.  This chapter will describe a scheme to accomplish that goal and produce an optimal estimate of scintillation energy which takes noise correlations into account.
+
+It is worth noting that in fact there are a number of different qualitative approaches to reducing the noise levels in the scintillation channel.  In casual terms, we will refer to "passive" approaches as those in which components of our signals are weighted more or less heavily based on their relative signal-to-noise content.  "Active" approaches, by contrast, will be classified as those which attempt to improve the signal-to-noise content of signal components.  We have identified the following three types of denoising:
+\begin{description}
+\item[Frequency weighting] \hfill \\
+On a given channel signal, weight more heavily the frequency components which contain larger signal-to-noise ratio.  This passive denoising scheme requires knowledge of the shapes in fourier space of a signal and the power spectrum of the noise.
+
+\item[Channel weighting] \hfill \\
+Different channels may have different levels of noise, so some may generally have higher-quality signals.  More importantly, though, the amount of signal on a given channel depends strongly on the proximity of the APD gang to the source of scintillation within the detector.  This passive denoising scheme therefore allows us to weight more heavily the channels which have more scintillation, provided we can identify these weights on an event-by-event basis.  This requires knowledge of the magnitude of noise on each channel and of the correspondence between event position and signal magnitude on each APD gang; the latter is described by the lightmap, described earlier.
+
+\item[Noise subtraction] \hfill \\
+This active form of denoising consists of using correlations between noise on different channels to produce a better estimate of the noise component of signals than each signal taken independently could provide.  To accomplish this, we will require detailed information about the pairwise noise correlations across channels at each frequency.
+\end{description}
+
+In the following, we will describe a general linear operator on the APD signals which in principle can accomplish each of these forms of denoising, and we will presume that all of the described inputs are available; by identifying the parameters for that linear operator which are optimal, we can be confident that the denoising operator we produce will accomplish all three forms of denoising described above.
+
 \section{Setup}
 
 We first establish a number of notational conventions:
 \begin{itemize}
-\item $i$, $j$ will represent indices over all channels.
-\item $k$, $\ell$ will represent only APD channel indices.
-\item $m$, $n$ will represent only wire channel indices.
+\item $i$, $j$ will represent indices over APD channels.
 \item $t$ will represent the time indices of a discrete waveform.
 \item $f$, $g$ will represent the frequency indices of Fourier-transformed waveforms.
-\item $r$, $s$ will represent indices of signals in an event.
+\item $a$, $b$ will represent indices of signals in an event.
 \item For a waveform $*[t]$, we will represent the discrete Fourier transform of that waveform with $\widetilde{*}[f]$, where the particular convention used to evaluate the Fourier transform is not significant.
 \item For a Fourier-transformed waveform $\widetilde{*}[f]$, we denote the real and imaginary parts of that waveform by $\widetilde{*}^R[f]$ and $\widetilde{*}^I[f]$, respectively.
 \end{itemize}
 
-We describe the data as a collection of discretely sampled waveforms, $X_i[t]$.  We assume that all signal times and shapes are already known, so we can model the waveforms by $X_i[t] = \sum_s C_{s}Y_{is}[t] + N_i[t] + b_i$, where $Y$ is the shape of signal $s$ on channel $i$, $C$ is the magnitude of that signal, and $N$ and $b$ represent the electronic noise and baseline, respectively, of the channel.
+We describe the data as a collection of discretely sampled waveforms, $X_i[t]$.  We assume that all signal times and shapes are already known, so we can model the waveforms by $X_i[t] = \sum_a M_{ia}Y_{ia}[t] + N_i[t] + b_i$, where $Y$ is the shape of signal $a$ on channel $i$, $M$ is the magnitude of that signal, and $N$ and $b$ represent the electronic noise and baseline, respectively, of the channel.
 
-Noise correlations will be much simpler in frequency space, so we take the Fourier transform and drop the zero-frequency component to obtain \[\widetilde{X}_i[f] = \sum_s C_{s}\widetilde{Y}_{is}[f] + \widetilde{N}_i[f].\]
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{scripts/UnshapedAPDWaveform.png}
+\includegraphics[keepaspectratio=true,width=\textwidth]{scripts/ShapedAPDWaveform.png}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Shaped and unshaped APD waveforms.  The normalization is shown to make the peak of the shaped waveform have a magnitude of one, and the time axis is shifted so that the unshaped waveform is a step function centered at $t=0$.}
+\label{fig:SampleAPDTemplates}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+To break the degeneracy between $M$ and $Y$, we choose to fix the magnitude of the template signal $Y$.  We choose to require that the signal $Y$ has its peak at one when its baseline lies at zero, as illustrated in figure~\ref{fig:SampleAPDTemplates}.  (Note that the baseline here is not the same as the zero-frequency component; rather, this asserts that $Y$ goes to zero for times far away from the time of the signal.)
+
+Noise correlations will be much simpler in frequency space, so we take the Fourier transform and drop the zero-frequency component to obtain \[\widetilde{X}_i[f] = \sum_a C_{a}\widetilde{Y}_{ia}[f] + \widetilde{N}_i[f].\]
 
 \subsection{The Noise Model}
 
-We will assume that there are two sources of noise in this model.  First, the electronic noise $N_i[t]$ is assumed to be randomly distributed with mean $\left< \widetilde{N}_i[f] \right> = 0$ for all $i$, $f$.  (This can also be interpreted as meaning that the phase of each frequency component is random.)  We additionally demand that electronic noise components with different frequencies are uncorrelated, $\left< \widetilde{N}_i[f] \widetilde{N}_j[g] \right> = 0$ when $f \ne g$.  Importantly, though, we do permit correlations in noise across different channels, so $\left< \widetilde{N}_i[f] \widetilde{N}_j[f] \right>$ may be non-zero for any $i$, $j$, $f$.  These electronic-noise correlations will be measured in external data [DESCRIBE ELSEWHERE]; for the present purpose, we simply assume they are known.
+We will assume that there are two sources of noise in this model.  First, the electronic noise $N_i[t]$ is assumed to be random.  We require that noise with different frequencies is uncorrelated:
+\[\left< \widetilde{N}_i[f] \widetilde{N}_j[g] \right> = 0 \text{~when~} f \ne g.\]
+The noise correlations $\left< \widetilde{N}_i[f] \widetilde{N}_j[f] \right>$ are assumed to be known; our means for measuring them are described [ELSEWHERE].
 
 The second random variable will be the magnitude of the signal itself, $C_s$.  When an energetic decay occurs in bulk of the detector, it will release some number of photons and electons which reflects the energy of the decay; however, the number of photons and electrons actually collected by sensors is randomly distributed.  We now consider the sources of that randomness.
 
@@ -341,3 +392,9 @@ Outline new algorithm demonstrating multi-threading and batch handling.
 Todo: Figure out better notation for transpose inverse than ${X^\top}^{-1}$.
 
 
+
+
+
+\section{Future Plans}
+
+Extract gang-by-gang magnitudes from scintillation.  The idea is that the lightmap needs gang-by-gang signal magnitudes as input, and currently the only way to produce them is with the old-style scintillation handling.  Now it would be nice to "close the circle" and use denoised magnitude measurements to improve the precision of the input to the lightmap.  (We already are doing this with event selection, just not with magnitude measurements.)
