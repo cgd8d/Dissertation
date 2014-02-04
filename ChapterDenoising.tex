@@ -50,34 +50,74 @@ We first establish a number of notational conventions:
 
 We describe the data as a collection of discretely sampled waveforms, $X_i[t]$.  We assume that all signal times and shapes are already known, so we can model the waveforms by $X_i[t] = \sum_a M_{ia}Y_{ia}[t] + N_i[t] + b_i$, where $Y$ is the shape of signal $a$ on channel $i$, $M$ is the magnitude of that signal, and $N$ and $b$ represent the electronic noise and baseline, respectively, of the channel.
 
-\begin{figure}
-\begin{center}
-\includegraphics[keepaspectratio=true,width=\textwidth]{scripts/UnshapedAPDWaveform.png}
-\includegraphics[keepaspectratio=true,width=\textwidth]{scripts/ShapedAPDWaveform.png}
-\end{center}
-\renewcommand{\baselinestretch}{1}
-\small\normalsize
-\begin{quote}
-\caption{Shaped and unshaped APD waveforms.  The normalization is shown to make the peak of the shaped waveform have a magnitude of one, and the time axis is shifted so that the unshaped waveform is a step function centered at $t=0$.}
-\label{fig:SampleAPDTemplates}
-\end{quote}
-\end{figure}
-\renewcommand{\baselinestretch}{2}
-\small\normalsize
+To break the degeneracy between $M$ and $Y$, we choose to fix the magnitude of the template signal $Y$.  We choose to require that the signal $Y$ has a magnitude of one, as described in figure~\ref{fig:SampleAPDTemplates}.  This implies that for a typical single-site $2615$-keV deposit, the average values of $M_i$ should be equal to the values of the lightmap $L_i(x,y,z,t)$ described earlier.
 
-To break the degeneracy between $M$ and $Y$, we choose to fix the magnitude of the template signal $Y$.  We choose to require that the signal $Y$ has its peak at one when its baseline lies at zero, as illustrated in figure~\ref{fig:SampleAPDTemplates}.  (Note that the baseline here is not the same as the zero-frequency component; rather, this asserts that $Y$ goes to zero for times far away from the time of the signal.)
+Noise correlations will be much simpler in frequency space, so we take the Fourier transform and drop the zero-frequency component to obtain \[\widetilde{X}_i[f] = \sum_a M_{ia}\widetilde{Y}_{ia}[f] + \widetilde{N}_i[f].\]
 
-Noise correlations will be much simpler in frequency space, so we take the Fourier transform and drop the zero-frequency component to obtain \[\widetilde{X}_i[f] = \sum_a C_{a}\widetilde{Y}_{ia}[f] + \widetilde{N}_i[f].\]
+\section{The Signal Model}
 
-\subsection{The Noise Model}
+It is first important to characterize the response of the APDs to energy deposits in EXO-200.  This will require us to understand the signal amplification of the detector at each physical stage, as well as the noise introduced by each of these processes.  We will describe both in detail here.
+
+\subsection{APD Noise}
 
 We will assume that there are two sources of noise in this model.  First, the electronic noise $N_i[t]$ is assumed to be random.  We require that noise with different frequencies is uncorrelated:
 \[\left< \widetilde{N}_i[f] \widetilde{N}_j[g] \right> = 0 \text{~when~} f \ne g.\]
 The noise correlations $\left< \widetilde{N}_i[f] \widetilde{N}_j[f] \right>$ are assumed to be known; our means for measuring them are described [ELSEWHERE].
 
-The second random variable will be the magnitude of the signal itself, $C_s$.  When an energetic decay occurs in bulk of the detector, it will release some number of photons and electons which reflects the energy of the decay; however, the number of photons and electrons actually collected by sensors is randomly distributed.  We now consider the sources of that randomness.
+The second random variable will be the magnitude of the signal itself, $M_{ia}$.  When an energetic decay occurs in bulk of the detector, it will release some number of photons.  We will denote the number of photons released by signal $a$ by $P^{(0)}_a$, and this is the parameter we wish to measure.  However, the magnitude signal actually observed on APD channels number of photons actually collected by sensors is a random variable whose distribution depends on $P^{(0)}_a$, and we will now identify the chain of events which produce it.
 
-On the wire channels, all charge is directed by the electric field to deposit in a single location; so the dominant source of randomness comes from impurities.  Electrons are absorbed by impurities through their trajectory across the bulk of the Xenon; the expected quantity of charge decays exponentially in time with some half-life $T$.  We can describe the number of lost electrons by a Poisson process.  However, a typical deposit in out Q-value will produce tens of thousands of electrons, from which at most about $10\%$ may be lost to purity, making Poisson noise negligible in this situation.  Moreover, there is no available information in the charge channel which can reduce this source of noise; so it is proper to associate this source of uncertainty as a part of the irreducible detector resolution in the charge channel, and we will not treat it further.
+First, each APD gang $i$ has some number $P^{(1)}_{ia}$ of photons which reach them.  The mean fraction of photons reaching a particular gang $i$ from position $(x,y,z)$, $f_i(x,y,z)$, is assumed to be known; however, the initial paths of the optical photons emitted from the source, their trajectories through the Xenon, and their success in reflecting off of teflon are all random, so we treat $P^{(1)}_{ia}$ as a Poisson-distributed random variable with mean $f_i(x,y,z)P^{(0)}_a$.  A typical deposit from a $\beta\beta 0\nu$ event may deposit $10-100$ photons on each APD gang [CHECK THIS NUMBER], depending strongly on the location of the deposit; thus, we find that the Poisson noise on a single APD channel may be quite significant.
+
+Additionally, the number of photons reaching different gangs are not uncorrelated; since a photon which reaches gang $i$ cannot deposit on a different gang $j$, $P^{(1)}_{ia}$ and $P^{(1)}_{ja}$ are anticorrelated for different gangs $i \ne j$.  This process is described by a multinomial distribution.  Explicitly, we can identify the expectation values of a multinomial distribution:
+\begin{itemize}
+\item $\left< P^{(1)}_{ia} \right> = f_i(x,y,z)P^{(0)}_a$
+\item $\left< P^{(1)}_{ia} P^{(1)}_{jb} \right> = \left< P^{(1)}_{ia} \right> \left< P^{(1)}_{jb} \right> + \left[ f_i(x,y,z)\delta_{ij} - f_i(x,y,z)f_j(x,y,z) \right] P^{(0)}_a \delta_{ab}$
+\end{itemize}
+
+Following the random process associated with photons reaching the APD gangs, there is also randomness associated with signal amplification internally in the APDs.  These processes are described in detail in~\cite{EXOLAAPD}, but we can summarize that:
+
+\begin{enumerate}
+\item Optical photons in the liquid xenon arrive at the active layer of the APDs have a wavelength of roughly $178$ nm, meaning that each optical photon has an energy of roughly $7.0$ eV.  The energy required to produce one electron-hole pair in silicon is roughly $3.66$ eV, which means that each incident photon produces roughly $1.9$ electron-hole pairs; we will define $P^{(2)}_{ia}$ to be the number of electron-hole pairs actually produced from $P^{(1)}_{ia}$ incident photons.  The corresponding Fano factor for electrons produced in silicon is roughly $0.1$, meaning that in addition to the uncertainty in $P^{(1)}_{ia}$ which we have already characterized, there is an additional uncorrelated variance in $P^{(2)}_{ia}$ equal to $0.1 \left<P^{(2)}_{ia}\right>$.  The correlations in the parameters $P^{(2)}_{ia}$ are therefore:
+\[\left< P^{(2)}_{ia} \right> = 1.9 \cdot P^{(1)}_{ia}\]
+\[\left< P^{(2)}_{ia} P^{(2)}_{jb} \right> = (1.9)^2\left< P^{(1)}_{ia} P^{(1)}_{jb} \right> + 0.1 \left< P^{(2)}_{ia}\right> \delta_{ij}\delta_{ab}\]
+\item Electron-hole pairs are then amplified by an avalanche process inside the APDs.  The magnitude of this gain is APD-dependent, generally on the order of $200-300$, and can be identified by a time-dependent quantity $G^P_i(t)$; we will call the number of output electrons $P^{(3)}_{ia}$.  In addition to amplification of existing noise in $P^{(2)}_{ia}$, two additional source of noise are introduced.  First, there is statistical variance in the amplification experienced by each electron due to the randomness of the avalanche process.  This variance is dependent on many factors, including the gain, and scales like the square root of the number of electrons; we define the variance on the gain experienced by a single electron as $\sigma^2_{G_i}(t)$.  Second, there are gain non-uniformities in the diode volume, which contribute variance proportional to the square of the number of initial electron-hole pairs; we will identify the proportionality constant as $\sigma^2_{NU}$, which may depend on time and APD gang.  The magnitude of this uncertainty is not well-known, but may be significant.  The correlations in the parameters $P^{(3)}_{ia}$ are therefore:
+\[\left< P^{(3)}_{ia} \right> = G^P_i(t)P^{(2)}_{ia}\]
+\[\left< P^{(3)}_{ia} P^{(3)}_{jb} \right> = G^P_i(t)G^P_j(t) \left< P^{(2)}_{ia} P^{(2)}_{jb} \right> + \left[P^{(2)}_{ia}\sigma^2_{G_i}(t) + \left(P^{(2)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab}\]
+\end{enumerate}
+
+Finally, there is amplification $G^{E}_i(t)$ associated with the electronics of the APDs which is dependent on time and channel.  This includes preamplifier gain, shaper gain, gain associated with the shaping times, and conversion from voltage to ADC counts.  We assume that no signal-dependent noise is introduced during this stage, but there is constant electronic noise $N_i[t]$ which has been described above.  Additionally, the APDs can contribute noise in the form of a dark current which is uncorrelated with signals; this is inseparable from the electronic noise, and so we absorb it into our description of $N_i[t]$.  Our final description of the signal magnitudes.
+
+\subsection{APD Signals and Noise}
+
+We have already characterized the overall gain of the APDs using the lightmap described earlier.  We know that a typical single-site deposit of $2615$ keV at position $(x,y,z)$ and time $t$ will produce a signal with expected magnitude $L_i(x,y,z,t)$ on APD channel $i$.  We must now connect this empirical understanding of our APD signals with the physical understanding in terms of photons and electrons described above.
+
+We have identified the number of photons created by an event $a$ as $P^{(0)}_a$.  In reality, an ideal scintillation measurement can only measure this quantity, and not the true energy of the event -- there is randomness in the number of photons produced by a known-energy deposit, so $P^{(0)}_a$ will not be perfectly correlated with the energy $E_a$ of the event.  However, the number of photons generated is a difficult parameter to understand empirically, and all of our calibrations occur at a known energy even though the corresponding number of deposited photons is unknown.
+
+Simulations using NEST~\cite{NESTpaper} which have been performed within the EXO group by Liangjian Wen at our bulk electric field indicate that we can expect roughly $82,000$ photons from a $2615$-keV gamma deposit.  We will identify this parameter with $c$, and express the average relation between energy and photon yield in EXO-200 by
+$P^{(0)} = c \cdot E$,
+where $E$ is the energy measured in units of $2615$ keV.  We will treat this relationship as exact, and attempt to measure $E$ rather than $P^{(0)}$; this means that when we speak of measuring the energy of an event using the APD signals, we really are referring to measuring the "scintillation energy," or a parameter proportional to the number of emitted photons which on average will equal the true energy of the deposit.
+
+Ignoring variances for a moment, we can combine all of the expectation values for numbers of photons or ADC counts above to state that on average,
+\[M_{ia} = 1.9 \cdot c f_i(x,y,z) G^P_i(t) G^E_i(t) E_a.\]
+We can compare this to our empirical lightmap measurements, which are expressed by $M_{ia} = L_i(x,y,z,t) E_a$,
+and we conclude that:
+\[ L_i(x,y,z,t) = 1.9 \cdot c f_i(x,y,z) G^P_i(t) G^E_i(t).\]
+
+We recall that it is assumed the lightmap is a separable function, $L_i(x,y,z,t) = R_i(x,y,z)S_i(t)$, and we can provide the two proportionalities:
+\[ R_i(x,y,z) \propto f_i(x,y,z) \]
+\[ S_i(t) \propto G^P_i(t) G^E_i(t).\]
+
+Although $G^E_i(t)$ is in principle time-dependent, due to environmental effects on the APD electronics and occasional replacement of electronics cards for certain channels, precision data on its value is not readily available.  Instead, we use a time-independent estimate $G^E_i(t) = 1.1e-3$ ADC counts per electron emitted from the APD; the uncertainty in this figure is dominated by uncertainty in the preamplifier gains, which are controlled by a roughly $5$ pF capacitor.  Other contributors to the gain include shaper gain of $21.2$ (from a combination of amplification and shaping) and a full-scale digitizer range of $2.5$ volts for $12$-bit digitization.
+
+We do have independent measurements of the APD gains $G^P_i(t)$ available from laser calibration runs.  These special runs allow a laser to shine into the detector from a fixed point and with a stable amplitude while the bias voltages on the APDs are varied from an effective unity gain to our standard voltage settings.  Using these measurements, we are able to measure $G^P_i(t)$ at weekly intervals from September 2012 to the present time.  Before September 2012, some less-reliable laser data is available, but results from that data are not readily available as of this writing.
+
+It would be possible, and should be a goal for future improvements, to make use of this full range of laser data.  However, the laser data provides a less uniform history of APD gains over the full data-taking window of EXO-200 from September 2011 to November 2013, and it is much easier to track time-dependent behavior from Thorium source data which have been collected regularly throughout that period.  As a result, a compromise is used to characterize $G^P_i(t)$.  One particular laser run, run 4540 (taken on December 13, 2012), is used to fix $G^P_i(t_{4540})$, and the function is extrapolated using Thorium source data with:
+\[G^P_i(t) \approx G^P_i(t_{4540}) \cdot S_i(t)/S_i(t_{4540}).\]
+This assumption makes use of the approximation that $G^E_i(t)$ is roughly constant, which is probably only accurate to one significant figure; therefore when an electronics change is made to a channel, we can expect that the accuracy of $G^P_i(t)$ is no better than one significant figure.  These results mean that we can also estimate with the same level of accuracy:
+\[f_i(x,y,z) \approx \frac{S_i(t_{4540})}{G^P_i(t_{4540})} \cdot \frac{R_i(x,y,z)}{1.9 \cdot c G^E_i(t)}.\]
+
+
+DUMMY MARKER -- THIS IS HOW FAR I'VE GOTTEN WITH MY SECOND DRAFT.
 
 On the APD channels, we detect photons which travel from the source of the energy deposit to the face of the APD.  The paths of optical photons, and their reflection off of detector surfaces, is highly variable, so it is reasonable to model the number of photons depositing on any particular APD as Poisson-distributed.  A typical deposit in our Q-value may deposit $10-100$ photons on each APD, depending strongly on the location of the deposit; we find that on a single APD channel Poisson noise is very important.  Suppose that for a deposit of energy $E$, we expect an average of $Q_{tot}$ photons to be produced and $Q_k$ photons to deposit on APD channel $k$.  Then the number of photons $P_k$ deposited on APD channel $k$ will follow a multinomial distribution with the properties:
 \begin{itemize}
