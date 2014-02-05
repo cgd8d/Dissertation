@@ -43,9 +43,11 @@ We first establish a number of notational conventions:
 \item $i$, $j$ will represent indices over APD channels.
 \item $t$ will represent the time indices of a discrete waveform.
 \item $f$, $g$ will represent the frequency indices of Fourier-transformed waveforms.
-\item $a$, $b$ will represent indices of signals in an event.
+\item $a$, $b$, $c$ will represent indices of signals in an event.
 \item For a waveform $*[t]$, we will represent the discrete Fourier transform of that waveform with $\widetilde{*}[f]$, where the particular convention used to evaluate the Fourier transform is not significant.
 \item For a Fourier-transformed waveform $\widetilde{*}[f]$, we denote the real and imaginary parts of that waveform by $\widetilde{*}^R[f]$ and $\widetilde{*}^I[f]$, respectively.
+\item For an unknown parameter $*$, the symbol $\widehat{*}$ will identify an estimator for $*$.
+\item For an expression $*$ containing random variables, $\left<*\right>$ is the expectation value of $*$.
 \end{itemize}
 
 We describe the data as a collection of discretely sampled waveforms, $X_i[t]$.  We assume that all signal times and shapes are already known, so we can model the waveforms by $X_i[t] = \sum_a M_{ia}Y_{ia}[t] + N_i[t] + b_i$, where $Y$ is the shape of signal $a$ on channel $i$, $M$ is the magnitude of that signal, and $N$ and $b$ represent the electronic noise and baseline, respectively, of the channel.
@@ -113,48 +115,175 @@ We do have independent measurements of the APD gains $G^P_i(t)$ available from l
 
 It would be possible, and should be a goal for future improvements, to make use of this full range of laser data.  However, the laser data provides a less uniform history of APD gains over the full data-taking window of EXO-200 from September 2011 to November 2013, and it is much easier to track time-dependent behavior from Thorium source data which have been collected regularly throughout that period.  As a result, a compromise is used to characterize $G^P_i(t)$.  One particular laser run, run 4540 (taken on December 13, 2012), is used to fix $G^P_i(t_{4540})$, and the function is extrapolated using Thorium source data with:
 \[G^P_i(t) \approx G^P_i(t_{4540}) \cdot S_i(t)/S_i(t_{4540}).\]
-This assumption makes use of the approximation that $G^E_i(t)$ is roughly constant, which is probably only accurate to one significant figure; therefore when an electronics change is made to a channel, we can expect that the accuracy of $G^P_i(t)$ is no better than one significant figure.  These results mean that we can also estimate with the same level of accuracy:
+This assumption makes use of the approximation that $G^E_i(t)$ is roughly constant in time, which is probably only accurate to one significant figure; therefore when an electronics change is made to a channel, we can expect that the accuracy of $G^P_i(t)$ is no better than one significant figure.  These results mean that we can also estimate with the same level of accuracy:
 \[f_i(x,y,z) \approx \frac{S_i(t_{4540})}{G^P_i(t_{4540})} \cdot \frac{R_i(x,y,z)}{1.9 \cdot c G^E_i(t)}.\]
 
+It is then possible to express the full correlations in signal magnitudes in terms of the scintillation energies of deposits as:
+\begin{align*}
+\left< M_{ia} \right> &= L_i(x,y,z,t) E_a \\
+\begin{split}
+\left< M_{ia} M_{jb} \right> &= L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \left[1 + \frac{\sigma^2_{NU}}{\left(G^P_i(t)\right)^2} \delta_{ij}\delta_{ab} \right] \\
+&\quad - L_i(x,y,z,t) L_j(x,y,z,t) E_a \delta_{ab}/c \\
+&\quad + L_i(x,y,z,t) G^E_i(t) E_a \delta_{ij} \delta_{ab} \left[\left(0.1 + 1.9\right)G^P_i(t) + \frac{\sigma^2_{G_i}(t)}{G^P_i(t)}\right].
+\end{split}\end{align*}
+\begin{comment}
+THE FOLLOWING IS MY WORK IN EXPANDING THE M_M CORRELATIONS.
+IF NEEDED, IT CAN BE UNCOMMENTED AND IS VALID LATEX CODE.
 
-DUMMY MARKER -- THIS IS HOW FAR I'VE GOTTEN WITH MY SECOND DRAFT.
+\[ \left< M_{ia} M_{jb} \right> = G^E_i(t) G^E_j(t) \left<P^{(3)}_{ia}P^{(3)}_{jb} \right> \]
 
-On the APD channels, we detect photons which travel from the source of the energy deposit to the face of the APD.  The paths of optical photons, and their reflection off of detector surfaces, is highly variable, so it is reasonable to model the number of photons depositing on any particular APD as Poisson-distributed.  A typical deposit in our Q-value may deposit $10-100$ photons on each APD, depending strongly on the location of the deposit; we find that on a single APD channel Poisson noise is very important.  Suppose that for a deposit of energy $E$, we expect an average of $Q_{tot}$ photons to be produced and $Q_k$ photons to deposit on APD channel $k$.  Then the number of photons $P_k$ deposited on APD channel $k$ will follow a multinomial distribution with the properties:
-\begin{itemize}
-\item $\left< P_k \right> = Q_k$
-\item $\left< P_k P_{\ell} \right> = Q_k Q_{\ell} \left( 1 + \delta_{k\ell}Q_k^{-1/2}Q_{\ell}^{-1/2} - Q_{tot}^{-1}\right)$
-%If k = ell,
-%Variance = <(P_k - Q_k)^2> = <P_k^2> - 2Q_k^2 + Q_k^2 = <P_k^2> - Q_k^2
-%but variance = Q_tot * Q_k/Q_tot * (1-Q_k/Q_tot)
-%So, <P_k^2> = Q_k^2 + Q_k*(1-Q_k/Q_tot)
-%            = Q_k^2(1 + 1/Q_k - 1/Q_tot)
-%Otherwise,
-%Covariance = <(P_k - Q_k)(P_l - Q_l)> = <P_k P_l> - Q_kQ_l
-%But covariance = -Q_k*Q_l/Q_tot
-%So <P_k P_l> = Q_k Q_l (1-1/Q_tot)
-\end{itemize}
+\[ \left< M_{ia} M_{jb} \right> = G^E_i(t) G^E_j(t) \left( G^P_i(t)G^P_j(t) \left< P^{(2)}_{ia} P^{(2)}_{jb} \right> + \left[P^{(2)}_{ia}\sigma^2_{G_i}(t) + \left(P^{(2)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab}\right)\]
 
-Note that this implies that to fully understand the noise on our APDs, we must have some a priori estimate of $Q_tot$; this requires us to have an a priori estimate of the deposit energy.  It will be important to ensure our estimator does not bias us toward whatever estimate is provided; we will return to this point.
+\begin{equation*}\begin{split}
+\left< M_{ia} M_{jb} \right> ={}& G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) \left< P^{(2)}_{ia} P^{(2)}_{jb} \right> \\
+ & + G^E_i(t) G^E_j(t) \left[P^{(2)}_{ia}\sigma^2_{G_i}(t) + \left(P^{(2)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab}
+\end{split}\end{equation*}
 
-Our noise model, as we have said, is \[\widetilde{X}_i[f] = \sum_s C_s\widetilde{Y}_{is}[f] + \widetilde{N}_i[f].\]  But it will be advantageous to fix the normalization of $\widetilde{Y}$ to something consistent.  In the case of wires, we use the usual normalization encountered in reconstruction: a deposit waveform should be normalized so that its peak lies $1$ ADC above the baseline.  Furthermore, in our model we must characterize the expected signal on every waveform from a given deposit; to generate the expected induced signals on neighboring wires, we use the same digitizer used in Monte Carlo, and scale by the same factor used on the deposit channel.
+\begin{equation*}\begin{split}
+\left< M_{ia} M_{jb} \right> ={}& G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) \left( (1.9)^2\left< P^{(1)}_{ia} P^{(1)}_{jb} \right> + 0.1 \left< P^{(2)}_{ia}\right> \delta_{ij}\delta_{ab} \right) \\
+ & + G^E_i(t) G^E_j(t) \left[1.9 \cdot P^{(1)}_{ia}\sigma^2_{G_i}(t) + (1.9)^2 \left(P^{(1)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab}
+\end{split}\end{equation*}
 
-On APDs, there is no advantaged channel which should be used to set a scale, as we did for wires.  However, there is a preferred energy scale: the lightmap we use is generated from photopeak events at the Thallium-208 gamma line at $2615$ keV, and this normalization is preserved in the lightmap file format.  So, the lightmap explicitly records the signal size (in ADC counts from baseline to peak) expected from a $2615$ keV gamma-like deposit at all positions and times, and we can preserve that normalization here.  APD-channel $\widetilde{Y}_{is}$ are therefore normalized to the number of ADC counts expected from a $2615$ keV deposit, and $C_{is}$ indicates the measured energy of the deposit in units of $2615$ keV.
+\begin{equation*}\begin{split}
+\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) \left< P^{(1)}_{ia} P^{(1)}_{jb} \right> \\
+& + 0.1 \cdot 1.9 \cdot G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) P^{(1)}_{ia} \delta_{ij}\delta_{ab} \\
+ & + G^E_i(t) G^E_j(t) \left[1.9 \cdot P^{(1)}_{ia}\sigma^2_{G_i}(t) + (1.9)^2 \left(P^{(1)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab}
+\end{split}\end{equation*}
 
-We can specify these factors explicitly.  Let $M_k(x,t)$ be the yield in ADC counts expected on APD channel $k$ from a single-site $2615$ keV deposit at position $x$ and time $t$.  Let $\widetilde{Y}_{\tau}[f]$ represent a $1$-ADC APD signal occurring at time $\tau$ within a waveform.  (We assume for now, as we do in the rest of the analysis, that the shaping times on all APDs are identical.)
+\begin{equation*}\begin{split}
+\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) \left< P^{(1)}_{ia} P^{(1)}_{jb} \right> \\
+ & + G^E_i(t) G^E_j(t) \left[1.9 \cdot P^{(1)}_{ia}\sigma^2_{G_i}(t) + (1.9)^2 \left(P^{(1)}_{ia}\right)^2\sigma^2_{NU} + 0.1 \cdot 1.9 \cdot G^P_i(t)G^P_j(t) P^{(1)}_{ia}\right]\delta_{ij}\delta_{ab}
+\end{split}\end{equation*}
 
-Let $E_{exp}$ be the a priori expected energy of the deposit, in units of $2615$ keV; if we expect $c$ photons per $2615$ keV deposited, we then can use $Q_{tot} = c \cdot E_{exp}$.  We can also write $Q_{ks}$ in terms of $C_s$ if we have some conversion factor between ADC counts and incident photons on an APD channel $k$.  Let $g_{k}(t)$ be this gain factor, as a function of time; then \[\frac{Q_{ks}\cdot g_k(t)}{M_k(x,t)} = E_{exp} = \left<C_s\right>.\]
+\begin{equation*}\begin{split}
+\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) \left< P^{(1)}_{ia} P^{(1)}_{jb} \right> \\
+ & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot P^{(1)}_{ia} \sigma^2_{NU} + 0.1 \cdot G^P_i(t)G^P_j(t) \right] \left(G^E_i(t)\right)^2 P^{(1)}_{ia} \delta_{ij}\delta_{ab}
+\end{split}\end{equation*}
 
-\subsection{Optimization and Constraints}
+\begin{equation*}\begin{split}
+\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) \left< P^{(1)}_{ia} \right> \left< P^{(1)}_{jb} \right> \\
+& + (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t)\left[ f_i(x,y,z)\delta_{ij} - f_i(x,y,z)f_j(x,y,z) \right] P^{(0)}_a \delta_{ab}  \\
+ & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot P^{(1)}_{ia} \sigma^2_{NU} + 0.1 \cdot G^P_i(t)G^P_j(t) \right] \left(G^E_i(t)\right)^2 P^{(1)}_{ia} \delta_{ij}\delta_{ab}
+\end{split}\end{equation*}
 
-For each signal, we wish to identify a denoising operator which acts on the Fourier components of all of the waveforms and yields an estimate of the magnitude of that signal.  To make the problem tractable, we stipulate that this operator must be linear; so our estimate of the unknown parameter $C_s$ will be
-\[ \widehat{C}_s = \sum_{if} A_{ifs} \widetilde{X}_i^R[f] + B_{ifs} \widetilde{X}_i^I[f]\]
+\begin{equation*}\begin{split}
+\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) f_i(x,y,z) f_j(x,y,z) \left(P^{(0)}_a\right)^2 \\
+& + (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t)\left[ f_i(x,y,z)\delta_{ij} - f_i(x,y,z)f_j(x,y,z) \right] P^{(0)}_a \delta_{ab}  \\
+ & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot f_i(x,y,z) P^{(0)}_a \sigma^2_{NU} + 0.1 \cdot G^P_i(t)G^P_j(t) \right] \left(G^E_i(t)\right)^2 f_i(x,y,z) P^{(0)}_a \delta_{ij}\delta_{ab}
+\end{split}\end{equation*}
 
-For each event and each signal, the goal of denoising is to find a set of coefficients $A_{ifs}$, $B_{ifs}$ which minimizes the expected square-error in this quantity,
-\[ \epsilon = \left< \left(C_s - \widehat{C}_s\right)^2\right> \]
+\begin{equation*}\begin{split}
+\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) f_i(x,y,z) f_j(x,y,z) c^2 E^2_a \\
+& + (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t)\left[ f_i(x,y,z)\delta_{ij} - f_i(x,y,z)f_j(x,y,z) \right] c E_a \delta_{ab}  \\
+ & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot f_i(x,y,z) c E_a \sigma^2_{NU} + 0.1 \cdot G^P_i(t)G^P_j(t) \right] \left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab}
+\end{split}\end{equation*}
 
-It will turn out to be necessary, to make the problem tractable, to make the additional assumption that this denoising operator produce an unbiased estimate.  This is expressed by the constraint:
-\[ \left< C_s - \widehat{C}_s\right> = 0 \]
-Although this constraint is necessary for mathematical tractability, it is worth noting that it is not required by physics.  Releasing this constraint would permit biased estimators, but might permit the use of a narrower region of interest with better signal-to-background ratio.  For instance, it might permit a mono-energetic peak to appear with asymmetric tails.  A future project could involve releasing this constraint and checking whether the resulting resolution is improved; however, the increase in required computation makes this infeasible for us.
+\begin{equation*}\begin{split}
+\left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \\
+& + (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) f_i(x,y,z)\delta_{ij} c E_a \delta_{ab}  \\
+& - (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) f_i(x,y,z)f_j(x,y,z) c E_a \delta_{ab} \\
+ & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot f_i(x,y,z) c E_a \sigma^2_{NU} + 0.1 \cdot G^P_i(t)G^P_j(t) \right] \left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab}
+\end{split}\end{equation*}
+
+\begin{equation*}\begin{split}
+\left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \\
+& + L_i(x,y,z,t) (1.9)  G^E_i(t) G^P_i(t) \delta_{ij}  E_a \delta_{ab}  \\
+& - L_i(x,y,z,t)     (1.9) G^E_j(t) G^P_j(t) f_j(x,y,z) E_a \delta_{ab} \\
+ & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot f_i(x,y,z) c E_a \sigma^2_{NU} + 0.1 \cdot \left(G^P_i(t)\right)^2 \right] \left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab}
+\end{split}\end{equation*}
+
+\begin{equation*}\begin{split}
+\left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \\
+& + L_i(x,y,z,t) (1.9)  G^E_i(t) G^P_i(t) E_a \delta_{ij} \delta_{ab}  \\
+& - L_i(x,y,z,t) L_j(x,y,z,t) E_a \delta_{ab}/c \\
+& + (1.9)\sigma^2_{G_i}(t)\left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab} \\
+& + (1.9)^2 f_i(x,y,z) c E_a \sigma^2_{NU} \left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab} \\
+& + (1.9) (0.1) \left(G^P_i(t)\right)^2 \left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab}
+\end{split}\end{equation*}
+
+\begin{equation*}\begin{split}
+\left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \\
+& + (1.9)^2 f^2_i(x,y,z) \sigma^2_{NU} \left(G^E_i(t)\right)^2 c^2 E^2_a \delta_{ij}\delta_{ab} \\
+& - L_i(x,y,z,t) L_j(x,y,z,t) E_a \delta_{ab}/c \\
+& + L_i(x,y,z,t) (1.9)  G^E_i(t) G^P_i(t) E_a \delta_{ij} \delta_{ab}  \\
+& + (1.9)\sigma^2_{G_i}(t)\left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab} \\
+& + L_i(x,y,z,t) (0.1) G^P_i(t) G^E_i(t) E_a \delta_{ij}\delta_{ab}
+\end{split}\end{equation*}
+
+\begin{equation*}\begin{split}
+\left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \\
+& + L^2_i(x,y,z,t) \sigma^2_{NU} E^2_a \delta_{ij}\delta_{ab}/\left(G^P_i(t)\right)^2 \\
+& - L_i(x,y,z,t) L_j(x,y,z,t) E_a \delta_{ab}/c \\
+& + L_i(x,y,z,t) (1.9)  G^E_i(t) G^P_i(t) E_a \delta_{ij} \delta_{ab}  \\
+& + L_i(x,y,z,t) \sigma^2_{G_i}(t)G^E_i(t) E_a \delta_{ij}\delta_{ab}/G^P_i(t) \\
+& + L_i(x,y,z,t) (0.1) G^P_i(t) G^E_i(t) E_a \delta_{ij}\delta_{ab}
+\end{split}\end{equation*}
+
+\begin{equation*}\begin{split}
+\left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \left[1 + \frac{\sigma^2_{NU}}{\left(G^P_i(t)\right)^2} \delta_{ij}\delta_{ab} \right] \\
+& - L_i(x,y,z,t) L_j(x,y,z,t) E_a \delta_{ab}/c \\
+& + L_i(x,y,z,t) \sigma^2_{G_i}(t)G^E_i(t) E_a \delta_{ij}\delta_{ab}/G^P_i(t) \\
+& + L_i(x,y,z,t) (1.9 + 0.1)  G^E_i(t) G^P_i(t) E_a \delta_{ij} \delta_{ab}
+\end{split}\end{equation*}
+
+\begin{equation*}\begin{split}
+\left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \left[1 + \frac{\sigma^2_{NU}}{\left(G^P_i(t)\right)^2} \delta_{ij}\delta_{ab} \right] \\
+& - L_i(x,y,z,t) L_j(x,y,z,t) E_a \delta_{ab}/c \\
+& + L_i(x,y,z,t) G^E_i(t) E_a \delta_{ij} \delta_{ab} \left[\left(0.1 + 1.9\right)G^P_i(t) + \frac{\sigma^2_{G_i}(t)}{G^P_i(t)}\right]
+\end{split}\end{equation*}
+\end{comment}
+
+We combine this with our knowledge of the noise coefficients:
+\begin{align*}
+\left< \widetilde{N}_i[f] \right> &= 0 \\
+\left< \widetilde{N}_i[f] \widetilde{N}_j[g] \right> &= \left\{ \begin{aligned}
+0~ &\text{if}~ f \ne g \\
+\text{known}~ &\text{if}~ f = g
+\end{aligned}\right.
+\end{align*}
+and can claim to now have a complete description of the signals and noise observed in the APD channels.
+
+\section{Derivation}
+
+It is now possible to specify the optimization criteria for generating an energy estimate from the APD signals.  We wish to identify an energy estimator which is unbiased and has a minimal expected error.  For the problem to remain tractable, we will demand that the operator be linear.  Furthermore, although the Fourier-transformed waveforms $\widetilde{X}_i[f]$ are complex-valued, we will require that the energy estimate be strictly real-valued.
+
+We will therefore take the energy estimator to be of the form:
+\[ \widehat{E}_a = \Sigma_{if} A_{ifa} \widetilde{X}_i^R[f] + B_{ifa} \widetilde{X}_i^I[f].\]
+The goal of denoising is therefore reduced to identifying the optimal parameters $A_{ifa}$ and $B_{ifa}$ for this estimator.
+
+The error in the energy estimate $\widehat{E}_a$ of $E_a$ is defined by:
+\[ \epsilon^2_a = \left< \left(\widehat{E}_a - E_a\right)^2\right>. \]
+Our goal is then to minimize $\epsilon^2_a$ under the constraint of no bias, ie. that:
+\[\left<\widehat{E}_a - E_a\right> = 0.\]
+
+We now proceed with the optimization.  We start by expanding $\epsilon^2_a$:
+\begin{align*}
+\epsilon^2_a &= \left< \left(\widehat{E}_a - E_a\right)^2\right> \\
+&= \left< \left(\Sigma_{if} \left[ A_{ifa} \widetilde{X}_i^R[f] + B_{ifa} \widetilde{X}_i^I[f]\right] - E_a \right)^2\right> \\
+%
+& \begin{aligned}= \bigg< \bigg(& \Sigma_{if} \left[ A_{ifa} \widetilde{N}_i^R[f] + B_{ifa} \widetilde{N}_i^I[f]\right] \\
+  & + \Sigma_{ifb} \left[ A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]M_{ib} \\
+  & - E_a \bigg)^2 \bigg>
+\end{aligned} \\
+%
+\intertext{The noise $\widetilde{N}$ and signal $M_{ia}$ are uncorrelated, so multiplicative cross-terms will have an expectation value of zero; we can therefore continue simplifying with:}
+%
+&= \left< \left( \Sigma_{if} \left[ A_{ifa} \widetilde{N}_i^R[f] + B_{ifa} \widetilde{N}_i^I[f]\right] \right)^2\right>\\
+&\quad + \left<\left(\Sigma_{ifb} \left[ A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]M_{ib} - E_a \right)^2\right> \\
+%
+&= \left< \left( \Sigma_{if} \left[ A_{ifa} \widetilde{N}_i^R[f] + B_{ifa} \widetilde{N}_i^I[f]\right] \right)^2\right>\\
+&\quad + \left<\left(\Sigma_{ifb} \left[ A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]M_{ib} - E_a \right)\Sigma_{jgc} \left[ A_{jga} \widetilde{Y}_{jc}^R[g] + B_{jga} \widetilde{Y}_{jc}^I[f]\right]M_{jc}\right> \\
+&\quad - \left<\left(\Sigma_{ifb} \left[ A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]M_{ib} - E_a \right)\right>E_a
+%
+\intertext{By invoking the constraint $\left<\widetilde{E}_a - E_a\right> = 0$ and noting that the electronic noise terms $\widetilde{N}$ have mean zero, the last term of this equation can be seen to equal zero, yielding:}
+%
+\end{align*}
+
+
+
+
+
+
 
 \section{Derivation}
 
