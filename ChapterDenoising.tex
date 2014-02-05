@@ -122,7 +122,7 @@ It is then possible to express the full correlations in signal magnitudes in ter
 \begin{align*}
 \left< M_{ia} \right> &= L_i(x,y,z,t) E_a \\
 \begin{split}
-\left< M_{ia} M_{jb} \right> &= L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \left[1 + \frac{\sigma^2_{NU}}{\left(G^P_i(t)\right)^2} \delta_{ij}\delta_{ab} \right] \\
+\left< M_{ia} M_{jb} \right> &= L_i(x,y,z,t)L_j(x,y,z,t) E_a E_b \left[1 + \frac{\sigma^2_{NU}}{\left(G^P_i(t)\right)^2} \delta_{ij}\delta_{ab} \right] \\
 &\quad - L_i(x,y,z,t) L_j(x,y,z,t) E_a \delta_{ab}/c \\
 &\quad + L_i(x,y,z,t) G^E_i(t) E_a \delta_{ij} \delta_{ab} \left[\left(0.1 + 1.9\right)G^P_i(t) + \frac{\sigma^2_{G_i}(t)}{G^P_i(t)}\right].
 \end{split}\end{align*}
@@ -254,7 +254,12 @@ The goal of denoising is therefore reduced to identifying the optimal parameters
 The error in the energy estimate $\widehat{E}_a$ of $E_a$ is defined by:
 \[ \epsilon^2_a = \left< \left(\widehat{E}_a - E_a\right)^2\right>. \]
 Our goal is then to minimize $\epsilon^2_a$ under the constraint of no bias, ie. that:
-\[\left<\widehat{E}_a - E_a\right> = 0.\]
+\[\left<\widehat{E}_a - E_a\right> = 0\]
+or, equivalently,
+\[\sum_{ifb}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(x,y,z,t) E_b = E_a.\]
+However, we will find that it is necessary to specify a slightly stronger constraint.  In particular, it will be desirable to ensure that the constraints are as independent of energy as possible to reduce the need to input an estimated energy into our energy estimator; therefore we will freely employ the stronger constraint
+\[\sum_{if}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(x,y,z,t) = \delta_{ab}\]
+which implies the earlier forms and leads to advantageous cancellations of terms.
 
 We now proceed with the optimization.  We start by expanding $\epsilon^2_a$:
 \begin{align*}
@@ -287,63 +292,51 @@ We now proceed with the optimization.  We start by expanding $\epsilon^2_a$:
   = \sum_{ijf} \bigg[ & A_{ifa}A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + A_{ifa}B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right> \\
   & + B_{ifa}A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ifa}B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\bigg] \end{aligned} \\
 &\quad + \sum_{\substack{ifb\\jgc}} \left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]\left[A_{jga} \widetilde{Y}_{jc}^R[g] + B_{jga} \widetilde{Y}_{jc}^I[g]\right] \left<M_{ib}M_{jc}\right> - E^2_a \\
+%
+\intertext{We will now expand $\left<M_{ib}M_{jc}\right>$ and take advantage of the stronger form of our constraint to simplify the expression:}
+%
+& \begin{aligned}
+  = \sum_{ijf} \bigg[ & A_{ifa}A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + A_{ifa}B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right> \\
+  & + B_{ifa}A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ifa}B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\bigg] \end{aligned} \\
+&\quad + \left( \sum_{ifb} \left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(x,y,z,t) E_b \right)^2 - E^2_a \\
+&\quad - \sum_b \left( \sum_{if} \left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(x,y,z,t) \right)^2 \frac{E_b}{c} \\
+&\quad \begin{aligned}
+  + \sum_{ifgb} &\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]\left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \cdot \\
+  & \begin{aligned}
+    L_i(x,y,z,t) E_b \bigg[ &(0.1 + 1.9) G^E_i(t) G^P_i(t) \\
+    & + \frac{G^E_i(t)}{G^P_i(t)} \sigma^2_{G_i}(t) + L_i(x,y,z,t) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t)\right)^2} \bigg]
+\end{aligned} \end{aligned} \\
+%
+& \begin{aligned}
+  = \sum_{ijf} \bigg[ & A_{ifa}A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + A_{ifa}B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right> \\
+  & + B_{ifa}A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ifa}B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\bigg] \end{aligned} \\
+&\quad \begin{aligned}
+  + \sum_{ifgb} &\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]\left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \cdot \\
+  & \begin{aligned}
+    L_i(x,y,z,t) E_b \bigg[ &(0.1 + 1.9) G^E_i(t) G^P_i(t) \\
+    & + \frac{G^E_i(t)}{G^P_i(t)} \sigma^2_{G_i}(t) + L_i(x,y,z,t) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t)\right)^2} \bigg]
+\end{aligned} \end{aligned} \\
+&\quad - \frac{E_a}{c}
 \end{align*}
 
-
-
-
-
-
-
-\section{Derivation}
-
-We are now in a position to derive the optimal denoising estimator.  We start by expanding the square-error value:
-\[
-\begin{array}{rcl}
-\epsilon &=& \left< \left(C_s - \widehat{C}_s\right)^2\right> \\
-
-&=& \left<\left(C_s - \sum_{if} \left[A_{ifs} \widetilde{X}_i^R[f] + B_{ifs} \widetilde{X}_i^I[f]\right]\right)^2\right> \\
-
-&=& \left<\left(C_s - \sum_{if} \left[A_{ifs}\widetilde{N}_i^R[f] + B_{ifs}\widetilde{N}_i^I[f]\right]
-                    - \sum_{ifr}C_r\left[A_{ifs}\widetilde{Y}_{ir}^R[f] + B_{ifs}\widetilde{Y}_{ir}^I[f]\right]
-    \right)^2\right>
-\end{array}
-\]
-We assume that the electronic and Poisson noise terms are uncorrelated:
-%\[
-%\begin{IEEEeqnarray*}{rcll}
-%\epsilon &=& \IEEEeqnarraymulticol{2}{l}{
-%\left<\left(\sum_{if} \left[A_{ifs}\widetilde{N}_i^R[f] + B_{ifs}\widetilde{N}_i^I[f]\right]\right)^2\right> +
-%             \left<\left(C_s - \sum_{ifr}C_r\left[A_{ifs}\widetilde{Y}_{ir}^R[f] + B_{ifs}\widetilde{Y}_{ir}^I%[f]\right]\right)^2\right>}\\
+We are now in a position to evaluate the partial derivatives of $\epsilon^2_a$ with respect to the parameters $A_{ifa}$ and $B_{ifa}$.  They are:
+\begin{align*}
+\frac{\partial \epsilon^2_a}{\partial A_{ifa}} &= 2 \sum_j \left[ A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right>\right] \\
+&\quad \begin{aligned}
+  + 2 \sum_{gb} & E_b\widetilde{Y}_{ib}^R[f] L_i(x,y,z,t)\left[A_{jga} \widetilde{Y}_{jb}^R[g] + B_{jga} \widetilde{Y}_{jb}^I[g]\right] \cdot \\
+  & \begin{aligned}
+    \bigg[ &(0.1 + 1.9) G^E_i(t) G^P_i(t) \\
+  & + \frac{G^E_i(t)}{G^P_i(t)} \sigma^2_{G_i}(t) + L_i(x,y,z,t) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t)\right)^2} \bigg]
+\end{aligned} \end{aligned}\\
 %
-%&=& \left<\left(\sum_{if} \left[A_{ifs}\widetilde{N}_i^R[f] + B_{ifs}\widetilde{N}_i^I[f]\right]\right)^2\right> +
-%     \left<\left(\sum_{ifr}C_r\left[A_{ifs}\widetilde{Y}_{ir}^R[f] + B_{ifs}\widetilde{Y}_{ir}^I[f]\right]\right)^2\right> -
-%     2\left<C_s \sum_{ifr}C_r\left[A_{ifs}\widetilde{Y}_{ir}^R[f] + B_{ifs}\widetilde{Y}_{ir}^I[f]\right]\right> +
-%     \left<C_s^2\right> \\
-
-
-
-%&=& \sum{ijfg}\left[&A_{ifs}A_{jgs}\left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[g]\right> + \\
-%& &                 &A_{ifs}B_{jgs}\left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[g]\right> + \\
-%& &                 &B_{ifs}A_{jgs}\left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[g]\right> + \\
-%& &                 &B_{ifs}B_{jgs}\left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[g]\right> \right] + \\
-%& &
-
-
-%\end{array}
-%\]
-% IEEEeqnarray would have the benefit of letting me merge across multiple columns, as used here.
-% Problem: latex complains when I start a group like \left[ which trails across a line.
-
-
-
-
-
-
-
-
-
-
+\frac{\partial \epsilon^2_a}{\partial B_{ifa}} &= 2 \sum_j \left[ A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\right] \\
+&\quad \begin{aligned}
+  + 2 \sum_{gb} & E_b\widetilde{Y}_{ib}^I[f] L_i(x,y,z,t)\left[A_{jga} \widetilde{Y}_{jb}^R[g] + B_{jga} \widetilde{Y}_{jb}^I[g]\right] \cdot \\
+  & \begin{aligned}
+    \bigg[ &(0.1 + 1.9) G^E_i(t) G^P_i(t) \\
+  & + \frac{G^E_i(t)}{G^P_i(t)} \sigma^2_{G_i}(t) + L_i(x,y,z,t) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t)\right)^2} \bigg]
+\end{aligned} \end{aligned}
+\end{align*}
 
 
 
