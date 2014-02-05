@@ -248,7 +248,7 @@ and can claim to now have a complete description of the signals and noise observ
 It is now possible to specify the optimization criteria for generating an energy estimate from the APD signals.  We wish to identify an energy estimator which is unbiased and has a minimal expected error.  For the problem to remain tractable, we will demand that the operator be linear.  Furthermore, although the Fourier-transformed waveforms $\widetilde{X}_i[f]$ are complex-valued, we will require that the energy estimate be strictly real-valued.
 
 We will therefore take the energy estimator to be of the form:
-\[ \widehat{E}_a = \Sigma_{if} A_{ifa} \widetilde{X}_i^R[f] + B_{ifa} \widetilde{X}_i^I[f].\]
+\[ \widehat{E}_a = \sum_{if} A_{ifa} \widetilde{X}_i^R[f] + B_{ifa} \widetilde{X}_i^I[f].\]
 The goal of denoising is therefore reduced to identifying the optimal parameters $A_{ifa}$ and $B_{ifa}$ for this estimator.
 
 The error in the energy estimate $\widehat{E}_a$ of $E_a$ is defined by:
@@ -259,24 +259,34 @@ Our goal is then to minimize $\epsilon^2_a$ under the constraint of no bias, ie.
 We now proceed with the optimization.  We start by expanding $\epsilon^2_a$:
 \begin{align*}
 \epsilon^2_a &= \left< \left(\widehat{E}_a - E_a\right)^2\right> \\
-&= \left< \left(\Sigma_{if} \left[ A_{ifa} \widetilde{X}_i^R[f] + B_{ifa} \widetilde{X}_i^I[f]\right] - E_a \right)^2\right> \\
 %
-& \begin{aligned}= \bigg< \bigg(& \Sigma_{if} \left[ A_{ifa} \widetilde{N}_i^R[f] + B_{ifa} \widetilde{N}_i^I[f]\right] \\
-  & + \Sigma_{ifb} \left[ A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]M_{ib} \\
-  & - E_a \bigg)^2 \bigg>
+&= \left< \widehat{E}^2_a \right> - E_a \left<\widehat{E}_a\right> - \left< \widehat{E}_a - E_a \right> E_a \\
+%
+\intertext{We can employ the constraint to simplify the second term of this expansion, and eliminate the third altogether; we then proceed:}
+%
+&= \left< \widehat{E}^2_a \right> - E^2_a \\
+%
+&= \left< \left(\sum_{if}\left[ A_{ifa} \widetilde{X}_i^R[f] + B_{ifa} \widetilde{X}_i^I[f]\right]\right)^2\right> - E^2_a \\
+%
+& \begin{aligned}= \bigg< \bigg(&
+  \sum_{if} \left[ A_{ifa} \widetilde{N}_i^R[f] + B_{ifa} \widetilde{N}_i^I[f]\right] \\
+  & + \sum_{ifb} \left[ A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]M_{ib}  \bigg)^2 \bigg> - E^2_a
 \end{aligned} \\
 %
-\intertext{The noise $\widetilde{N}$ and signal $M_{ia}$ are uncorrelated, so multiplicative cross-terms will have an expectation value of zero; we can therefore continue simplifying with:}
+\intertext{The noise $\widetilde{N}$ and signal $M_{ia}$ are uncorrelated, so multiplicative cross-terms will have an expectation value of zero:}
 %
-&= \left< \left( \Sigma_{if} \left[ A_{ifa} \widetilde{N}_i^R[f] + B_{ifa} \widetilde{N}_i^I[f]\right] \right)^2\right>\\
-&\quad + \left<\left(\Sigma_{ifb} \left[ A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]M_{ib} - E_a \right)^2\right> \\
+&= \left< \left(\sum_{if} \left[ A_{ifa} \widetilde{N}_i^R[f] + B_{ifa} \widetilde{N}_i^I[f]\right]\right)^2\right> \\
+&\quad + \left<\left(\sum_{ifb} \left[ A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]M_{ib} \right)^2 \right> - E^2_a \\
 %
-&= \left< \left( \Sigma_{if} \left[ A_{ifa} \widetilde{N}_i^R[f] + B_{ifa} \widetilde{N}_i^I[f]\right] \right)^2\right>\\
-&\quad + \left<\left(\Sigma_{ifb} \left[ A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]M_{ib} - E_a \right)\Sigma_{jgc} \left[ A_{jga} \widetilde{Y}_{jc}^R[g] + B_{jga} \widetilde{Y}_{jc}^I[f]\right]M_{jc}\right> \\
-&\quad - \left<\left(\Sigma_{ifb} \left[ A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]M_{ib} - E_a \right)\right>E_a
+\intertext{Additionally, only electronic noise cross-terms between different frequencies will not survive:}
 %
-\intertext{By invoking the constraint $\left<\widetilde{E}_a - E_a\right> = 0$ and noting that the electronic noise terms $\widetilde{N}$ have mean zero, the last term of this equation can be seen to equal zero, yielding:}
+&= \left< \sum_{ijf} \left[ A_{ifa} \widetilde{N}_i^R[f] + B_{ifa} \widetilde{N}_i^I[f]\right] \left[ A_{jfa} \widetilde{N}_j^R[f] + B_{jfa} \widetilde{N}_j^I[f]\right] \right> \\
+&\quad + \left<\left(\sum_{ifb} \left[ A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]M_{ib} \right)^2 \right> - E^2_a \\
 %
+& \begin{aligned}
+  = \sum_{ijf} \bigg[ & A_{ifa}A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + A_{ifa}B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right> \\
+  & + B_{ifa}A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ifa}B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\bigg] \end{aligned} \\
+&\quad + \sum_{\substack{ifb\\jgc}} \left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]\left[A_{jga} \widetilde{Y}_{jc}^R[g] + B_{jga} \widetilde{Y}_{jc}^I[g]\right] \left<M_{ib}M_{jc}\right> - E^2_a \\
 \end{align*}
 
 
