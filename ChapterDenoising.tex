@@ -258,7 +258,7 @@ Our goal is then to minimize $\epsilon^2_a$ under the constraint of no bias, ie.
 or, equivalently,
 \[\sum_{ifb}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(x,y,z,t) E_b = E_a.\]
 However, we will find that it is necessary to specify a slightly stronger constraint.  In particular, it will be desirable to ensure that the constraints are as independent of energy as possible to reduce the need to input an estimated energy into our energy estimator; therefore we will freely employ the stronger constraint
-\[\sum_{if}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(x,y,z,t) = \delta_{ab}\]
+\[\sum_{if}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(x,y,z,t) = \delta_{ab} \text{~for all b,}\]
 which implies the earlier forms and leads to advantageous cancellations of terms.
 
 We now proceed with the optimization.  We start by expanding $\epsilon^2_a$:
@@ -338,12 +338,32 @@ We are now in a position to evaluate the partial derivatives of $\epsilon^2_a$ w
 \end{aligned} \end{aligned}
 \end{align*}
 
+We will use Lagrange's method to minimize $\epsilon^2_a$ while satisfying our constraints; we define
+\[C_{ab} = \sum_{if}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(x,y,z,t),\]
+with ordered indices, and restate our constraints as
+\[C_{ab} = \delta_{ab}.\]
+Then, the partial derivatives of these constrained expressions are:
+\begin{align*}
+\frac{\partial C_{bc}}{\partial A_{ifa}} &= \widetilde{Y}^R_{ic}[f] L_i(x,y,z,t) \delta_{ab} \\
+\frac{\partial C_{bc}}{\partial B_{ifa}} &= \widetilde{Y}^I_{ic}[f] L_i(x,y,z,t) \delta_{ab}
+\end{align*}
 
-
-
-
-
-
+Denoting the set of lagrange multipliers for $\epsilon^2_a$ with $\lambda_{ab}$, where the indices are ordered, and allowing these parameters to absorb constant factors, we can at last identify the full set of linear equations describing the optimal energy estimator $\widehat{E}_a$:
+\begin{align*}
+&\sum_j \left[ A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right>\right]\\
+&+ \sum_{gb} \begin{aligned}[t]
+  & E_b\widetilde{Y}_{ib}^R[f] L_i(x,y,z,t)\left[A_{jga} \widetilde{Y}_{jb}^R[g] + B_{jga} \widetilde{Y}_{jb}^I[g]\right] \cdot \\
+  & \bigg[ (0.1 + 1.9) G^E_i(t) G^P_i(t) + \frac{G^E_i(t)}{G^P_i(t)} \sigma^2_{G_i}(t) + L_i(x,y,z,t) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t)\right)^2} \bigg] \end{aligned} \\
+&\qquad = \sum_b \lambda_{ab} \widetilde{Y}^R_{ib}[f] L_i(x,y,z,t) \qquad \qquad \qquad \qquad \medspace \medspace \medspace \text{for each $i$, $f$}\\
+%
+&\sum_j \left[ A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\right]\\
+&+ \sum_{gb} \begin{aligned}[t]
+  & E_b\widetilde{Y}_{ib}^I[f] L_i(x,y,z,t)\left[A_{jga} \widetilde{Y}_{jb}^R[g] + B_{jga} \widetilde{Y}_{jb}^I[g]\right] \cdot \\
+  & \bigg[ (0.1 + 1.9) G^E_i(t) G^P_i(t) + \frac{G^E_i(t)}{G^P_i(t)} \sigma^2_{G_i}(t) + L_i(x,y,z,t) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t)\right)^2} \bigg] \end{aligned} \\
+&\qquad = \sum_b \lambda_{ab} \widetilde{Y}^I_{ib}[f] L_i(x,y,z,t) \qquad \qquad \qquad \qquad \medspace \medspace \medspace \text{for each $i$, $f$}\\
+%
+&\sum_{if}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(x,y,z,t) = \delta_{ab} \qquad \text{for each $b$}
+\end{align*}
 
 \section{Preconditioning}
 
