@@ -365,6 +365,24 @@ Denoting the set of lagrange multipliers for $\epsilon^2_a$ with $\lambda_{ab}$,
 &\sum_{if}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) = \delta_{ab} \qquad \text{for each $b$}
 \end{align*}
 
+To simplify the notation, let us define a new function:
+\[q(i,b) := \begin{aligned}[t]
+  \bigg( &(0.1 + 1.9) G^E_i(t_b) G^P_i(t_b) + \frac{G^E_i(t_b)}{G^P_i(t_b)} \sigma^2_{G_i}(t_b)\\
+  &+ L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t_b)\right)^2}\bigg)L_i(\vec{x}_b, t_b) E_b
+\end{aligned}\]
+which we note should be strictly positive if measured correctly (because all gains and lightmap values should be strictly positive, and all variances are non-negative).  Using this shorthand, we can re-write our system of equations in the more compact form:
+\begin{align*}
+&\sum_j \left[ A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right>\right]\\
+&+ \sum_{gb} \widetilde{Y}_{ib}^R[f] q(i,b) \left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \\
+&+ \sum_b \lambda_{ab} \widetilde{Y}^R_{ib}[f] L_i(\vec{x}_b,t_b) = 0 \qquad \qquad \qquad \qquad \quad \text{for each $i$, $f$}\\
+%
+&\sum_j \left[ A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\right]\\
+&+ \sum_{gb} \widetilde{Y}_{ib}^I[f] q(i,b) \left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \\
+&+ \sum_b \lambda_{ab} \widetilde{Y}^I_{ib}[f] L_i(\vec{x}_b,t_b) = 0 \qquad \qquad \qquad \qquad \quad \text{for each $i$, $f$}\\
+%
+&\sum_{if}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) = \delta_{ab} \qquad \text{for each $b$}
+\end{align*}
+
 It is important to note here that energies $E_b$, which we are intending to measure, do in fact enter into this linear set of equations.  At first this would seem to demonstrate that the equations here are impossible to apply, but in fact they remind us that the forms of noise which are correlated with the signal are also dependent on the magnitude of that signal.  Statistical fluctuations in the number of photons observed on each APD, for instance, scale like the square root of the number of photons emitted.
 
 We can see, then, that some estimate of energy is necessary to know the relative importance of different forms of noise.  But the constraint equation does ensure that our estimate will be unbiased regardless of what energy estimates are fed into the system of equations, so we can be confident that it is only a rough estimate of the energy scale which is needed, and not worry that the optimization will be biased to estimate energies similar to the estimates we feed in.  For this purpose, it is sufficient to use the charge-only energy as an estimate of the scintillation-only energy.
@@ -373,7 +391,13 @@ We can see, then, that some estimate of energy is necessary to know the relative
 
 Because the system of equations above is linear in $A_{ifa}$ and $B_{ifa}$, we wish to solve it as a matrix equation.  This requires, first, that we choose an ordering of the unknowns; the best ordering will be the one which groups nonzero entries into blocks, since this will allow us to make more efficient use of matrix libraries.  We define:
 \[\vec{A}_a = (A_{1 1 a}, B_{1 1 a}, A_{2 1 a}, B_{2 1 a}, \dots, B_{i_{max} 1 a}, A_{1 2 a}, \dots, A_{0 f_{max} a}, A_{1, f_{max} a}, \dots, A_{i_{max} f_{max} a})\]
-so that the entries alternate between $A$ and $B$, iterating quickly through channels and more slowly through frequencies.  Note that only the $A$ terms are included for the maximum frequency; this is because $X_i[t]$ is real-valued, so $\widetilde{X}_i[0]$ and $\widetilde{X}_i[f_{max}]$ are real-valued as well.
+so that the entries alternate between $A$ and $B$, iterating quickly through channels and more slowly through frequencies.  Note that only the $A$ terms are included for the maximum frequency; this is because $X_i[t]$ is real-valued, so $\widetilde{X}_i[0]$ and $\widetilde{X}_i[f_{max}]$ are real-valued as well.  We also will find it convenient to define the matrix:
+\[\mathbf{A} = \begin{pmatrix}
+\vdots & & \vdots \\
+\vec{A}_1 & \cdots & \vec{A}_{a_{max}} \\
+\vdots & & \vdots
+\end{pmatrix}\]
+which includes the parameters needed for each of the estimators $\widehat{E}_a$.
 
 We can then begin by defining the electronic noise blocks as:
 \[ \mathbf{N_f} = \begin{pmatrix}
@@ -391,26 +415,57 @@ where for $\mathbf{N_{f_{max}}}$ terms with imaginary parts of $\widetilde{N}$ a
   \mathbf{0} & \mathbf{0} & \dots & \mathbf{N_{f_{max}}}
 \end{pmatrix} .\]
 
-In a similar way, we can define the other noise terms in terms of matrix operations.  We will find that it is possible to the noise terms correlated with signals as a product of two matrices, $\mathbf{P = P_1 P_2}$.  First we define the matrix $\mathbf{P_1}$, which steps through the index $b$ horizontally; each column $b$ of $\mathbf{P_1}$ takes the form::
-\begin{gather*}
-\mathbf{P_1} = \begin{pmatrix}
-  E_b \widetilde{Y}^R_{1 b}[1] L_1(\vec{x}_b, t_b) q(1,b) \\
-  E_b \widetilde{Y}^I_{1 b}[1] L_1(\vec{x}_b, t_b) q(1,b) \\
-  E_b \widetilde{Y}^R_{2 b}[1] L_2(\vec{x}_b, t_b) q(2,b) \\
-  \vdots \\
-  E_b \widetilde{Y}^I_{i_{max} b}[1] L_{i_{max}}(\vec{x}_b, t_b) q(i_{max},b) \\
-  E_b \widetilde{Y}^R_{1 b}[2] L_1(\vec{x}_b, t_b) q(1,b) \\
-  \vdots \\
-  E_b \widetilde{Y}^R_{1 b}[f_{max}] L_1(\vec{x}_b, t_b) q(1,b) \\
-  E_b \widetilde{Y}^R_{2 b}[f_{max}] L_2(\vec{x}_b, t_b) q(2,b) \\
-  \vdots \\
-  E_b \widetilde{Y}^R_{i_{max} b}[f_{max}] L_{i_{max}}(\vec{x}_b, t_b) q(i_{max},b)
-\end{pmatrix} \\
-\text{where we define~} q(i,b) := (0.1 + 1.9) G^E_i(t_b) G^P_i(t_b) + \frac{G^E_i(t_b)}{G^P_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t_b)\right)^2}
-\end{gather*}
+In a similar way, we can define the other noise terms in terms of matrix operations.  We will find that it is possible to describe the noise terms correlated with signals as a product of two matrices, $\mathbf{P = P_1 P_2}$.  First we define the matrix $\mathbf{P_1}$, which steps horizontally through the APD channels and signals.  For a particular choice of indices $j$, $b$, the corresponding column of $\mathbf{P_1}$ will be:
+\[ \mathbf{P_1}(\text{column $j$, $b$}) = \begin{pmatrix}
+\widetilde{Y}^R_{j b}[1] \delta_{1 j} \\
+\widetilde{Y}^I_{j b}[1] \delta_{1 j} \\
+\widetilde{Y}^R_{j b}[1] \delta_{2 j} \\
+\vdots \\
+\widetilde{Y}^I_{j b}[1] \delta_{i_{max} j} \\
+\widetilde{Y}^R_{j b}[2] \delta_{1 j} \\
+\vdots \\
+\widetilde{Y}^R_{j b}[f_{max}] \delta_{1 j} \\
+\widetilde{Y}^R_{j b}[f_{max}] \delta_{2 j} \\
+\vdots \\
+\widetilde{Y}^R_{j b}[f_{max}] \delta_{i_{max} j}
+\end{pmatrix}\sqrt{q(j,b)}.\]
+Note that in each channel, only a fraction of the entries are nonzero.
 
+This means that $\mathbf{P_2}$ should be a matrix with rows that step through the APD channels and signals as well.  For a particular choice of indices $j$, $b$, the corresponding row of $\mathbf{P_2}$ will be:
+\begin{multline*} \mathbf{P_2}(\text{row $j$, $b$}) = \\
+\begin{matrix}
+\bigg( \widetilde{Y}^R_{jb}[1]\delta_{1 j} & \widetilde{Y}^I_{j b}[1]\delta_{1 j} & \widetilde{Y}^R_{jb}[1]\delta_{2 j} & \cdots & \widetilde{Y}^I_{jb}[1]\delta_{i_{max} j} & \widetilde{Y}^R_{jb}[2]\delta_{1 j} & \cdots \\
+\cdots & \widetilde{Y}^R_{jb}[f_{max}]\delta_{1 j} & \widetilde{Y}^R_{jb}[f_{max}]\delta_{2 j} & \cdots & \widetilde{Y}^R_{jb}[f_{max}]\delta_{i_{max} j}\rlap{$\bigg) \sqrt{q(j,b)}.$}
+\end{matrix}\end{multline*}
+Since we will be using the product $\mathbf{P} = \mathbf{P_1 P_2}$, it clearly must be the case that the ordering of columns in $\mathbf{P_1}$ is the same as the ordering of rows in $\mathbf{P_2}$.  Because in practice there will always be more APD channels than APD signals, it will generally be advantageous to iterate through $j$ fastest, and step through $b$ more slowly.  We can also see that $\mathbf{P_1} = \mathbf{P_2}^{\top}$, so $\mathbf{P} = \mathbf{P_2}^{\top} \mathbf{P_2}$.
+
+The constraint equations are represented by a matrix $\mathbf{C}$ with rows that step through the APD signals; for a particular choice of $b$ the corresponding row of $\mathbf{C}$  will be:
+\[ \begin{matrix}
+\mathbf{C}(\text{row $b$}) = \bigg( & \widetilde{Y}^R_{1 b}[1] L_1(\vec{x}_b, t_b) & \widetilde{Y}^I_{1 b}[1] L_1(\vec{x}_b, t_b) & \widetilde{Y}^R_{2 b}[1] L_2(\vec{x}_b, t_b) \\
+&\cdots & \widetilde{Y}^I_{i_{max} b}[1] L_{i_{max}}(\vec{x}_b, t_b) & \widetilde{Y}^R_{1 b}[2] L_1(\vec{x}_b, t_b) \\
+&\cdots & \widetilde{Y}^R_{1 b}[f_{max}] L_1(\vec{x}_b, t_b) & \widetilde{Y}^R_{2 b}[f_{max}] L_2(\vec{x}_b, t_b) \\
+& & \cdots & \widetilde{Y}^R_{i_{max} b}[f_{max}] L_{i_{max}}(\vec{x}_b, t_b) & \bigg).
+\end{matrix}\]
+
+Finally it is possible to restate the full linear equation specified above in matrix form, where we can simultaneously include the equations for all of the estimators $\widehat{E}_a$:
+\[
+\begin{pmatrix}
+\mathbf{N} + \mathbf{P} & \mathbf{C}^{\top} \\
+\mathbf{C} & \mathbf{0}
+\end{pmatrix} \mathbf{A} =
+\begin{pmatrix}
+\mathbf{0} \\
+\mathbf{I}
+\end{pmatrix}.
+\]
+
+The matrix $\mathbf{N}$ is the same as the covariance matrix of the electronic noise, so it must be symmetric and positive-semidefinite.  Similarly, we have seen that $\mathbf{P} = \mathbf{P_2}^{\top} \mathbf{P_2}$, implying that $\mathbf{P}$ must be symmetric and positive-semidefinite.  This means that there is a Cholesky decomposition $\mathbf{N} + \mathbf{P} = \mathbf{L}\mathbf{L}^{\top}$, where $\mathbf{L}$ is a lower-triangular matrix, and that $\mathbf{N} + \mathbf{P}$ is symmetric and positive semi-definite.  This implies that the full matrix equation is symmetric; however, it is insufficient for showing that the full system is positive semi-definite, and in fact we will see that this is not the case.
 
 \section{Preconditioning}
+
+We have specified a matrix equation which we now wish to solve.  However, it is generally recommended that large matrix equations should not be solved directly.  Instead, it is recommended that the matrix should be preconditioned.  This means that if a matrix equation $\mathbf{A}\vec{x} = \vec{b}$ should be solved, one should first find a matrix $\mathbf{A}'$ which is approximately equal to $\mathbf{A}$ and which is easily invertible.  Finding the right balance between the quality of the approximation $\mathbf{A}' \approx \mathbf{A}$ and the difficulty of computing the inverse $\left(\mathbf{A}'\right)^{-1}$ is more art than science, but we will present here a preconditioning matrix which seems to strike a good balance for this particular system.
+
+NEED TO UPDATE FROM HERE TO MATCH NOTATION ABOVE.
 
 The matrix equation we wish to solve takes the form:
 \[\begin{pmatrix}
