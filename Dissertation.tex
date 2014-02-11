@@ -10,10 +10,13 @@
    \titleformat{\chapter}
       {\normalfont\large}{Chapter \thechapter:}{1em}{}
 
-\usepackage{amsmath}
-\usepackage{verbatim}
-\usepackage{algorithmic}
-\usepackage{tikz}
+\usepackage{hyperref} % Create hyperlinks.
+\usepackage{amsmath} % For producing high-quality multi-line math displays.
+\usepackage{IEEEtrantools} % Alternative for complicated math -- allows specifying column alignment.
+\usepackage{verbatim} % For producing blocks of comments.
+\usepackage{algorithmic} % For producing algorithms.
+\usepackage{algorithm} % For producing floating figures which hold an algorithmic environment.
+\usepackage{tikz} % For producing inline Feynman diagrams.
 \usetikzlibrary{snakes}
 \usetikzlibrary{patterns}
 
@@ -73,7 +76,7 @@
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \newpage
-\bibliographystyle{unsrt} 
+\bibliographystyle{plain}
 \bibliography{Bibliography}
 
 \end{document}

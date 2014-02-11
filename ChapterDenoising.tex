@@ -54,7 +54,10 @@ We describe the data as a collection of discretely sampled waveforms, $X_i[\tau]
 
 To break the degeneracy between $M$ and $Y$, we choose to fix the magnitude of the template signal $Y$.  We choose to require that the signal $Y$ has a magnitude of one, as described in figure~\ref{fig:SampleAPDTemplates}.  This implies that for a typical single-site $2615$-keV deposit, the average values of $M_i$ should be equal to the values of the lightmap $L_i(\vec{x},t)$ described earlier.
 
-Noise correlations will be much simpler in frequency space, so we take the Fourier transform and drop the zero-frequency component to obtain \[\widetilde{X}_i[f] = \sum_a M_{ia}\widetilde{Y}_{ia}[f] + \widetilde{N}_i[f].\]
+Noise correlations will be much simpler in frequency space, so we take the Fourier transform and drop the zero-frequency component to obtain
+\begin{equation}
+\widetilde{X}_i[f] = \sum_a M_{ia}\widetilde{Y}_{ia}[f] + \widetilde{N}_i[f].
+\end{equation}
 
 \section{The Signal Model}
 
@@ -71,20 +74,24 @@ The second random variable will be the magnitude of the signal itself, $M_{ia}$.
 First, each APD gang $i$ has some number $P^{(1)}_{ia}$ of photons which reach them.  The mean fraction of photons reaching a particular gang $i$ from position $\vec{x}_a$, $f_i(\vec{x}_a)$, is assumed to be known; however, the initial paths of the optical photons emitted from the source, their trajectories through the Xenon, and their success in reflecting off of teflon are all random, so we treat $P^{(1)}_{ia}$ as a Poisson-distributed random variable with mean $f_i(\vec{x}_a)P^{(0)}_a$.  A typical deposit from a $\beta\beta 0\nu$ event may deposit $10-100$ photons on each APD gang [CHECK THIS NUMBER], depending strongly on the location of the deposit; thus, we find that the Poisson noise on a single APD channel may be quite significant.
 
 Additionally, the number of photons reaching different gangs are not uncorrelated; since a photon which reaches gang $i$ cannot deposit on a different gang $j$, $P^{(1)}_{ia}$ and $P^{(1)}_{ja}$ are anticorrelated for different gangs $i \ne j$.  This process is described by a multinomial distribution.  Explicitly, we can identify the expectation values of a multinomial distribution:
-\begin{itemize}
-\item $\left< P^{(1)}_{ia} \right> = f_i(\vec{x}_a)P^{(0)}_a$
-\item $\left< P^{(1)}_{ia} P^{(1)}_{jb} \right> = \left< P^{(1)}_{ia} \right> \left< P^{(1)}_{jb} \right> + \left[ f_i(\vec{x}_a)\delta_{ij} - f_i(\vec{x}_a)f_j(\vec{x}_a) \right] P^{(0)}_a \delta_{ab}$
-\end{itemize}
+\begin{IEEEeqnarray}{cCl}
+\left< P^{(1)}_{ia} \right> &=& f_i(\vec{x}_a)P^{(0)}_a \\
+\left< P^{(1)}_{ia} P^{(1)}_{jb} \right> &=& \left< P^{(1)}_{ia} \right> \left< P^{(1)}_{jb} \right> + \left[ f_i(\vec{x}_a)\delta_{ij} - f_i(\vec{x}_a)f_j(\vec{x}_a) \right] P^{(0)}_a \delta_{ab}
+\end{IEEEeqnarray}
 
 Following the random process associated with photons reaching the APD gangs, there is also randomness associated with signal amplification internally in the APDs.  These processes are described in detail in~\cite{EXOLAAPD}, but we can summarize that:
 
 \begin{enumerate}
 \item Optical photons in the liquid xenon arrive at the active layer of the APDs have a wavelength of roughly $178$ nm, meaning that each optical photon has an energy of roughly $7.0$ eV.  The energy required to produce one electron-hole pair in silicon is roughly $3.66$ eV, which means that each incident photon produces roughly $1.9$ electron-hole pairs; we will define $P^{(2)}_{ia}$ to be the number of electron-hole pairs actually produced from $P^{(1)}_{ia}$ incident photons.  The corresponding Fano factor for electrons produced in silicon is roughly $0.1$, meaning that in addition to the uncertainty in $P^{(1)}_{ia}$ which we have already characterized, there is an additional uncorrelated variance in $P^{(2)}_{ia}$ equal to $0.1 \left<P^{(2)}_{ia}\right>$.  The correlations in the parameters $P^{(2)}_{ia}$ are therefore:
-\[\left< P^{(2)}_{ia} \right> = 1.9 \cdot P^{(1)}_{ia}\]
-\[\left< P^{(2)}_{ia} P^{(2)}_{jb} \right> = (1.9)^2\left< P^{(1)}_{ia} P^{(1)}_{jb} \right> + 0.1 \left< P^{(2)}_{ia}\right> \delta_{ij}\delta_{ab}\]
+\begin{IEEEeqnarray}{cCl}
+\left< P^{(2)}_{ia} \right> &=& 1.9 \cdot P^{(1)}_{ia} \\
+\left< P^{(2)}_{ia} P^{(2)}_{jb} \right> &=& (1.9)^2\left< P^{(1)}_{ia} P^{(1)}_{jb} \right> + 0.1 \left< P^{(2)}_{ia}\right> \delta_{ij}\delta_{ab}
+\end{IEEEeqnarray}
 \item Electron-hole pairs are then amplified by an avalanche process inside the APDs.  The magnitude of this gain is APD-dependent, generally on the order of $200-300$, and can be identified by a time-dependent quantity $G^P_i(t)$; we will call the number of output electrons $P^{(3)}_{ia}$.  In addition to amplification of existing noise in $P^{(2)}_{ia}$, two additional source of noise are introduced.  First, there is statistical variance in the amplification experienced by each electron due to the randomness of the avalanche process.  This variance is dependent on many factors, including the gain, and scales like the square root of the number of electrons; we define the variance on the gain experienced by a single electron as $\sigma^2_{G_i}(t)$.  Second, there are gain non-uniformities in the diode volume, which contribute variance proportional to the square of the number of initial electron-hole pairs; we will identify the proportionality constant as $\sigma^2_{NU}$, which may depend on time and APD gang.  The magnitude of this uncertainty is not well-known, but may be significant.  The correlations in the parameters $P^{(3)}_{ia}$ are therefore:
-\[\left< P^{(3)}_{ia} \right> = G^P_i(t_a)P^{(2)}_{ia}\]
-\[\left< P^{(3)}_{ia} P^{(3)}_{jb} \right> = G^P_i(t_a)G^P_j(t_b) \left< P^{(2)}_{ia} P^{(2)}_{jb} \right> + \left[P^{(2)}_{ia}\sigma^2_{G_i}(t_a) + \left(P^{(2)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab}\]
+\begin{IEEEeqnarray}{cCl}
+\left< P^{(3)}_{ia} \right> &=& G^P_i(t_a)P^{(2)}_{ia}\\
+\left< P^{(3)}_{ia} P^{(3)}_{jb} \right> &=& G^P_i(t_a)G^P_j(t_b) \left< P^{(2)}_{ia} P^{(2)}_{jb} \right> + \left[P^{(2)}_{ia}\sigma^2_{G_i}(t_a) + \left(P^{(2)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab} \nonumber \\*
+\end{IEEEeqnarray}
 \end{enumerate}
 
 Finally, there is amplification $G^{E}_i(t)$ associated with the electronics of the APDs which is dependent on time and channel.  This includes preamplifier gain, shaper gain, gain associated with the shaping times, and conversion from voltage to ADC counts.  We assume that no signal-dependent noise is introduced during this stage, but there is constant electronic noise $N_i[\tau]$ which has been described above.  Additionally, the APDs can contribute noise in the form of a dark current which is uncorrelated with signals; this is inseparable from the electronic noise, and so we absorb it into our description of $N_i[\tau]$.
@@ -119,13 +126,12 @@ This assumption makes use of the approximation that $G^E_i(t)$ is roughly consta
 \[f_i(\vec{x}) \approx \frac{S_i(t_{4540})}{G^P_i(t_{4540})} \cdot \frac{R_i(\vec{x})}{1.9 \cdot c G^E_i(t)}.\]
 
 It is then possible to express the full correlations in signal magnitudes in terms of the scintillation energies of deposits as:
-\begin{align*}
-\left< M_{ia} \right> &= L_i(\vec{x}_a,t_a) E_a \\
-\begin{split}
-\left< M_{ia} M_{jb} \right> &= L_i(\vec{x}_a,t_a)L_j(\vec{x}_b,t_b) E_a E_b \left[1 + \frac{\sigma^2_{NU}}{\left(G^P_i(t)\right)^2} \delta_{ij}\delta_{ab} \right] \\
-&\quad - L_i(\vec{x}_a,t_a) L_j(\vec{x}_a,t_a) E_a \delta_{ab}/c \\
-&\quad + L_i(\vec{x}_a,t_a) G^E_i(t) E_a \delta_{ij} \delta_{ab} \left[\left(0.1 + 1.9\right)G^P_i(t) + \frac{\sigma^2_{G_i}(t)}{G^P_i(t)}\right].
-\end{split}\end{align*}
+\begin{IEEEeqnarray}{cCl}
+\left< M_{ia} \right> &=& L_i(\vec{x}_a,t_a) E_a \\
+\left< M_{ia} M_{jb} \right> &=& L_i(\vec{x}_a,t_a)L_j(\vec{x}_b,t_b) E_a E_b \left[1 + \frac{\sigma^2_{NU}}{\left(G^P_i(t)\right)^2} \delta_{ij}\delta_{ab} \right] \nonumber \\
+&& {} - L_i(\vec{x}_a,t_a) L_j(\vec{x}_a,t_a) E_a \delta_{ab}/c \nonumber \\
+&& {} + L_i(\vec{x}_a,t_a) G^E_i(t) E_a \delta_{ij} \delta_{ab} \left[\left(0.1 + 1.9\right)G^P_i(t) + \frac{\sigma^2_{G_i}(t)}{G^P_i(t)}\right].
+\end{IEEEeqnarray}
 \begin{comment}
 THE FOLLOWING IS MY WORK IN EXPANDING THE M_M CORRELATIONS.
 IF NEEDED, IT CAN BE UNCOMMENTED AND IS VALID LATEX CODE.
@@ -461,7 +467,7 @@ Finally it is possible to restate the full linear equation specified above in ma
 
 The matrix $\mathbf{N}$ is the same as the covariance matrix of the electronic noise, so it must be symmetric and positive-semidefinite.  Similarly, we have seen that $\mathbf{P} = \mathbf{P_2}^{\top} \mathbf{P_2}$, implying that $\mathbf{P}$ must be symmetric and positive-semidefinite.  This means that there is a Cholesky decomposition $\mathbf{N} + \mathbf{P} = \mathbf{L}\mathbf{L}^{\top}$, where $\mathbf{L}$ is a lower-triangular matrix, and that $\mathbf{N} + \mathbf{P}$ is symmetric and positive semi-definite.  This implies that the full matrix equation is symmetric; however, it is insufficient for showing that the full system is positive semi-definite, and in fact we will see that this is not the case.
 
-We also note the important observation that this matrix is sparse.  Given roughly $1000$ frequency components in our signals, only $0.1\%$ of the entries of $\mathbf{N}$ are non-zero.  And 
+We also note the important observation that this matrix is sparse.  Given roughly $1000$ frequency components in our signals, only $0.1\%$ of the entries of $\mathbf{N}$ are non-zero.  And with $70$ APD channels and only a small number of signals we wish to denoise, the combined number of non-zero entries in $\mathbf{P}_1$ and $\mathbf{P}_2$ is easily an order of magnitude less than the number of non-zero entries in $\mathbf{N}$.  As a result, we can conclude that this matrix is extremely sparse, and should ensure that whatever method we use to solve these equations takes advantage of this sparsity.
 
 \section{Preconditioning}
 
@@ -601,16 +607,20 @@ Based on these various advantages, it is this system which we attempt to solve r
 
 The matrix $\mathbf{\widetilde{A}}$ for which we attempt to solve will have as many columns as there are signals we wish to denoise within an event; often, this will only be one, and $\mathbf{\widetilde{A}}$ will simply be a column vector.  However, there certainly are many events with multiple scintillation signals; we will also later discuss extended applications of denoising where we may treat events as having additional signals.  In these cases the number of columns may be larger.  In such cases it would be possible to solve for each column of $\mathbf{\widetilde{A}}$ independently, but more efficient to solve the entire system simultaneously.  In this way, information obtained from multiplying the matrix by one column may be exploited to solve the other columns as well, effectively multiplying the benefit from each matrix-multiplication by the number of columns of $\mathbf{\widetilde{A}}$.
 
-Matrix-solving algorithms which handle multiple vectors simultaneously are commonly referred to as block algorithms.  We will use the Block-BiCGSTAB algorithm~\cite{BlBiCGSTAB}, an iterative method based on the popular stabilized biconjugate-gradient (BiCGSTAB) method.  BiCGSTAB and Block-BiCGSTAB are notable for being able to deal with arbitrary matrices rather than requiring that the matrix be positive-definite (which our matrix is not).  The algorithm is reproduced here in the form used by our code:
-\begin{algorithmic}
-\STATE Block-BiCGSTAB Algorithm:
+Matrix-solving algorithms which handle multiple vectors simultaneously are commonly referred to as block algorithms.  We will use the Block-BiCGSTAB algorithm~\cite{BlBiCGSTAB}, an iterative method based on the popular stabilized biconjugate-gradient (BiCGSTAB) method.  BiCGSTAB and Block-BiCGSTAB are notable for being able to deal with arbitrary matrices rather than requiring that the matrix be positive-definite (which our matrix is not).  The algorithm is reproduced in the form used by our code as Algorithm~\ref{alg:BlBiCGSTAB}.  This algorithm only requires that we are able to left-multiply vectors and matrices by $\mathbf{M}$ quickly, which makes it possible to exploit the sparsity of $\mathbf{M}$.
+
+\begin{algorithm}
+\caption{Block-BiCGSTAB Algorithm}
+\label{alg:BlBiCGSTAB}
+\algsetup{indent=2em} % Recommended by the package authors; the default is only for backward compatibility.
+\begin{algorithmic}[1]
 \STATE $\mathbf{\widetilde{A}} \gets \mathbf{\widetilde{A}}_0$
 \STATE $\mathbf{R} \gets \mathbf{B}-\mathbf{M\widetilde{A}}$
 \STATE $\mathbf{S} \gets \mathbf{R}$
 \STATE $\mathbf{\widetilde{R}}_0 \gets \mathbf{R}$
 \LOOP
   \STATE $\mathbf{V} \gets \mathbf{M}\mathbf{S}$
-  \STATE Solve $(\mathbf{\widetilde{R}}_0^\top \mathbf{V})\alpha = (\mathbf{\widetilde{R}}_0^\top \mathbf{R})$ for $\alpha$.
+  \STATE Solve $(\mathbf{\widetilde{R}}_0^\top \mathbf{V})\alpha = (\mathbf{\widetilde{R}}_0^\top \mathbf{R})$ for $\alpha$. \label{algline:BlBiCGSTAB_alpha}
   \STATE $\mathbf{R} \gets \mathbf{R} - \mathbf{V}\alpha$
   \STATE $\mathbf{T} \gets \mathbf{M}\mathbf{R}$
   \STATE $\omega \gets {\langle \mathbf{T},\mathbf{S}\rangle_F} / {\langle \mathbf{T},\mathbf{T}\rangle_F} $, where $\langle\cdot,\cdot\rangle_F$ is the Frobenius matrix norm.
@@ -620,21 +630,19 @@ Matrix-solving algorithms which handle multiple vectors simultaneously are commo
   \IF{all columns of $\mathbf{R}$ have sufficiently small magnitudes}
     \RETURN $\mathbf{\widetilde{A}}$
   \ENDIF
-  \STATE Solve $(\mathbf{\widetilde{R}}_0^\top \mathbf{V})\beta = -(\mathbf{\widetilde{R}}_0^\top \mathbf{T})$ for $\beta$.
+  \STATE Solve $(\mathbf{\widetilde{R}}_0^\top \mathbf{V})\beta = -(\mathbf{\widetilde{R}}_0^\top \mathbf{T})$ for $\beta$. \label{algline:BlBiCGSTAB_beta}
   \STATE $\mathbf{S} \gets \mathbf{R} + (\mathbf{S} - \omega \mathbf{V}) \beta$
 \ENDLOOP
 \end{algorithmic}
-This algorithm only requires that we are able to left-multiply vectors and matrices by $\mathbf{M}$ quickly, which makes it possible to exploit the sparsity of $\mathbf{M}$.
+\end{algorithm}
 
-Since each column of $Z$ corresponds to one signal we are refitting, the norm of the corresponding column of $R$ tells us how well we have identified the optimal magnitude estimator for that signal; thus, to test for termination we should evaluate the norm of each column of $R$, and while any of those norms are above some threshold, the solver must be permitted to continue.  Because our resolution is only on the order of $1\%$, solutions generally need not be very accurate; in practice, we establish reasonable thresholds by plotting resolution against threshold for a small subset of data, and observing when the resolution stops improving.
+Since each column of $\mathbf{\widetilde{A}}$ corresponds to one signal we are refitting, the norm of the corresponding column of $\mathbf{R}$ tells us how well we have identified the optimal magnitude estimator for that signal; thus, to test for termination we should evaluate the norm of each column of $\mathbf{R}$, and while any of those norms are above some threshold, the solver must be permitted to continue.  Because our resolution is only on the order of $1\%$, solutions generally need not be very accurate; in practice, we establish reasonable thresholds by plotting resolution against threshold for a small subset of data, and observing when the resolution stops improving.
 
 \section{Implementation}
 
-Although the previous section described the algorithm used for solving these matrix equations, in practice the processing time required is significant.  There are certain implementation tricks which can be applied with significant impact.  These are described here.
+Although the previous section described the algorithm used for solving these matrix equations, in practice the processing time required is still significant; combined with the very large number of events which we hope to denoise (hundreds of millions), we still must seek out any possible speed-ups.  There are certain implementation tricks which can be applied with significant impact.  These are described here.
 
-FILL-IN: Poisson multiplication using common factors.
-
-After reducing the complexity of handling Poisson terms in this way, the handling of electronic noise terms in matrix multiplication becomes the computational bottleneck.  The structure of the problem is that the matrix containing electronic noise terms is block-diagonal; that is, it consists of one dense block per frequency component, with each block lying on the diagonal and where the number of rows and columns is twice the number of channels being denoised (except for the last frequency component, where imaginary terms are identically equal to zero).  The problem of handling electronic noise terms thus consists of $1024$ matrix-matrix multiplications, with the left matrix of approximate size $300\times300$ and the right matrix of approximate size $300\times O(1)$.\footnote{The number of columns in the right matrix is equal to the number of signals, which may be sometimes $3-5$ or more; however, it is always much smaller than $300$, and describing it as $O(1)$ captures this fact.}
+The majority of non-zero matrix entries comes from the electronic noise matrix $\mathbf{N}$, making it the computational bottleneck of the algorithm.  The structure of the problem is that the matrix containing electronic noise terms is block-diagonal; that is, it consists of one dense block per frequency component, with each block lying on the diagonal and where the number of rows and columns is twice the number of channels being denoised (except for the last frequency component, where imaginary terms are identically equal to zero).  The problem of handling electronic noise terms thus consists of $1024$ matrix-matrix multiplications, with the left matrix of approximate size $300\times300$ and the right matrix of approximate size $300\times O(1)$.\footnote{The number of columns in the right matrix is equal to the number of signals, which may be sometimes $3-5$ or more; however, it is always much smaller than $300$, and describing it as $O(1)$ captures this fact.}
 
 The key points here which create an opportunity for optimization are that:
 \begin{itemize}
@@ -649,8 +657,13 @@ Optimization of matrix-matrix multiplication is a large field, but fortunately t
 
 Finally, implementation at NERSC has the interesting feature that NERSC's computing systems are designed for multi-core processing.  The Hopper and Edison computing systems at NERSC allocate whole nodes, each of which contains 24 cores.  Although it is possible to simply run 24 independent processes on each node, memory on NERSC machines is highly constrained; memory use can be reduced by sharing certain large data structures across multiple cores on a node.  Additionally, as more events are packed together for electronic-noise multiplication, greater savings can be realized; so it is better to handle many events in coordination.  To this purpose, a multi-threaded version of the program has been developed to exploit portions of the code which are conveniently distributed.  Because NERSC nodes have a Non-Uniform Memory Access (NUMA) architecture, processes are constrained to only run on cores with a similar memory access pattern; on Hopper this results in four 6-threaded processes per node, while on Edison this results in two 12-threaded processes per node.
 
+These represent the most significant set of computational optimizations.  However, there are also smaller optimizations which can still produce non-negligible speedups.  The naive Block-BiCGSTAB algorithm (in the case of only one signal in an event) requires two matrix-vector multiplications, but it also requires a number of vector-vector operations, and the cumulative cost of these vector-vector operations can become non-negligible.  One obvious shortcut is to reuse our computation of $\mathbf{\widetilde{R}}_0^\top \mathbf{V}$ from line~\ref{algline:BlBiCGSTAB_alpha} of Algorithm~\ref{alg:BlBiCGSTAB} to save work in line~\ref{algline:BlBiCGSTAB_beta}.
 
-Outline new algorithm demonstrating multi-threading and batch handling.
+Another speedup for our vector-vector operations consists of combining multiple operations into one step.  We see on line~\ref{algline:BlBiCGSTAB_alpha} that both $\mathbf{\widetilde{R}}_0^\top \mathbf{V}$ and $\mathbf{\widetilde{R}}_0^\top \mathbf{R}$ are computed.  As described earlier in the context of multiplication of vectors by electronic noise, it is possible to take advantage of caching and speed up vector operations by packing multiple vectors together into a more square-shaped matrix.  In this case, rather than computing these two products separately, we can pack $\mathbf{V}$ and $\mathbf{R}$ together and compute
+\[\mathbf{\widetilde{R}}_0^\top \begin{pmatrix} V & R \end{pmatrix}\]
+as one step.  The rest of the algorithm will not be affected by the fact that these two matrices are stored contiguously in memory.
+
+Outline new algorithm demonstrating multi-threading and batch handling.  AM I REALLY GOING TO DO THIS EXPLICITLY?  SEEMS LIKE KIND OF A MESS.
 
 \begin{algorithmic}
 \STATE $E$ is a list of events.
