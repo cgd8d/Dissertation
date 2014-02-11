@@ -461,169 +461,170 @@ Finally it is possible to restate the full linear equation specified above in ma
 
 The matrix $\mathbf{N}$ is the same as the covariance matrix of the electronic noise, so it must be symmetric and positive-semidefinite.  Similarly, we have seen that $\mathbf{P} = \mathbf{P_2}^{\top} \mathbf{P_2}$, implying that $\mathbf{P}$ must be symmetric and positive-semidefinite.  This means that there is a Cholesky decomposition $\mathbf{N} + \mathbf{P} = \mathbf{L}\mathbf{L}^{\top}$, where $\mathbf{L}$ is a lower-triangular matrix, and that $\mathbf{N} + \mathbf{P}$ is symmetric and positive semi-definite.  This implies that the full matrix equation is symmetric; however, it is insufficient for showing that the full system is positive semi-definite, and in fact we will see that this is not the case.
 
+We also note the important observation that this matrix is sparse.  Given roughly $1000$ frequency components in our signals, only $0.1\%$ of the entries of $\mathbf{N}$ are non-zero.  And 
+
 \section{Preconditioning}
 
 We have specified a matrix equation which we now wish to solve.  However, it is generally recommended that large matrix equations should not be solved directly.  Instead, it is recommended that the matrix should be preconditioned.  This means that if a matrix equation $\mathbf{A}\vec{x} = \vec{b}$ should be solved, one should first find a matrix $\mathbf{A}'$ which is approximately equal to $\mathbf{A}$ and which is easily invertible.  Finding the right balance between the quality of the approximation $\mathbf{A}' \approx \mathbf{A}$ and the difficulty of computing the inverse $\left(\mathbf{A}'\right)^{-1}$ is more art than science, but we will present here a preconditioning matrix which seems to strike a good balance for this particular system.
 
-NEED TO UPDATE FROM HERE TO MATCH NOTATION ABOVE.
-
 The matrix equation we wish to solve takes the form:
 \[\begin{pmatrix}
-E+P & L\\
-L^\top & 0
+\mathbf{N}+\mathbf{P} & \mathbf{C}^\top\\
+\mathbf{C} & \mathbf{0}
 \end{pmatrix}
-X = 
+\mathbf{A} = 
 \begin{pmatrix}
-0 \\ I
+\mathbf{0} \\ \mathbf{I}
 \end{pmatrix}\]
-Let us define $D = diag(E)$ and approximate
+Let us define $\mathbf{D} = diag(\mathbf{N})$ and approximate
 \[\begin{pmatrix}
-E+P & L\\
-L^\top & 0
+\mathbf{N}+\mathbf{P} & \mathbf{C}^\top\\
+\mathbf{C} & \mathbf{0}
 \end{pmatrix}
 \approx
 \begin{pmatrix}
-D & L\\
-L^\top & 0
+\mathbf{D} & \mathbf{C}^\top \\
+\mathbf{C} & \mathbf{0}
 \end{pmatrix}\]
-This approximate form is easy to invert, and can be used to precondition our problem for better numerical behavior.
+This approximate form is easy to invert (assuming every frequency component of every channel has non-zero noise and every constraint is satisfiable, which is true in practice), and can be used to precondition our problem for better numerical behavior.
 
 We can further factor this approximate form of the matrix:
 \[
 \begin{array}{cccc}
 \begin{pmatrix}
-D & L\\
-L^\top & 0
+\mathbf{D} & \mathbf{C}^\top \\
+\mathbf{C} & \mathbf{0}
 \end{pmatrix}
 &=&
 \begin{pmatrix}
-D^{1/2} & 0\\
-L^\top D^{-1/2} & -H^\top
+\mathbf{D}^{1/2} & \mathbf{0} \\
+\mathbf{C} \mathbf{D}^{-1/2} & \mathbf{H}
 \end{pmatrix}
 &
 \begin{pmatrix}
-D^{1/2} & D^{-1/2}L\\
-0 & H
+\mathbf{D}^{1/2} & \mathbf{D}^{-1/2}\mathbf{C}^\top \\
+\mathbf{0} & -\mathbf{H}^\top
 \end{pmatrix}\\[1em]
 &=&
 
 \begin{pmatrix}
-D^{1/2} & 0\\
-0 & I
+\mathbf{D}^{1/2} & \mathbf{0}\\
+\mathbf{0} & \mathbf{I}
 \end{pmatrix}
 \begin{pmatrix}
-I & 0\\
-L^\top D^{-1/2} & -H^\top
+\mathbf{I} & \mathbf{0}\\
+\mathbf{C} \mathbf{D}^{-1/2} & \mathbf{H}
 \end{pmatrix}
 &
 \begin{pmatrix}
-I & D^{-1/2}L\\
-0 & H
+\mathbf{I} & \mathbf{D}^{-1/2}\mathbf{C}^\top\\
+\mathbf{0} & -\mathbf{H}^\top
 \end{pmatrix}
 \begin{pmatrix}
-D^{1/2} & 0\\
-0 & I
+\mathbf{D}^{1/2} & \mathbf{0}\\
+\mathbf{0} & \mathbf{I}
 \end{pmatrix}
 
 \end{array}
 \]
-where $H$ is defined uniquely by $H^\top H = L^\top D^{-1} L$.  (The solution is guaranteed to be real because D is positive-semidefinite -- it consists of noise variance terms, which are non-negative.)
+where $\mathbf{H}$ is a lower-diagonal square matrix defined uniquely as the Cholesky decomposition $\mathbf{HH}^\top = \mathbf{C} \mathbf{D}^{-1} \mathbf{C}^\top$.  (The solution is guaranteed to be real because $\mathbf{D}$ is positive-semidefinite in all cases, and positive-definite in practice -- it consists of noise variance terms, which are strictly positive in practice.)  Note that $\mathbf{C} \mathbf{D}^{-1} \mathbf{C}^\top$ has dimensions equal to the number of signals in an event, which in practice will be small enough that we can compute its Cholesky decomposition $\mathbf{HH}^\top$ directly.
 
 The two diagonal factors are easily inverted; we further define
-\[
-\begin{array}{cc}
-K_1 =
+\begin{align*}
+\mathbf{K}_1 &=
 \begin{pmatrix}
-I & 0\\
-L^\top D^{-1/2} & -H^\top
+\mathbf{I} & \mathbf{0}\\
+\mathbf{C} \mathbf{D}^{-1/2} & \mathbf{H}
 \end{pmatrix}
 &
-K_1^{-1} =
+\mathbf{K}_1^{-1} &=
 \begin{pmatrix}
-I & 0\\
-{H^\top}^{-1}L^\top D^{-1/2} & -{H^\top}^{-1}
+\mathbf{I} & \mathbf{0}\\
+-\mathbf{H}^{-1}\mathbf{CD}^{-1/2} & \mathbf{H}^{-1}
 \end{pmatrix}\\
-K_2 =
+\mathbf{K}_2 &=
 \begin{pmatrix}
-I & D^{-1/2}L\\
-0 & H
+\mathbf{I} & \mathbf{D}^{-1/2}\mathbf{C}^\top\\
+\mathbf{0} & -\mathbf{H}^\top
 \end{pmatrix}
 &
-K_2^{-1} =
+\mathbf{K}_2^{-1} &=
 \begin{pmatrix}
-I & -D^{-1/2}LH^{-1}\\
-0 & H^{-1}
-\end{pmatrix}
-\end{array}
-\]
-and then follow the standard proscription for preconditioning a linear system:
+\mathbf{I} & \mathbf{D}^{-1/2}\mathbf{C}^\top \mathbf{H}^{-\top}\\
+\mathbf{0} & -\mathbf{H}^{-\top}
+\end{pmatrix},
+\end{align*}
+where $\mathbf{M}^{-\top}$ represents the inverse of the transpose of $\mathbf{M}$.  We then follow the standard proscription for preconditioning a linear system by replacing our original matrix equation with the new form:
 \begin{gather*}
-K_1^{-1} \begin{pmatrix}D^{-1/2}&0\\0&I\end{pmatrix}
+\mathbf{K}_1^{-1} \begin{pmatrix}\mathbf{D}^{-1/2}&\mathbf{0}\\ \mathbf{0}&\mathbf{I}\end{pmatrix}
 \begin{pmatrix}
-E+P & L\\
-L^\top & 0
+\mathbf{N}+\mathbf{P} & \mathbf{C}^\top \\
+\mathbf{C} & \mathbf{0}
 \end{pmatrix}
-\begin{pmatrix}D^{-1/2}&0\\0&I\end{pmatrix} K_2^{-1} Z = 
-K_1^{-1} \begin{pmatrix}D^{-1/2}&0\\0&I\end{pmatrix} \begin{pmatrix}0\\I\end{pmatrix}\\
-Z = K_2 \begin{pmatrix}D^{1/2} & 0\\0 & I\end{pmatrix}X
+\begin{pmatrix}\mathbf{D}^{-1/2}&\mathbf{0}\\ \mathbf{0}&\mathbf{I}\end{pmatrix} \mathbf{K}_2^{-1} \mathbf{\widetilde{A}} = 
+\mathbf{K}_1^{-1} \begin{pmatrix}\mathbf{D}^{-1/2}&\mathbf{0}\\\mathbf{0}&\mathbf{I}\end{pmatrix} \begin{pmatrix}\mathbf{0}\\ \mathbf{I}\end{pmatrix}\\
+\mathbf{\widetilde{A}} = \mathbf{K}_2 \begin{pmatrix}\mathbf{D}^{1/2} & \mathbf{0}\\ \mathbf{0} & \mathbf{I}\end{pmatrix}\mathbf{A}
 \end{gather*}
 which reduces to
 \begin{gather*}
-K_1^{-1} 
+\mathbf{K}_1^{-1} 
 \left[
-\begin{pmatrix}D^{-1/2}ED^{-1/2}&0\\0&0\end{pmatrix}
+\begin{pmatrix}\mathbf{D}^{-1/2}\mathbf{ND}^{-1/2}&\mathbf{0}\\ \mathbf{0}&\mathbf{0}\end{pmatrix}
 +
-\begin{pmatrix}D^{-1/2}PD^{-1/2}&D^{-1/2}L\\L^\top D^{-1/2}&0\end{pmatrix}
+\begin{pmatrix}\mathbf{D}^{-1/2}\mathbf{PD}^{-1/2}&\mathbf{D}^{-1/2}\mathbf{C}^\top \\ \mathbf{CD}^{-1/2}&\mathbf{0}\end{pmatrix}
 \right]
-K_2^{-1} Z = 
-\begin{pmatrix}0\\-{H^\top}^{-1}\end{pmatrix}\\
-X = \begin{pmatrix}D^{-1/2}&0\\0&I\end{pmatrix}K_2^{-1}Z
+\mathbf{K}_2^{-1} \mathbf{\widetilde{A}} = 
+\begin{pmatrix}\mathbf{0}\\ \mathbf{H}^{-1}\end{pmatrix}\\
+\mathbf{A} = \begin{pmatrix}\mathbf{D}^{-1/2}&\mathbf{0}\\ \mathbf{0}&\mathbf{I}\end{pmatrix}\mathbf{K}_2^{-1}\mathbf{\widetilde{A}}
 \end{gather*}
 
-This preconditioned set of equations is numerically quite stable.  It is also possible to provide an excellent initial guess $Z_0$ by taking the approximate form of the matrix to be exact, yielding
+This preconditioned set of equations is numerically quite stable.  It is also possible to provide an excellent initial guess $\mathbf{\widetilde{A}}_0$ by taking the approximate form of the matrix to be exact, yielding
 \[
-Z_0 = \begin{pmatrix}0\\-{H^\top}^{-1}\end{pmatrix}
+\mathbf{\widetilde{A}}_0 = \begin{pmatrix}\mathbf{0}\\ \mathbf{H}^{-1}\end{pmatrix}
 \]
-Based on these various advantages, it is this system which we attempt to solve rather than the original form.  Below we define matrices $A$ and $B$ for convenience, and summarize the system to be solved:
-\[\begin{array}{rcl}
-A &=& K_1^{-1} 
+Based on these various advantages, it is this system which we attempt to solve rather than the original form.  Below we define matrices $\mathbf{M}$ and $\mathbf{B}$ for convenience, and summarize the system to be solved:
+\begin{align*}
+\mathbf{M} &= \mathbf{K}_1^{-1} 
 \left[
-\begin{pmatrix}D^{-1/2}ED^{-1/2}&0\\0&0\end{pmatrix}
+\begin{pmatrix}\mathbf{D}^{-1/2}\mathbf{ND}^{-1/2}&\mathbf{0}\\ \mathbf{0}&\mathbf{0}\end{pmatrix}
 +
-\begin{pmatrix}D^{-1/2}PD^{-1/2}&D^{-1/2}L\\L^\top D^{-1/2}&0\end{pmatrix}
+\begin{pmatrix}\mathbf{D}^{-1/2}\mathbf{PD}^{-1/2}&\mathbf{D}^{-1/2}\mathbf{C}^\top \\ \mathbf{CD}^{-1/2}&\mathbf{0}\end{pmatrix}
 \right]
-K_2^{-1}\\
-B &=& Z_0 = \begin{pmatrix}0\\-{H^\top}^{-1}\end{pmatrix}\\
-AZ &=& B\\
-X &=&  \begin{pmatrix}D^{-1/2}&0\\0&I\end{pmatrix}K_2^{-1}Z
-\end{array}\]
+\mathbf{K}_2^{-1}\\
+\mathbf{B} &= \mathbf{\widetilde{A}}_0 = \begin{pmatrix}\mathbf{0}\\ \mathbf{H}^{-1}\end{pmatrix}\\
+\mathbf{M\widetilde{A}} &= \mathbf{B}\\
+\mathbf{A} &= \begin{pmatrix}\mathbf{D}^{-1/2}&\mathbf{0}\\ \mathbf{0}&\mathbf{I}\end{pmatrix}\mathbf{K}_2^{-1}\mathbf{\widetilde{A}}
+\end{align*}
 
 
 \section{Solver}
 
-The matrix $Z$ for which we attempt to solve will have as many columns as there are signals we wish to simultaneously refit within an event; in the case of light-only denoising and with the restriction that we only examine events with one scintillation signal, $Z$ will always have exactly one column.  In general, though, it may be desirable to denoise events with multiple scintillation signals; or it may be beneficial to denoise certain wire channels (which may include wire signals) simultaneously with the APD channels.  In these cases the number of columns may be larger -- five or six columns may not be unusual.  In such cases it would be possible to solve for each column of $Z$ independently, but more efficient to solve the entire system simultaneously.  In this way, information obtained from multiplying the matrix by one column may be exploited to solve the other columns as well, effectively multiplying the benefit from each matrix-multiplication by the number of columns of $Z$.\footnote{In practice the improvement is not quite so impressive, for two reasons: the vectors which are most useful toward solving one column may not be the most useful toward solving another; and some columns may achieve a solution earlier than others, yet are difficult to terminate without restarting the solver entirely.  These challenges have not appeared to be significant for this particular system.}
+The matrix $\mathbf{\widetilde{A}}$ for which we attempt to solve will have as many columns as there are signals we wish to denoise within an event; often, this will only be one, and $\mathbf{\widetilde{A}}$ will simply be a column vector.  However, there certainly are many events with multiple scintillation signals; we will also later discuss extended applications of denoising where we may treat events as having additional signals.  In these cases the number of columns may be larger.  In such cases it would be possible to solve for each column of $\mathbf{\widetilde{A}}$ independently, but more efficient to solve the entire system simultaneously.  In this way, information obtained from multiplying the matrix by one column may be exploited to solve the other columns as well, effectively multiplying the benefit from each matrix-multiplication by the number of columns of $\mathbf{\widetilde{A}}$.
 
-The algorithm which we have selected for solving this system is the block variant of the stabilized biconjugate-gradient method (Bl-BiCGSTAB) [CITE THIS].  It is reproduced here in the form used by our code.
-
+Matrix-solving algorithms which handle multiple vectors simultaneously are commonly referred to as block algorithms.  We will use the Block-BiCGSTAB algorithm~\cite{BlBiCGSTAB}, an iterative method based on the popular stabilized biconjugate-gradient (BiCGSTAB) method.  BiCGSTAB and Block-BiCGSTAB are notable for being able to deal with arbitrary matrices rather than requiring that the matrix be positive-definite (which our matrix is not).  The algorithm is reproduced here in the form used by our code:
 \begin{algorithmic}
-\STATE $R \gets B-AZ_0$
-\STATE $P \gets R$
-\STATE $\widetilde{R_0} \gets R$
-\WHILE{any column of $R$ has a magnitude greater than desired}
-  \STATE $V \gets AP$
-  \STATE Solve $(\widetilde{R_0}^\top V)\alpha = (\widetilde{R_0}^\top R)$ for $\alpha$.
-  \STATE $R \gets R - V\alpha$
-  \STATE $T \gets AR$
-  \STATE $\omega \gets {\langle T,S\rangle_F} / {\langle T,T\rangle_F} $
-    \COMMENT{where $\langle\cdot,\cdot\rangle_F$ is the Frobenius matrix norm.}
-  \STATE $Z \gets Z + P\alpha + \omega R$
-  \STATE $R \gets R - \omega T$
-  \STATE $R$ currently equals $B-AZ$; if it is small enough, terminate.
-  \STATE Solve $(\widetilde{R_0}^\top V)\beta = -(\widetilde{R_0}^\top T)$ for $\beta$.
-  \STATE $P \gets R + (P - \omega V) \beta$
-\ENDWHILE
-
+\STATE Block-BiCGSTAB Algorithm:
+\STATE $\mathbf{\widetilde{A}} \gets \mathbf{\widetilde{A}}_0$
+\STATE $\mathbf{R} \gets \mathbf{B}-\mathbf{M\widetilde{A}}$
+\STATE $\mathbf{S} \gets \mathbf{R}$
+\STATE $\mathbf{\widetilde{R}}_0 \gets \mathbf{R}$
+\LOOP
+  \STATE $\mathbf{V} \gets \mathbf{M}\mathbf{S}$
+  \STATE Solve $(\mathbf{\widetilde{R}}_0^\top \mathbf{V})\alpha = (\mathbf{\widetilde{R}}_0^\top \mathbf{R})$ for $\alpha$.
+  \STATE $\mathbf{R} \gets \mathbf{R} - \mathbf{V}\alpha$
+  \STATE $\mathbf{T} \gets \mathbf{M}\mathbf{R}$
+  \STATE $\omega \gets {\langle \mathbf{T},\mathbf{S}\rangle_F} / {\langle \mathbf{T},\mathbf{T}\rangle_F} $, where $\langle\cdot,\cdot\rangle_F$ is the Frobenius matrix norm.
+  \STATE $\mathbf{\widetilde{A}} \gets \mathbf{\widetilde{A}} + \mathbf{S}\alpha + \omega \mathbf{R}$
+  \STATE $\mathbf{R} \gets \mathbf{R} - \omega \mathbf{T}$
+  \STATE $\mathbf{R}$ currently equals $\mathbf{B}-\mathbf{M\widetilde{A}}$
+  \IF{all columns of $\mathbf{R}$ have sufficiently small magnitudes}
+    \RETURN $\mathbf{\widetilde{A}}$
+  \ENDIF
+  \STATE Solve $(\mathbf{\widetilde{R}}_0^\top \mathbf{V})\beta = -(\mathbf{\widetilde{R}}_0^\top \mathbf{T})$ for $\beta$.
+  \STATE $\mathbf{S} \gets \mathbf{R} + (\mathbf{S} - \omega \mathbf{V}) \beta$
+\ENDLOOP
 \end{algorithmic}
+This algorithm only requires that we are able to left-multiply vectors and matrices by $\mathbf{M}$ quickly, which makes it possible to exploit the sparsity of $\mathbf{M}$.
 
 Since each column of $Z$ corresponds to one signal we are refitting, the norm of the corresponding column of $R$ tells us how well we have identified the optimal magnitude estimator for that signal; thus, to test for termination we should evaluate the norm of each column of $R$, and while any of those norms are above some threshold, the solver must be permitted to continue.  Because our resolution is only on the order of $1\%$, solutions generally need not be very accurate; in practice, we establish reasonable thresholds by plotting resolution against threshold for a small subset of data, and observing when the resolution stops improving.
 
