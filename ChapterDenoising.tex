@@ -1,5 +1,5 @@
 
-\renewcommand{\thechapter}{4}
+\renewcommand{\thechapter}{3}
 \chapter{Denoising Theory}
 
 As has been discussed, the performance of double-beta experiments like EXO-200 is partially determined by their energy resolution.  In EXO-200, the energy resolution is limited by the scintillation energy resolution, which in turn is dominated by electronic noise in the APDs.  Significant effort must therefore be expended to understand and reduce the noise in the scintillation signals.
@@ -67,7 +67,7 @@ It is first important to characterize the response of the APDs to energy deposit
 
 We will assume that there are two sources of noise in this model.  First, the electronic noise $N_i[\tau]$ is assumed to be random.  We require that noise with different frequencies is uncorrelated:
 \[\left< \widetilde{N}_i[f] \widetilde{N}_j[g] \right> = 0 \text{~when~} f \ne g.\]
-The noise correlations $\left< \widetilde{N}_i[f] \widetilde{N}_j[f] \right>$ are assumed to be known; our means for measuring them are described [ELSEWHERE].
+The noise correlations $\left< \widetilde{N}_i[f] \widetilde{N}_j[f] \right>$ are assumed to be known; our means for measuring them are described in chapter~\ref{ch:NoiseMeasurements}.
 
 The second random variable will be the magnitude of the signal itself, $M_{ia}$.  When an energetic decay occurs in bulk of the detector, it will release some number of photons.  We will denote the number of photons released by signal $a$ by $P^{(0)}_a$, and this is the parameter we wish to measure.  However, the magnitude signal actually observed on APD channels number of photons actually collected by sensors is a random variable whose distribution depends on $P^{(0)}_a$, and we will now identify the chain of events which produce it.
 
@@ -75,7 +75,7 @@ First, each APD gang $i$ has some number $P^{(1)}_{ia}$ of photons which reach t
 
 Additionally, the number of photons reaching different gangs are not uncorrelated; since a photon which reaches gang $i$ cannot deposit on a different gang $j$, $P^{(1)}_{ia}$ and $P^{(1)}_{ja}$ are anticorrelated for different gangs $i \ne j$.  This process is described by a multinomial distribution.  Explicitly, we can identify the expectation values of a multinomial distribution:
 \begin{IEEEeqnarray}{cCl}
-\left< P^{(1)}_{ia} \right> &=& f_i(\vec{x}_a)P^{(0)}_a \\
+\left< P^{(1)}_{ia} \right> &=& f_i(\vec{x}_a)P^{(0)}_a \label{eqn:MeanOfP1} \\
 \left< P^{(1)}_{ia} P^{(1)}_{jb} \right> &=& \left< P^{(1)}_{ia} \right> \left< P^{(1)}_{jb} \right> + \left[ f_i(\vec{x}_a)\delta_{ij} - f_i(\vec{x}_a)f_j(\vec{x}_a) \right] P^{(0)}_a \delta_{ab}
 \end{IEEEeqnarray}
 
@@ -84,17 +84,21 @@ Following the random process associated with photons reaching the APD gangs, the
 \begin{enumerate}
 \item Optical photons in the liquid xenon arrive at the active layer of the APDs have a wavelength of roughly $178$ nm, meaning that each optical photon has an energy of roughly $7.0$ eV.  The energy required to produce one electron-hole pair in silicon is roughly $3.66$ eV, which means that each incident photon produces roughly $1.9$ electron-hole pairs; we will define $P^{(2)}_{ia}$ to be the number of electron-hole pairs actually produced from $P^{(1)}_{ia}$ incident photons.  The corresponding Fano factor for electrons produced in silicon is roughly $0.1$, meaning that in addition to the uncertainty in $P^{(1)}_{ia}$ which we have already characterized, there is an additional uncorrelated variance in $P^{(2)}_{ia}$ equal to $0.1 \left<P^{(2)}_{ia}\right>$.  The correlations in the parameters $P^{(2)}_{ia}$ are therefore:
 \begin{IEEEeqnarray}{cCl}
-\left< P^{(2)}_{ia} \right> &=& 1.9 \cdot P^{(1)}_{ia} \\
+\left< P^{(2)}_{ia} \right> &=& 1.9 \cdot P^{(1)}_{ia} \label{eqn:MeanOfP2} \\
 \left< P^{(2)}_{ia} P^{(2)}_{jb} \right> &=& (1.9)^2\left< P^{(1)}_{ia} P^{(1)}_{jb} \right> + 0.1 \left< P^{(2)}_{ia}\right> \delta_{ij}\delta_{ab}
 \end{IEEEeqnarray}
 \item Electron-hole pairs are then amplified by an avalanche process inside the APDs.  The magnitude of this gain is APD-dependent, generally on the order of $200-300$, and can be identified by a time-dependent quantity $G^P_i(t)$; we will call the number of output electrons $P^{(3)}_{ia}$.  In addition to amplification of existing noise in $P^{(2)}_{ia}$, two additional source of noise are introduced.  First, there is statistical variance in the amplification experienced by each electron due to the randomness of the avalanche process.  This variance is dependent on many factors, including the gain, and scales like the square root of the number of electrons; we define the variance on the gain experienced by a single electron as $\sigma^2_{G_i}(t)$.  Second, there are gain non-uniformities in the diode volume, which contribute variance proportional to the square of the number of initial electron-hole pairs; we will identify the proportionality constant as $\sigma^2_{NU}$, which may depend on time and APD gang.  The magnitude of this uncertainty is not well-known, but may be significant.  The correlations in the parameters $P^{(3)}_{ia}$ are therefore:
 \begin{IEEEeqnarray}{cCl}
-\left< P^{(3)}_{ia} \right> &=& G^P_i(t_a)P^{(2)}_{ia}\\
+\left< P^{(3)}_{ia} \right> &=& G^P_i(t_a)P^{(2)}_{ia} \label{eqn:MeanOfP3} \\
 \left< P^{(3)}_{ia} P^{(3)}_{jb} \right> &=& G^P_i(t_a)G^P_j(t_b) \left< P^{(2)}_{ia} P^{(2)}_{jb} \right> + \left[P^{(2)}_{ia}\sigma^2_{G_i}(t_a) + \left(P^{(2)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab} \nonumber \\*
 \end{IEEEeqnarray}
 \end{enumerate}
 
-Finally, there is amplification $G^{E}_i(t)$ associated with the electronics of the APDs which is dependent on time and channel.  This includes preamplifier gain, shaper gain, gain associated with the shaping times, and conversion from voltage to ADC counts.  We assume that no signal-dependent noise is introduced during this stage, but there is constant electronic noise $N_i[\tau]$ which has been described above.  Additionally, the APDs can contribute noise in the form of a dark current which is uncorrelated with signals; this is inseparable from the electronic noise, and so we absorb it into our description of $N_i[\tau]$.
+Finally, there is amplification
+\begin{equation} \label{eqn:DefnOfMFromP3}
+M_{ia} = G^{E}_i(t) P^{(3)}_{ia}
+\end{equation}
+associated with the electronics of the APDs which is dependent on time and channel.  This includes preamplifier gain, shaper gain, gain associated with the shaping times, and conversion from voltage to ADC counts.  We assume that no signal-dependent noise is introduced during this stage, but there is constant electronic noise $N_i[\tau]$ which has been described above.  Additionally, the APDs can contribute noise in the form of a dark current which is uncorrelated with signals; this is inseparable from the electronic noise, and so we absorb it into our description of $N_i[\tau]$.
 
 \subsection{APD Signals and Noise}
 
@@ -103,14 +107,18 @@ We have already characterized the overall gain of the APDs using the lightmap de
 We have identified the number of photons created by an event $a$ as $P^{(0)}_a$.  In reality, an ideal scintillation measurement can only measure this quantity, and not the true energy of the event -- there is randomness in the number of photons produced by a known-energy deposit, so $P^{(0)}_a$ will not be perfectly correlated with the energy $E_a$ of the event.  However, the number of photons generated is a difficult parameter to understand empirically, and all of our calibrations occur at a known energy even though the corresponding number of deposited photons is unknown.
 
 Simulations using NEST~\cite{NESTpaper} which have been performed within the EXO group by Liangjian Wen at our bulk electric field indicate that we can expect roughly $82,000$ photons from a $2615$-keV gamma deposit.  We will identify this parameter with $c$, and express the average relation between energy and photon yield in EXO-200 by
-$P^{(0)} = c \cdot E$,
+\begin{equation} \label{eqn:DefnOfP0}
+P^{(0)} = c \cdot E,
+\end{equation}
 where $E$ is the energy measured in units of $2615$ keV.  We will treat this relationship as exact, and attempt to measure $E$ rather than $P^{(0)}$; this means that when we speak of measuring the energy of an event using the APD signals, we really are referring to measuring the "scintillation energy," or a parameter proportional to the number of emitted photons which on average will equal the true energy of the deposit.
 
-Ignoring variances for a moment, we can combine all of the expectation values for numbers of photons or ADC counts above to state that on average,
+Ignoring variances for a moment, we can combine equations~\ref{eqn:MeanOfP1}, \ref{eqn:MeanOfP2}, \ref{eqn:MeanOfP3}, \ref{eqn:DefnOfMFromP3}, and \ref{eqn:DefnOfP0} to state that on average,
 \[M_{ia} = 1.9 \cdot c f_i(\vec{x}_a) G^P_i(t_a) G^E_i(t_a) E_a.\]
 We can compare this to our empirical lightmap measurements, which are expressed by $M_{ia} = L_i(\vec{x}_a,t_a) E_a$,
 and we conclude that:
-\[ L_i(\vec{x},t) = 1.9 \cdot c f_i(\vec{x}) G^P_i(t) G^E_i(t).\]
+\begin{equation}
+L_i(\vec{x},t) = 1.9 \cdot c f_i(\vec{x}) G^P_i(t) G^E_i(t).
+\end{equation}
 
 We recall that it is assumed the lightmap is a separable function, $L_i(\vec{x},t) = R_i(\vec{x})S_i(t)$, and we can provide the two proportionalities:
 \[ R_i(\vec{x}) \propto f_i(\vec{x}) \]
@@ -130,7 +138,7 @@ It is then possible to express the full correlations in signal magnitudes in ter
 \left< M_{ia} \right> &=& L_i(\vec{x}_a,t_a) E_a \\
 \left< M_{ia} M_{jb} \right> &=& L_i(\vec{x}_a,t_a)L_j(\vec{x}_b,t_b) E_a E_b \left[1 + \frac{\sigma^2_{NU}}{\left(G^P_i(t)\right)^2} \delta_{ij}\delta_{ab} \right] \nonumber \\
 && {} - L_i(\vec{x}_a,t_a) L_j(\vec{x}_a,t_a) E_a \delta_{ab}/c \nonumber \\
-&& {} + L_i(\vec{x}_a,t_a) G^E_i(t) E_a \delta_{ij} \delta_{ab} \left[\left(0.1 + 1.9\right)G^P_i(t) + \frac{\sigma^2_{G_i}(t)}{G^P_i(t)}\right].
+&& {} + L_i(\vec{x}_a,t_a) G^E_i(t) E_a \delta_{ij} \delta_{ab} \left[\left(0.1 + 1.9\right)G^P_i(t) + \frac{\sigma^2_{G_i}(t)}{G^P_i(t)}\right]. \label{eqn:MMcorrelations}
 \end{IEEEeqnarray}
 \begin{comment}
 THE FOLLOWING IS MY WORK IN EXPANDING THE M_M CORRELATIONS.
@@ -254,17 +262,25 @@ and can claim to now have a complete description of the signals and noise observ
 It is now possible to specify the optimization criteria for generating an energy estimate from the APD signals.  We wish to identify an energy estimator which is unbiased and has a minimal expected error.  For the problem to remain tractable, we will demand that the operator be linear.  Furthermore, although the Fourier-transformed waveforms $\widetilde{X}_i[f]$ are complex-valued, we will require that the energy estimate be strictly real-valued.
 
 We will therefore take the energy estimator to be of the form:
-\[ \widehat{E}_a = \sum_{if} A_{ifa} \widetilde{X}_i^R[f] + B_{ifa} \widetilde{X}_i^I[f].\]
+\begin{equation}
+\widehat{E}_a = \sum_{if} A_{ifa} \widetilde{X}_i^R[f] + B_{ifa} \widetilde{X}_i^I[f].
+\end{equation}
 The goal of denoising is therefore reduced to identifying the optimal parameters $A_{ifa}$ and $B_{ifa}$ for this estimator.
 
 The error in the energy estimate $\widehat{E}_a$ of $E_a$ is defined by:
-\[ \epsilon^2_a = \left< \left(\widehat{E}_a - E_a\right)^2\right>. \]
+\begin{equation}
+\epsilon^2_a = \left< \left(\widehat{E}_a - E_a\right)^2\right>.
+\end{equation}
 Our goal is then to minimize $\epsilon^2_a$ under the constraint of no bias, ie. that:
-\[\left<\widehat{E}_a - E_a\right> = 0\]
+\begin{equation}\label{eqn:ConstraintForm1}
+\left<\widehat{E}_a - E_a\right> = 0
+\end{equation}
 or, equivalently,
 \[\sum_{ifb}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) E_b = E_a.\]
 However, we will find that it is necessary to specify a slightly stronger constraint.  In particular, it will be desirable to ensure that the constraints are as independent of energy as possible to reduce the need to input an estimated energy into our energy estimator; therefore we will freely employ the stronger constraint
-\[\sum_{if}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) = \delta_{ab} \text{~for all b,}\]
+\begin{equation}
+\sum_{if}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) = \delta_{ab} \text{~for all b,} \label{eqn:ConstraintForm3}
+\end{equation}
 which implies the earlier forms and leads to advantageous cancellations of terms.
 
 We now proceed with the optimization.  We start by expanding $\epsilon^2_a$:
@@ -273,9 +289,9 @@ We now proceed with the optimization.  We start by expanding $\epsilon^2_a$:
 %
 &= \left< \widehat{E}^2_a \right> - E_a \left<\widehat{E}_a\right> - \left< \widehat{E}_a - E_a \right> E_a \\
 %
-\intertext{We can employ the constraint to simplify the second term of this expansion, and eliminate the third altogether; we then proceed:}
+\intertext{We can employ the constraint of equation~\ref{eqn:ConstraintForm1} to simplify the second term of this expansion, and eliminate the third altogether; we then proceed:}
 %
-&= \left< \widehat{E}^2_a \right> - E^2_a \\
+\epsilon^2_a &= \left< \widehat{E}^2_a \right> - E^2_a \\
 %
 &= \left< \left(\sum_{if}\left[ A_{ifa} \widetilde{X}_i^R[f] + B_{ifa} \widetilde{X}_i^I[f]\right]\right)^2\right> - E^2_a \\
 %
@@ -286,12 +302,12 @@ We now proceed with the optimization.  We start by expanding $\epsilon^2_a$:
 %
 \intertext{The noise $\widetilde{N}$ and signal $M_{ia}$ are uncorrelated, so multiplicative cross-terms will have an expectation value of zero:}
 %
-&= \left< \left(\sum_{if} \left[ A_{ifa} \widetilde{N}_i^R[f] + B_{ifa} \widetilde{N}_i^I[f]\right]\right)^2\right> \\
+\epsilon^2_a &= \left< \left(\sum_{if} \left[ A_{ifa} \widetilde{N}_i^R[f] + B_{ifa} \widetilde{N}_i^I[f]\right]\right)^2\right> \\
 &\quad + \left<\left(\sum_{ifb} \left[ A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]M_{ib} \right)^2 \right> - E^2_a \\
 %
 \intertext{Additionally, electronic noise cross-terms between different frequencies will not survive:}
 %
-&= \left< \sum_{ijf} \left[ A_{ifa} \widetilde{N}_i^R[f] + B_{ifa} \widetilde{N}_i^I[f]\right] \left[ A_{jfa} \widetilde{N}_j^R[f] + B_{jfa} \widetilde{N}_j^I[f]\right] \right> \\
+\epsilon^2_a &= \left< \sum_{ijf} \left[ A_{ifa} \widetilde{N}_i^R[f] + B_{ifa} \widetilde{N}_i^I[f]\right] \left[ A_{jfa} \widetilde{N}_j^R[f] + B_{jfa} \widetilde{N}_j^I[f]\right] \right> \\
 &\quad + \left<\left(\sum_{ifb} \left[ A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]M_{ib} \right)^2 \right> - E^2_a \\
 %
 & \begin{aligned}
@@ -299,9 +315,9 @@ We now proceed with the optimization.  We start by expanding $\epsilon^2_a$:
   & + B_{ifa}A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ifa}B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\bigg] \end{aligned} \\
 &\quad + \sum_{\substack{ifb\\jgc}} \left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]\left[A_{jga} \widetilde{Y}_{jc}^R[g] + B_{jga} \widetilde{Y}_{jc}^I[g]\right] \left<M_{ib}M_{jc}\right> - E^2_a \\
 %
-\intertext{We will now expand $\left<M_{ib}M_{jc}\right>$ and take advantage of the stronger form of our constraint to simplify the expression:}
+\intertext{We will now expand $\left<M_{ib}M_{jc}\right>$ using equation~\ref{eqn:MMcorrelations} and take advantage of the stronger form of our constraint~\ref{eqn:ConstraintForm3} to simplify the expression:}
 %
-& \begin{aligned}
+\epsilon^2_a & \begin{aligned}[t]
   = \sum_{ijf} \bigg[ & A_{ifa}A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + A_{ifa}B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right> \\
   & + B_{ifa}A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ifa}B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\bigg] \end{aligned} \\
 &\quad + \left( \sum_{ifb} \left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) E_b \right)^2 - E^2_a \\
@@ -346,7 +362,7 @@ We are now in a position to evaluate the partial derivatives of $\epsilon^2_a$ w
 
 We will use Lagrange's method to minimize $\epsilon^2_a$ while satisfying our constraints; we define
 \[C_{ab} = \sum_{if}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b),\]
-with ordered indices, and restate our constraints as
+with ordered indices, and restate the constraints of equation~\ref{eqn:ConstraintForm3} as
 \[C_{ab} = \delta_{ab}.\]
 Then, the partial derivatives of these constrained expressions are:
 \begin{align*}
@@ -354,7 +370,7 @@ Then, the partial derivatives of these constrained expressions are:
 \frac{\partial C_{bc}}{\partial B_{ifa}} &= \widetilde{Y}^I_{ic}[f] L_i(\vec{x}_c,t_c) \delta_{ab}
 \end{align*}
 
-Denoting the set of lagrange multipliers for $\epsilon^2_a$ with $\lambda_{ab}$, where the indices are ordered, and allowing these parameters to absorb constant factors, we can at last identify the full set of linear equations describing the optimal energy estimator $\widehat{E}_a$:
+Denoting the set of Lagrange multipliers for $\epsilon^2_a$ with $\lambda_{ab}$, where the indices are ordered, and allowing these parameters to absorb constant factors, we can at last identify the full set of linear equations describing the optimal energy estimator $\widehat{E}_a$:
 \begin{align*}
 &\sum_j \left[ A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right>\right]\\
 &+ \sum_{gb} \begin{aligned}[t]
@@ -372,22 +388,24 @@ Denoting the set of lagrange multipliers for $\epsilon^2_a$ with $\lambda_{ab}$,
 \end{align*}
 
 To simplify the notation, let us define a new function:
-\[q(i,b) := \begin{aligned}[t]
+\begin{equation} \label{eqn:DefinitionOfQ}
+q(i,b) := \begin{aligned}[t]
   \bigg( &(0.1 + 1.9) G^E_i(t_b) G^P_i(t_b) + \frac{G^E_i(t_b)}{G^P_i(t_b)} \sigma^2_{G_i}(t_b)\\
   &+ L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t_b)\right)^2}\bigg)L_i(\vec{x}_b, t_b) E_b
-\end{aligned}\]
+\end{aligned}
+\end{equation}
 which we note should be strictly positive if measured correctly (because all gains and lightmap values should be strictly positive, and all variances are non-negative).  Using this shorthand, we can re-write our system of equations in the more compact form:
-\begin{align*}
-&\sum_j \left[ A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right>\right]\\
-&+ \sum_{gb} \widetilde{Y}_{ib}^R[f] q(i,b) \left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \\
+\begin{subequations} \label{eqn:SystemToSolve} \begin{align}
+&\sum_j \left[ A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right>\right] \notag \\
+&+ \sum_{gb} \widetilde{Y}_{ib}^R[f] q(i,b) \left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \notag \\
 &+ \sum_b \lambda_{ab} \widetilde{Y}^R_{ib}[f] L_i(\vec{x}_b,t_b) = 0 \qquad \qquad \qquad \qquad \quad \text{for each $i$, $f$}\\
 %
-&\sum_j \left[ A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\right]\\
-&+ \sum_{gb} \widetilde{Y}_{ib}^I[f] q(i,b) \left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \\
+&\sum_j \left[ A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\right] \notag \\
+&+ \sum_{gb} \widetilde{Y}_{ib}^I[f] q(i,b) \left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \notag \\
 &+ \sum_b \lambda_{ab} \widetilde{Y}^I_{ib}[f] L_i(\vec{x}_b,t_b) = 0 \qquad \qquad \qquad \qquad \quad \text{for each $i$, $f$}\\
 %
 &\sum_{if}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) = \delta_{ab} \qquad \text{for each $b$}
-\end{align*}
+\end{align} \end{subequations}
 
 It is important to note here that energies $E_b$, which we are intending to measure, do in fact enter into this linear set of equations.  At first this would seem to demonstrate that the equations here are impossible to apply, but in fact they remind us that the forms of noise which are correlated with the signal are also dependent on the magnitude of that signal.  Statistical fluctuations in the number of photons observed on each APD, for instance, scale like the square root of the number of photons emitted.
 
@@ -396,33 +414,54 @@ We can see, then, that some estimate of energy is necessary to know the relative
 \section{Matrix Version}
 
 Because the system of equations above is linear in $A_{ifa}$ and $B_{ifa}$, we wish to solve it as a matrix equation.  This requires, first, that we choose an ordering of the unknowns; the best ordering will be the one which groups nonzero entries into blocks, since this will allow us to make more efficient use of matrix libraries.  We define:
-\[\vec{A}_a = (A_{1 1 a}, B_{1 1 a}, A_{2 1 a}, B_{2 1 a}, \dots, B_{i_{max} 1 a}, A_{1 2 a}, \dots, A_{0 f_{max} a}, A_{1, f_{max} a}, \dots, A_{i_{max} f_{max} a})\]
+\begin{equation}
+\vec{A}_a = (A_{1 1 a}, B_{1 1 a}, A_{2 1 a}, B_{2 1 a}, \dots, B_{i_{max} 1 a}, A_{1 2 a}, \dots, A_{1 f_{max} a}, A_{2 f_{max} a}, \dots, A_{i_{max} f_{max} a})
+\end{equation}
 so that the entries alternate between $A$ and $B$, iterating quickly through channels and more slowly through frequencies.  Note that only the $A$ terms are included for the maximum frequency; this is because $X_i[t]$ is real-valued, so $\widetilde{X}_i[0]$ and $\widetilde{X}_i[f_{max}]$ are real-valued as well.  We also will find it convenient to define the matrix:
-\[\mathbf{A} = \begin{pmatrix}
+\begin{equation}
+\mathbf{A} = \begin{pmatrix}
 \vdots & & \vdots \\
 \vec{A}_1 & \cdots & \vec{A}_{a_{max}} \\
 \vdots & & \vdots
-\end{pmatrix}\]
+\end{pmatrix}
+\end{equation}
 which includes the parameters needed for each of the estimators $\widehat{E}_a$.
 
-We can then begin by defining the electronic noise blocks as:
-\[ \mathbf{N_f} = \begin{pmatrix}
-  \left<\widetilde{N}_0^R[f]\widetilde{N}_0^R[f]\right> & \left<\widetilde{N}_0^R[f]\widetilde{N}_0^I[f]\right> & \left<\widetilde{N}_0^R[f]\widetilde{N}_1^R[f]\right> & \dots & \left<\widetilde{N}_0^R[f]\widetilde{N}_{i_{max}}^I[f]\right>\\
-  \left<\widetilde{N}_0^I[f]\widetilde{N}_0^R[f]\right> & \left<\widetilde{N}_0^I[f]\widetilde{N}_0^I[f]\right> & \left<\widetilde{N}_0^I[f]\widetilde{N}_1^R[f]\right> & \dots & \left<\widetilde{N}_0^I[f]\widetilde{N}_{i_{max}}^I[f]\right>\\
-  \left<\widetilde{N}_1^R[f]\widetilde{N}_0^R[f]\right> & \left<\widetilde{N}_1^R[f]\widetilde{N}_0^I[f]\right> & \left<\widetilde{N}_1^R[f]\widetilde{N}_1^R[f]\right> & \dots & \left<\widetilde{N}_1^R[f]\widetilde{N}_{i_{max}}^I[f]\right>\\
-  \vdots & \vdots & \vdots & \ddots & \vdots \\
-  \left<\widetilde{N}_{i_{max}}^I[f]\widetilde{N}_0^R[f]\right> & \left<\widetilde{N}_{i_{max}}^I[f]\widetilde{N}_0^I[f]\right> & \left<\widetilde{N}_{i_{max}}^I[f]\widetilde{N}_1^R[f]\right> & \dots & \left<\widetilde{N}_{i_{max}}^I[f]\widetilde{N}_{i_{max}}^I[f]\right>
-\end{pmatrix} \]
-where for $\mathbf{N_{f_{max}}}$ terms with imaginary parts of $\widetilde{N}$ are dropped.  We combine these blocks into:
-\[ \mathbf{N} = \begin{pmatrix}
+We can then define the electronic noise blocks as:
+\begin{equation} \label{eqn:BlocksOfN}
+\mathbf{N_f} = \begin{cases}
+  \mathbf{COV}\left(\widetilde{N}_1^R[f], \widetilde{N}_1^I[f], \widetilde{N}_2^R[f], \dots, \widetilde{N}_{i_{max}}^I[f]\right) & \text{for $f < f_{max}$} \\
+\mathbf{COV}\left(\widetilde{N}_1^R[f], \widetilde{N}_2^R[f], \dots, \widetilde{N}_{i_{max}}^R[f]\right) & \text{for $f = f_{max}$}
+\end{cases}
+\end{equation}
+where $\mathbf{COV}$ specifies the covariance matrix of an ordered list of random variables,
+\begin{equation}
+\mathbf{COV}\left( x_1, x_2, \dots, x_n \right) = \begin{pmatrix}
+  cov(x_1 x_1) & cov(x_1 x_2) & \cdots & cov(x_1 x_n) \\
+  cov(x_2 x_1) & cov(x_2 x_2) & \cdots & cov(x_2 x_n) \\
+  \vdots & \vdots & \ddots & \vdots \\
+  cov(x_n x_1) & cov(x_n x_2) & \cdots & cov(x_n x_n)
+\end{pmatrix}. \end{equation}
+Note that because our noise variables $\widetilde{N}_i^R[f]$ and $\widetilde{N}_i^I[f]$ have mean zero, we can move smoothly between expectation values of products and covariances:
+\begin{equation} \begin{aligned}
+cov(\widetilde{N}_i^R[f], \widetilde{N}_j^R[f]) &= \left< \widetilde{N}_i^R[f] \widetilde{N}_j^R[f] \right>\\
+cov(\widetilde{N}_i^R[f], \widetilde{N}_j^I[f]) &= \left< \widetilde{N}_i^R[f] \widetilde{N}_j^I[f] \right>\\
+cov(\widetilde{N}_i^I[f], \widetilde{N}_j^R[f]) &= \left< \widetilde{N}_i^I[f] \widetilde{N}_j^R[f] \right>\\
+cov(\widetilde{N}_i^I[f], \widetilde{N}_j^I[f]) &= \left< \widetilde{N}_i^I[f] \widetilde{N}_j^I[f] \right>.
+\end{aligned} \end{equation}
+
+We pack together the blocks of equation~\ref{eqn:BlocksOfN} into a sparse noise matrix:
+\begin{equation} \label{eqn:DefinitionOfN}
+\mathbf{N} = \begin{pmatrix}
   \mathbf{N_1} & \mathbf{0} & \dots & \mathbf{0} \\
   \mathbf{0} & \mathbf{N_2} & \dots & \mathbf{0} \\
   \vdots & \vdots & \ddots & \vdots \\
   \mathbf{0} & \mathbf{0} & \dots & \mathbf{N_{f_{max}}}
-\end{pmatrix} .\]
+\end{pmatrix} .\end{equation}
 
 In a similar way, we can define the other noise terms in terms of matrix operations.  We will find that it is possible to describe the noise terms correlated with signals as a product of two matrices, $\mathbf{P = P_1 P_2}$.  First we define the matrix $\mathbf{P_1}$, which steps horizontally through the APD channels and signals.  For a particular choice of indices $j$, $b$, the corresponding column of $\mathbf{P_1}$ will be:
-\[ \mathbf{P_1}(\text{column $j$, $b$}) = \begin{pmatrix}
+\begin{equation}
+\mathbf{P_1}(\text{column $j$, $b$}) = \begin{pmatrix}
 \widetilde{Y}^R_{j b}[1] \delta_{1 j} \\
 \widetilde{Y}^I_{j b}[1] \delta_{1 j} \\
 \widetilde{Y}^R_{j b}[1] \delta_{2 j} \\
@@ -434,27 +473,31 @@ In a similar way, we can define the other noise terms in terms of matrix operati
 \widetilde{Y}^R_{j b}[f_{max}] \delta_{2 j} \\
 \vdots \\
 \widetilde{Y}^R_{j b}[f_{max}] \delta_{i_{max} j}
-\end{pmatrix}\sqrt{q(j,b)}.\]
-Note that in each channel, only a fraction of the entries are nonzero.
+\end{pmatrix}\sqrt{q(j,b)}.
+\end{equation}
+Note that in each column, only a small subset of the entries are nonzero.
 
 This means that $\mathbf{P_2}$ should be a matrix with rows that step through the APD channels and signals as well.  For a particular choice of indices $j$, $b$, the corresponding row of $\mathbf{P_2}$ will be:
-\begin{multline*} \mathbf{P_2}(\text{row $j$, $b$}) = \\
+\begin{multline} \mathbf{P_2}(\text{row $j$, $b$}) = \\
 \begin{matrix}
 \bigg( \widetilde{Y}^R_{jb}[1]\delta_{1 j} & \widetilde{Y}^I_{j b}[1]\delta_{1 j} & \widetilde{Y}^R_{jb}[1]\delta_{2 j} & \cdots & \widetilde{Y}^I_{jb}[1]\delta_{i_{max} j} & \widetilde{Y}^R_{jb}[2]\delta_{1 j} & \cdots \\
 \cdots & \widetilde{Y}^R_{jb}[f_{max}]\delta_{1 j} & \widetilde{Y}^R_{jb}[f_{max}]\delta_{2 j} & \cdots & \widetilde{Y}^R_{jb}[f_{max}]\delta_{i_{max} j}\rlap{$\bigg) \sqrt{q(j,b)}.$}
-\end{matrix}\end{multline*}
-Since we will be using the product $\mathbf{P} = \mathbf{P_1 P_2}$, it clearly must be the case that the ordering of columns in $\mathbf{P_1}$ is the same as the ordering of rows in $\mathbf{P_2}$.  Because in practice there will always be more APD channels than APD signals, it will generally be advantageous to iterate through $j$ fastest, and step through $b$ more slowly.  We can also see that $\mathbf{P_1} = \mathbf{P_2}^{\top}$, so $\mathbf{P} = \mathbf{P_2}^{\top} \mathbf{P_2}$.
+\end{matrix}\end{multline}
+Since we will be using the product $\mathbf{P} = \mathbf{P_1 P_2}$, it clearly must be the case that the ordering of columns in $\mathbf{P_1}$ is the same as the ordering of rows in $\mathbf{P_2}$.  Because in practice there will always be more APD channels than APD signals, it will generally be advantageous to iterate through $j$ fastest, and step through $b$ more slowly.  We can also see that $\mathbf{P_1} = \mathbf{P_2}^{\top}$, so
+\begin{equation}
+\mathbf{P} = \mathbf{P_2}^{\top} \mathbf{P_2}.
+\end{equation}
 
 The constraint equations are represented by a matrix $\mathbf{C}$ with rows that step through the APD signals; for a particular choice of $b$ the corresponding row of $\mathbf{C}$  will be:
-\[ \begin{matrix}
+\begin{equation} \begin{matrix}
 \mathbf{C}(\text{row $b$}) = \bigg( & \widetilde{Y}^R_{1 b}[1] L_1(\vec{x}_b, t_b) & \widetilde{Y}^I_{1 b}[1] L_1(\vec{x}_b, t_b) & \widetilde{Y}^R_{2 b}[1] L_2(\vec{x}_b, t_b) \\
 &\cdots & \widetilde{Y}^I_{i_{max} b}[1] L_{i_{max}}(\vec{x}_b, t_b) & \widetilde{Y}^R_{1 b}[2] L_1(\vec{x}_b, t_b) \\
 &\cdots & \widetilde{Y}^R_{1 b}[f_{max}] L_1(\vec{x}_b, t_b) & \widetilde{Y}^R_{2 b}[f_{max}] L_2(\vec{x}_b, t_b) \\
 & & \cdots & \widetilde{Y}^R_{i_{max} b}[f_{max}] L_{i_{max}}(\vec{x}_b, t_b) & \bigg).
-\end{matrix}\]
+\end{matrix}\end{equation}
 
 Finally it is possible to restate the full linear equation specified above in matrix form, where we can simultaneously include the equations for all of the estimators $\widehat{E}_a$:
-\[
+\begin{equation}
 \begin{pmatrix}
 \mathbf{N} + \mathbf{P} & \mathbf{C}^{\top} \\
 \mathbf{C} & \mathbf{0}
@@ -463,7 +506,7 @@ Finally it is possible to restate the full linear equation specified above in ma
 \mathbf{0} \\
 \mathbf{I}
 \end{pmatrix}.
-\]
+\end{equation}
 
 The matrix $\mathbf{N}$ is the same as the covariance matrix of the electronic noise, so it must be symmetric and positive-semidefinite.  Similarly, we have seen that $\mathbf{P} = \mathbf{P_2}^{\top} \mathbf{P_2}$, implying that $\mathbf{P}$ must be symmetric and positive-semidefinite.  This means that there is a Cholesky decomposition $\mathbf{N} + \mathbf{P} = \mathbf{L}\mathbf{L}^{\top}$, where $\mathbf{L}$ is a lower-triangular matrix, and that $\mathbf{N} + \mathbf{P}$ is symmetric and positive semi-definite.  This implies that the full matrix equation is symmetric; however, it is insufficient for showing that the full system is positive semi-definite, and in fact we will see that this is not the case.
 
@@ -483,7 +526,7 @@ The matrix equation we wish to solve takes the form:
 \mathbf{0} \\ \mathbf{I}
 \end{pmatrix}\]
 Let us define $\mathbf{D} = diag(\mathbf{N})$ and approximate
-\[\begin{pmatrix}
+\begin{equation}\begin{pmatrix}
 \mathbf{N}+\mathbf{P} & \mathbf{C}^\top\\
 \mathbf{C} & \mathbf{0}
 \end{pmatrix}
@@ -491,11 +534,11 @@ Let us define $\mathbf{D} = diag(\mathbf{N})$ and approximate
 \begin{pmatrix}
 \mathbf{D} & \mathbf{C}^\top \\
 \mathbf{C} & \mathbf{0}
-\end{pmatrix}\]
+\end{pmatrix}\end{equation}
 This approximate form is easy to invert (assuming every frequency component of every channel has non-zero noise and every constraint is satisfiable, which is true in practice), and can be used to precondition our problem for better numerical behavior.
 
 We can further factor this approximate form of the matrix:
-\[
+\begin{equation}
 \begin{array}{cccc}
 \begin{pmatrix}
 \mathbf{D} & \mathbf{C}^\top \\
@@ -532,11 +575,11 @@ We can further factor this approximate form of the matrix:
 \end{pmatrix}
 
 \end{array}
-\]
+\end{equation}
 where $\mathbf{H}$ is a lower-diagonal square matrix defined uniquely as the Cholesky decomposition $\mathbf{HH}^\top = \mathbf{C} \mathbf{D}^{-1} \mathbf{C}^\top$.  (The solution is guaranteed to be real because $\mathbf{D}$ is positive-semidefinite in all cases, and positive-definite in practice -- it consists of noise variance terms, which are strictly positive in practice.)  Note that $\mathbf{C} \mathbf{D}^{-1} \mathbf{C}^\top$ has dimensions equal to the number of signals in an event, which in practice will be small enough that we can compute its Cholesky decomposition $\mathbf{HH}^\top$ directly.
 
 The two diagonal factors are easily inverted; we further define
-\begin{align*}
+\begin{align}
 \mathbf{K}_1 &=
 \begin{pmatrix}
 \mathbf{I} & \mathbf{0}\\
@@ -559,7 +602,7 @@ The two diagonal factors are easily inverted; we further define
 \mathbf{I} & \mathbf{D}^{-1/2}\mathbf{C}^\top \mathbf{H}^{-\top}\\
 \mathbf{0} & -\mathbf{H}^{-\top}
 \end{pmatrix},
-\end{align*}
+\end{align}
 where $\mathbf{M}^{-\top}$ represents the inverse of the transpose of $\mathbf{M}$.  We then follow the standard proscription for preconditioning a linear system by replacing our original matrix equation with the new form:
 \begin{gather*}
 \mathbf{K}_1^{-1} \begin{pmatrix}\mathbf{D}^{-1/2}&\mathbf{0}\\ \mathbf{0}&\mathbf{I}\end{pmatrix}
@@ -572,7 +615,7 @@ where $\mathbf{M}^{-\top}$ represents the inverse of the transpose of $\mathbf{M
 \mathbf{\widetilde{A}} = \mathbf{K}_2 \begin{pmatrix}\mathbf{D}^{1/2} & \mathbf{0}\\ \mathbf{0} & \mathbf{I}\end{pmatrix}\mathbf{A}
 \end{gather*}
 which reduces to
-\begin{gather*}
+\begin{gather}
 \mathbf{K}_1^{-1} 
 \left[
 \begin{pmatrix}\mathbf{D}^{-1/2}\mathbf{ND}^{-1/2}&\mathbf{0}\\ \mathbf{0}&\mathbf{0}\end{pmatrix}
@@ -582,14 +625,14 @@ which reduces to
 \mathbf{K}_2^{-1} \mathbf{\widetilde{A}} = 
 \begin{pmatrix}\mathbf{0}\\ \mathbf{H}^{-1}\end{pmatrix}\\
 \mathbf{A} = \begin{pmatrix}\mathbf{D}^{-1/2}&\mathbf{0}\\ \mathbf{0}&\mathbf{I}\end{pmatrix}\mathbf{K}_2^{-1}\mathbf{\widetilde{A}}
-\end{gather*}
+\end{gather}
 
 This preconditioned set of equations is numerically quite stable.  It is also possible to provide an excellent initial guess $\mathbf{\widetilde{A}}_0$ by taking the approximate form of the matrix to be exact, yielding
 \[
 \mathbf{\widetilde{A}}_0 = \begin{pmatrix}\mathbf{0}\\ \mathbf{H}^{-1}\end{pmatrix}
 \]
 Based on these various advantages, it is this system which we attempt to solve rather than the original form.  Below we define matrices $\mathbf{M}$ and $\mathbf{B}$ for convenience, and summarize the system to be solved:
-\begin{align*}
+\begin{align}
 \mathbf{M} &= \mathbf{K}_1^{-1} 
 \left[
 \begin{pmatrix}\mathbf{D}^{-1/2}\mathbf{ND}^{-1/2}&\mathbf{0}\\ \mathbf{0}&\mathbf{0}\end{pmatrix}
@@ -600,7 +643,7 @@ Based on these various advantages, it is this system which we attempt to solve r
 \mathbf{B} &= \mathbf{\widetilde{A}}_0 = \begin{pmatrix}\mathbf{0}\\ \mathbf{H}^{-1}\end{pmatrix}\\
 \mathbf{M\widetilde{A}} &= \mathbf{B}\\
 \mathbf{A} &= \begin{pmatrix}\mathbf{D}^{-1/2}&\mathbf{0}\\ \mathbf{0}&\mathbf{I}\end{pmatrix}\mathbf{K}_2^{-1}\mathbf{\widetilde{A}}
-\end{align*}
+\end{align}
 
 
 \section{Solver}
@@ -615,14 +658,14 @@ Matrix-solving algorithms which handle multiple vectors simultaneously are commo
 \algsetup{indent=2em} % Recommended by the package authors; the default is only for backward compatibility.
 \begin{algorithmic}[1]
 \STATE $\mathbf{\widetilde{A}} \gets \mathbf{\widetilde{A}}_0$
-\STATE $\mathbf{R} \gets \mathbf{B}-\mathbf{M\widetilde{A}}$
+\STATE $\mathbf{R} \gets \mathbf{B}-\mathbf{M\widetilde{A}}$ \label{algline:MatrixMul1}
 \STATE $\mathbf{S} \gets \mathbf{R}$
 \STATE $\mathbf{\widetilde{R}}_0 \gets \mathbf{R}$
 \LOOP
-  \STATE $\mathbf{V} \gets \mathbf{M}\mathbf{S}$
+  \STATE $\mathbf{V} \gets \mathbf{M}\mathbf{S}$ \label{algline:MatrixMul2}
   \STATE Solve $(\mathbf{\widetilde{R}}_0^\top \mathbf{V})\alpha = (\mathbf{\widetilde{R}}_0^\top \mathbf{R})$ for $\alpha$. \label{algline:BlBiCGSTAB_alpha}
   \STATE $\mathbf{R} \gets \mathbf{R} - \mathbf{V}\alpha$
-  \STATE $\mathbf{T} \gets \mathbf{M}\mathbf{R}$
+  \STATE $\mathbf{T} \gets \mathbf{M}\mathbf{R}$ \label{algline:MatrixMul3}
   \STATE $\omega \gets {\langle \mathbf{T},\mathbf{S}\rangle_F} / {\langle \mathbf{T},\mathbf{T}\rangle_F} $, where $\langle\cdot,\cdot\rangle_F$ is the Frobenius matrix norm.
   \STATE $\mathbf{\widetilde{A}} \gets \mathbf{\widetilde{A}} + \mathbf{S}\alpha + \omega \mathbf{R}$
   \STATE $\mathbf{R} \gets \mathbf{R} - \omega \mathbf{T}$
@@ -642,20 +685,29 @@ Since each column of $\mathbf{\widetilde{A}}$ corresponds to one signal we are r
 
 Although the previous section described the algorithm used for solving these matrix equations, in practice the processing time required is still significant; combined with the very large number of events which we hope to denoise (hundreds of millions), we still must seek out any possible speed-ups.  There are certain implementation tricks which can be applied with significant impact.  These are described here.
 
-The majority of non-zero matrix entries comes from the electronic noise matrix $\mathbf{N}$, making it the computational bottleneck of the algorithm.  The structure of the problem is that the matrix containing electronic noise terms is block-diagonal; that is, it consists of one dense block per frequency component, with each block lying on the diagonal and where the number of rows and columns is twice the number of channels being denoised (except for the last frequency component, where imaginary terms are identically equal to zero).  The problem of handling electronic noise terms thus consists of $1024$ matrix-matrix multiplications, with the left matrix of approximate size $300\times300$ and the right matrix of approximate size $300\times O(1)$.\footnote{The number of columns in the right matrix is equal to the number of signals, which may be sometimes $3-5$ or more; however, it is always much smaller than $300$, and describing it as $O(1)$ captures this fact.}
+The majority of non-zero matrix entries comes from the electronic noise matrix $\mathbf{N}$, making it the computational bottleneck of the algorithm.  $\mathbf{N}$ is block-diagonal, as seen in equation~\ref{eqn:DefinitionOfN}; if we assume roughly $70$ APD channels, then the last block of $\mathbf{N}$ will have $70^2$ non-zero entries and all other blocks will have $4\cdot 70^2$ non-zero entries.  With waveforms having $2048$ samples, and ignoring the baseline component, the problem of multiplying a vector by the electronic noise terms thus consists of $1024$ matrix-matrix multiplications, with each left matrix containing roughly $20,000$ non-zero terms and each right matrix consisting of $O(1)$ columns and roughly $150$ rows.  (The number of columns in the right matrix is equal to the number of signals, which may be sometimes $3-5$ or more; however, it is always much smaller than $150$, and describing it as $O(1)$ captures this fact.)
 
 The key points here which create an opportunity for optimization are that:
 \begin{itemize}
 \item The electronic noise terms generally do not change event-by-event.  They are treated as constant across many runs.
-\item It is possible to multiply two $N \times N$ matrices together much faster than it is possible to perform $N$ multiplications of an $N \times N$ matrix with $N$ $N \times 1$ matrices.  This can be achieved with a combination of algorithms faster than naive $O(N^3)$ speed and exploitation of low-level computer hardware features such as the CPU cache. [Provide a citation!]
+\item It is possible to multiply two $N \times N$ matrices together much faster than it is possible to perform $N$ multiplications of an $N \times N$ matrix with $N$ $N \times 1$ matrices.  This can be achieved with a combination of algorithms faster than naive $O(N^3)$ speed and exploitation of low-level computer hardware features such as the CPU cache.~\cite{BLASFirstReference}~\cite{AnatomyOfMatrixMultiply}
 \end{itemize}
-What we wish to do, then, is reorganize the solver algorithm so that whenever multiplication by the electronic noise matrix is required, rather than performing that multiplication on a ``skinny" $300 \times O(1)$ matrix, we pack together many such ``skinny" matrices into a single matrix with many columns.  Multiplication can then be performed in bulk; and individual columns from the result can be extracted and used as before.
+What we wish to do, then, is reorganize the solver algorithm so that whenever multiplication by the electronic noise matrix is required, rather than performing that multiplication on a ``skinny" $150 \times O(1)$ matrix, we pack together many such ``skinny" matrices into a single matrix with many columns.  Multiplication can then be performed in bulk; and individual columns from the result can be extracted and used as before.
 
-Additionally, it is important that matrix multiplication be made as fast as possible.  It has long been known that matrix multiplication provides significant opportunities for low-level optimizations. For example, most of the time taken by naive matrix multiplication is spent fetching and writing data to and from RAM.  Significant speedups can be achieved by minimizing the number of CPU cache misses, which can be accomplished by operating on matrices in blocks with size chosen so they fit entirely in the cache.  Multiplication instructions can also often be packed into vector instructions such as SSE or AVX.  For extremely large matrices, there are even algorithms which require fewer than $O(N^3)$ multiplications, and these can sometimes be beneficial.
+Additionally, it is important that matrix multiplication be made as fast as possible.  It has long been known that matrix multiplication provides significant opportunities for low-level optimizations. For example, most of the time taken by naive matrix multiplication is spent fetching and writing data to and from RAM.  Significant speedups can be achieved by minimizing the number of CPU cache misses, which can be accomplished by operating on matrices in blocks with size chosen so they fit entirely in the cache.  Multiplication instructions can also often be packed into vector instructions such as SSE or AVX.  For extremely large matrices, there are even algorithms which require fewer than $O(N^3)$ multiplications, and these can sometimes be beneficial.~\cite{AnatomyOfMatrixMultiply}
 
-Optimization of matrix-matrix multiplication is a large field, but fortunately there are a number of well-tuned software libraries implementing matrix multiplication well-tuned to specific machines.  These libraries generally provide the standard Basic Linear Algebra Subroutines (BLAS) interface, making them interchangeable with ease.  In this instance, Intel's MKL library has been used; benefits to this implementation are its availability (MKL is installed on both the SLAC and NERSC computing systems.) and its adaptability (MKL will detect a machine's architecture at runtime, and select a well-tuned codepath then; this is in contrast to some other BLAS implementations which must be compiled on the particular machine where they will be used.).
+Optimization of matrix-matrix multiplication is a large field, but fortunately there are a number of well-tuned software libraries implementing matrix multiplication well-tuned to specific machines.  These libraries generally provide the standard Basic Linear Algebra Subroutines (BLAS) interface, making them interchangeable with ease.  In this instance, Intel's MKL library has been used; benefits to this implementation are its availability on scientific computing platforms and its ability to adapt to heterogeneous compute clusters by detecting the architecture of the machine on which it is run.~\cite{IntelMKL}
 
 Finally, implementation at NERSC has the interesting feature that NERSC's computing systems are designed for multi-core processing.  The Hopper and Edison computing systems at NERSC allocate whole nodes, each of which contains 24 cores.  Although it is possible to simply run 24 independent processes on each node, memory on NERSC machines is highly constrained; memory use can be reduced by sharing certain large data structures across multiple cores on a node.  Additionally, as more events are packed together for electronic-noise multiplication, greater savings can be realized; so it is better to handle many events in coordination.  To this purpose, a multi-threaded version of the program has been developed to exploit portions of the code which are conveniently distributed.  Because NERSC nodes have a Non-Uniform Memory Access (NUMA) architecture, processes are constrained to only run on cores with a similar memory access pattern; on Hopper this results in four 6-threaded processes per node, while on Edison this results in two 12-threaded processes per node.
+
+As a result, and because the bulk of our computational time is spent multiplying by $\mathbf{N}$, we pursue the following strategies to improve code performance:
+\begin{enumerate}
+\item One denoising process will be run on each NUMA node of a NERSC machine.  Processes should be run in ``strict memory mode,'' where a process only has access to memory resources on its own NUMA node.
+\item Within a process, algorithm~\ref{alg:BlBiCGSTAB} should be performed in parallel on all available cores to maximimize CPU utilization.
+\item When a thread encounters the need for a matrix multiplication in lines~\ref{algline:MatrixMul1}, \ref{algline:MatrixMul2}, or \ref{algline:MatrixMul3}, the thread should not multiply by $\mathbf{N}$.  Instead, it should push the left hand side into new columns of a matrix $\mathbf{RHS}$ of ``thin'' matrices needing to be multiplied by $\mathbf{N}$.
+\item When enough columns have accumulated in $\mathbf{RHS}$, collect the running threads; these threads should each perform some fraction of the matrix multiplications between blocks of $\mathbf{N}$ and the corresponding rows of $\mathbf{RHS}$.  When this is complete, the threads should resume their processing of algorithm~\ref{alg:BlBiCGSTAB} in parallel on the available pool of events.
+\item Every matrix multiplication should be performed by a direct call to the Intel MKL library.  To facilitate this process, $\mathbf{N}$ should be stored in a format that ensures its blocks are accessed in a contiguous segment of memory.  Furthermore, because there is ample opportunity for higher-level parallelization, at no time should a multithreaded BLAS operation be invoked; this reduces computational overhead of parallelization.
+\end{enumerate}
 
 These represent the most significant set of computational optimizations.  However, there are also smaller optimizations which can still produce non-negligible speedups.  The naive Block-BiCGSTAB algorithm (in the case of only one signal in an event) requires two matrix-vector multiplications, but it also requires a number of vector-vector operations, and the cumulative cost of these vector-vector operations can become non-negligible.  One obvious shortcut is to reuse our computation of $\mathbf{\widetilde{R}}_0^\top \mathbf{V}$ from line~\ref{algline:BlBiCGSTAB_alpha} of Algorithm~\ref{alg:BlBiCGSTAB} to save work in line~\ref{algline:BlBiCGSTAB_beta}.
 
@@ -663,44 +715,34 @@ Another speedup for our vector-vector operations consists of combining multiple 
 \[\mathbf{\widetilde{R}}_0^\top \begin{pmatrix} V & R \end{pmatrix}\]
 as one step.  The rest of the algorithm will not be affected by the fact that these two matrices are stored contiguously in memory.
 
-Outline new algorithm demonstrating multi-threading and batch handling.  AM I REALLY GOING TO DO THIS EXPLICITLY?  SEEMS LIKE KIND OF A MESS.
-
-\begin{algorithmic}
-\STATE $E$ is a list of events.
-\WHILE{there are events to read}
-  \STATE Push the next event $E_i$ onto $E$.
-  \STATE Compute $A_i$ and $Z_0^i$, the matrix and initial guess for event $E_i$.
-  \STATE $R_i \gets B-A_i Z_0^i$
-  \STATE $P_i \gets R_i$
-\ENDWHILE
-
-\STATE $R \gets B-AZ_0$
-\STATE $P \gets R$
-\STATE $\widetilde{R_0} \gets R$
-\WHILE{any column of $R$ has a magnitude greater than desired}
-  \STATE $V \gets AP$
-  \STATE Solve $(\widetilde{R_0}^\top V)\alpha = (\widetilde{R_0}^\top R)$ for $\alpha$.
-  \STATE $R \gets R - V\alpha$
-  \STATE $T \gets AR$
-  \STATE $\omega \gets {\langle T,S\rangle_F} / {\langle T,T\rangle_F} $
-    \COMMENT{where $\langle\cdot,\cdot\rangle_F$ is the Frobenius matrix norm.}
-  \STATE $Z \gets Z + P\alpha + \omega R$
-  \STATE $R \gets R - \omega T$
-  \STATE $R$ currently equals $B-AZ$; if it is small enough, terminate.
-  \STATE Solve $(\widetilde{R_0}^\top V)\beta = -(\widetilde{R_0}^\top T)$ for $\beta$.
-  \STATE $P \gets R + (P - \omega V) \beta$
-\ENDWHILE
-\end{algorithmic}
-
-
-
-
-Todo: Figure out better notation for transpose inverse than ${X^\top}^{-1}$.
-
-
-
-
-
 \section{Future Plans}
 
-Extract gang-by-gang magnitudes from scintillation.  The idea is that the lightmap needs gang-by-gang signal magnitudes as input, and currently the only way to produce them is with the old-style scintillation handling.  Now it would be nice to "close the circle" and use denoised magnitude measurements to improve the precision of the input to the lightmap.  (We already are doing this with event selection, just not with magnitude measurements.)
+As outlined here, denoising is capable of producing optimal estimates of the total energy emitted in scintillation by a particular event; however, it should be noted that this algorithm can be applied to a more general range of problems in the EXO-200 detector with only minor modifications.
+
+\subsection{Anticorrelated Cluster Energies}
+
+One important generalization is in our definition of ``signals.''  In the body of this chapter, we have worked on the assumption that a signal consists of a simultaneous set of energy deposits in the bulk of the detector, possibly at multiple locations.  We do this because it must be possible for denoising to break degeneracies between signals -- by specifying that two different signals must have occurred at different times, we give the algorithm a means to discriminate between light coming from the two different signals and assign energy properly to each of them.
+
+Historically, time was the only useful variable for this sort of discrimination; because multiple APD channels were added together and all APD channels were treated as identical in this sum, a significant amount of information was discarded and there were no remaining parameters to use for signal separation except for the signal time.
+
+However, this denoising algorithm makes use of additional information: the relative magnitudes of each APD gang.  By depending on a highly detailed lightmap, we have incorporated information about which channels should see light most from energy deposits at different positions.   As a result, if we permit two ``signals'' which are simultaneous in time, it should be possible to separate their energy content by comparing their positions to the set of channels which see more light.  This would allow us to produce anti-correlated energy measurements of individual clusters, which should give a significant improvement in the energy resolution achievable for clusters within an event.
+
+In principle, this is entirely feasible -- in the extreme case, when two clusters are at opposite ends of the detector we can expect them to produce light on an entirely different set of channels, and it should be quite easy to separate light produced by each.  However, this extension of our algorithm does present some practical challenges.
+
+In EXO's reconstruction, light signals which are found close together in time are aggressively merged together, ensuring that denoising will never encounter light signals which are very close in time; this assures us that two signals separated in time will be well-separated, and there will not be a near-degeneracy which could render the solver algorithm unstable.
+
+However, charge clusters are merged much less aggressively, and some bugs exist which have minimal effect on the main analysis but permit the existence of clusters very near to each other.  For denoising to separate simultaneous light signals solely based on their relative position, they must be separated far enough that their respective light yields on nearby APD channels are significantly different, which is not at all guaranteed by reconstruction.  As a result, denoising can only fit simultanous signals separately if it performs a re-clustering process in which clusters occurring near each other are artificially merged together for the purpose of denoising.  The threshold for merging clusters together would require further study, and might be different in each of the three coordinate directions.
+
+Such an analysis would not have a significant impact on single-site data, so it would have minimal impact on our primary goal of searching for double-beta decay.  However, it could have a significant impact on a search for excited-state two-neutrino double-beta decay by improving the resolution of gamma lines associated with Barium de-excitation.  Barabash states in~\cite{Barabash2010} that the dominant mode of excited-state $2\nu \beta\beta$ decay will be to the $0^{+}_1$ state, which in $^{136}Ba$ would lead to the emission of a $760$ keV and $819$ keV gamma in coincidence; if denoising could be accomplished on individual clusters, the sensitivity to these gamma lines could be significantly enhanced.
+
+There are also potential benefits to our understanding of the detector itself.  Currently the only mono-energetic beta calibration available for EXO is the double-escape peak, formed when a gamma particle enters the detector, pair-produces an electron and positron, and the positron interacts with an electron and emits gammas which travel sufficiently far from the initial interaction site so that the initial electron interactions and gamma interactions can be clearly separated.  Currently we have the ability to separate charge yield from gammas and the initial electron in some of these events, allowing us to understand the different charge yields from gammas and betas.  However, we have no similar capabilities for light yield because the gamma and beta interactions are treated as just one ``signal.''  If we could separate the light yield from these spatially separated clusters, we could use these events to understand both the light and charge yield for different types of interactions.
+
+Another type of detector study which might benefit from anticorrelated cluster energies is the Compton telescope.  This is a technique that combines our knowledge of cluster energies and scattering angles, along with the Compton scattering formula~\cite{ComptonScattering}, which allows us to produce estimates of the origin of the incident gamma.  Such a technique permits us to study the sources of our backgrounds, informing future attempts to reduce them by indicating which materials had the most significant negative effect.  The accuracy by which we place the origin of the incident gammas is strongly related to the accuracy of our measurements of the energies of the individual clusters, so it is expected that improving the accuracy of our cluster energies would have a positive impact on our ability to locate the backgrounds of our experiment.
+
+The last benefit to this approach is more technical: evaluating the lightmap for a multi-site event requires an energy-weighted combination of the values of the lightmap at individual cluster locations.  This process is complicated and error-prone, and can be avoided entirely when we treat each signal instead as having a single well-defined position.
+
+\subsection{Wire Denoising}
+
+The current EXO-200 resolution is limited by the scintillation resolution of the APDs.  As a result, little benefit is anticipated from denoising the wires.  However, it is possible that a future detector could reduce the scintillation noise to a point where resolution of the wires is non-negligible; alternatively, a future detector could have noise which is correlated between wires and APDs, making it possible to use noise information from the wires to improve our scintillation resolution even though no direct benefit is expected to the wire resolution itself.
+
+In any case, it is possible to apply equations~\ref{eqn:SystemToSolve} to a system with a combination of wires and APDs without significant adjustment.  The template functions $Y[t]$ will of course be significantly different, and must include a time offset to account for the different time of arrival of the electrons and photons.  The ``lightmap'' of charge will be far less diffuse than for APDs because charge from any location generally drifts directly to only a small number of wires along externally imposed field lines.  And finally, because electron statistics should be negligible and signal amplification should not be a noisy process, for wire channels we would modify equation~\ref{eqn:DefinitionOfQ} to state that $q(i_{wire}, b) = 0$.  In this sense, denoising of wires consists of minimizing the variance in the energy estimator due to electronic noise, and using the wires to improve our denoising of APDs consists of using information about the wires to reduce variance due to electronic noise without expecting any correlations between APD and wire signals, all while ensuring that the energy estimates are unbiased by retaining the same constraints.
