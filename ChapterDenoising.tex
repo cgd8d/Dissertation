@@ -52,7 +52,29 @@ We first establish a number of notational conventions:
 
 We describe the data as a collection of discretely sampled waveforms, $X_i[\tau]$.  We assume that all signal times and shapes are already known, so we can model the waveforms by $X_i[\tau] = \sum_a M_{ia}Y_{ia}[\tau] + N_i[\tau] + b_i$, where $Y$ is the shape of signal $a$ on channel $i$, $M$ is the magnitude of that signal, and $N$ and $b$ represent the electronic noise and baseline, respectively, of the channel.
 
-To break the degeneracy between $M$ and $Y$, we choose to fix the magnitude of the template signal $Y$.  We choose to require that the signal $Y$ has a magnitude of one, as described in figure~\ref{fig:SampleAPDTemplates}.  This implies that for a typical single-site $2615$-keV deposit, the average values of $M_i$ should be equal to the values of the lightmap $L_i(\vec{x},t)$ described earlier.
+To break the degeneracy between $M$ and $Y$, we choose to fix the magnitude of the template signal $Y$.  We choose to require that the signal $Y$ has a magnitude of one, as described in figure~\ref{fig:SampleAPDTemplates}.  We assume that the expected magnitude of a signal on channel $i$ from a single-site $2615$-keV deposit is known, and is characterized as a function $L_i(\vec{x}, t)$ of the deposit position $\vec{x}$ and calendar time $t$.  The exact methods for measuring $L_i(\vec{x}, t)$ will be described in chapter~\ref{ch:Lightmap}.  In cases where a multi-site event deposits energy in multiple locations, we will use the charge information to estimate the energy deposited in each location; the estimated lightmap yield from such an event will be a weighted sum:
+\begin{equation}
+L_i^{MS}(\vec{x}_1, \dots, \vec{x}_{n_{max}}, t) = \frac{\sum_n E_n^{charge} L_i(\vec{x}_n, t)}{sum_n E_n^{charge}}.
+\end{equation}
+For notational simplicity, we will still characterize the expected yield on a gang $i$ from a multi-site event as $L_i(\vec{x}, t)$; in practice it will always be clear how to compute the expected yields for any event from this function.  We can thereby characterize the expected yields $M_{ia}$ from an event with energy $E_a$ as:
+\begin{equation}
+\left< M_{ia} \right> = L_i(\vec{x}_a, t_a) E_a.
+\end{equation}
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=4in]{scripts/UnshapedAPDWaveform.png}
+\includegraphics[keepaspectratio=true,width=4in]{scripts/ShapedAPDWaveform.png}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Shaped and unshaped APD waveforms.  The normalization is shown to make the peak of the shaped waveform have a magnitude of one, and the time axis is shifted so that the unshaped waveform is a step function centered at $t=0$.}
+\label{fig:SampleAPDTemplates}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
 
 Noise correlations will be much simpler in frequency space, so we take the Fourier transform and drop the zero-frequency component to obtain
 \begin{equation}

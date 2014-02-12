@@ -1,6 +1,7 @@
 
 \renewcommand{\thechapter}{5}
 \chapter{The Lightmap}
+\label{ch:Lightmap}
 
 The EXO detector was designed with roughly 450 APDs ganged into 74 channels of six to seven APDs each.  These APDs were set into the two endcaps of the cylindrical EXO detector.  Three of the APD ganged channels were disabled due to noisy components before physics data collection began; a fourth channel was disabled in February 2012 due to increasing noise in its components.  Additional stepwise changes in APD behavior come from changes to the electronics which have been implemented multiple times during the course of the experiment.
 
@@ -13,21 +14,6 @@ Even with such a significant quantity of source data, statistics were found to b
 Although the APD-plane lightmap produced significant improvements in the energy resolution achieved by the EXO detector, inevitably it was only an incomplete characterization of the APD response.  Indeed, because for $\beta\beta0\nu$ studies we place our fiducial cut as close to the edges of the detector as possible, in certain regions of the detector our scintillation signal might be highly concentrated on one or a small number of channels.  Summing together multiple channels is, in this sense, a lossy form of compression of the data, and it is tempting to see whether we can extract better physics if it is avoided.  Thus, characterizing the APD yield on individual APD-gang channels is not in itself an important component of our analysis, but may be expected to provide a critical tool for more advanced scintillation analysis.
 
 \section{Four-Dimensional Lightmap}
-
-\begin{figure}
-\begin{center}
-\includegraphics[keepaspectratio=true,width=\textwidth]{scripts/UnshapedAPDWaveform.png}
-\includegraphics[keepaspectratio=true,width=\textwidth]{scripts/ShapedAPDWaveform.png}
-\end{center}
-\renewcommand{\baselinestretch}{1}
-\small\normalsize
-\begin{quote}
-\caption{Shaped and unshaped APD waveforms.  The normalization is shown to make the peak of the shaped waveform have a magnitude of one, and the time axis is shifted so that the unshaped waveform is a step function centered at $t=0$.}
-\label{fig:SampleAPDTemplates}
-\end{quote}
-\end{figure}
-\renewcommand{\baselinestretch}{2}
-\small\normalsize
 
 As described above, in constructing an individual-APD lightmap we face two conflicting needs: we must use as much data as possible to handle the faster spatial dependence and smaller signals expected, but if too much data is included then we run the risk of combining data taken when an APD had a different gain.  If we truly wish to use all available data, then we will need to simultaneously understand the full time-dependence of the gain.  In other words, rather than forming a small number of independently-measured three-dimensional lightmaps, we will need to measure a four-dimensional lightmap $L(x,y,z,t)$.  Since we will use Thorium-226 source data to generate the lightmap, we require that our lightmap should predict the magnitude of the signals on each APD gang induced by a single-site deposit of energy $2615$ keV; figure~\ref{fig:SampleAPDTemplates} shows our definition of a unit-magnitude signal.
 
