@@ -17,6 +17,7 @@
 \titlespacing*{\chapter}{0pt}{0.5in}{1in}
 
 \usepackage{hyperref} % Create hyperlinks.
+\usepackage{color} % Enable colors (useful to make sure I notice things I want to return to).
 \usepackage{amsmath} % For producing high-quality multi-line math displays.
 \usepackage{IEEEtrantools} % Alternative for complicated math -- allows specifying column alignment.
 \usepackage{verbatim} % For producing blocks of comments.
@@ -58,11 +59,13 @@
 \newpage
 %\listoftables %(if present, lower-case Roman)
 %\newpage
-\addcontentsline{toc}{chapter}{List of Figures}
+\phantomsection % Needed to make hyperlinks point to the right page.
+\addcontentsline{toc}{chapter}{List of Figures} % Adds section to table of contents.
 \listoffigures %(if present, lower-case Roman)
 \newpage
 % LIST OF ABBREVIATIONS
-\addcontentsline{toc}{chapter}{List of Abbreviations}
+\phantomsection % Needed to make hyperlinks point to the right page.
+\addcontentsline{toc}{chapter}{List of Abbreviations} % Adds section to table of contents.
 \include{Abbreviations}
 
 \newpage
@@ -78,6 +81,7 @@
 \include{ChapterDenoising}
 \include{ChapterNoiseMeasurement}
 \include{ChapterLightmap}
+\include{ChapterResults}
 
 \renewcommand{\baselinestretch}{1}
 \small\normalsize

@@ -22,7 +22,7 @@ When the noise in the APDs is studied, it was found that the individual APD chan
 
 However, the observation that coherent noise is the dominant source of noise in the APDs, and thus also the limiting factor in EXO-200's energy resolution, means that it should be possible to exploit these correlations and reduce the level of noise in offline analysis.  This chapter will describe a scheme to accomplish that goal and produce an optimal estimate of scintillation energy which takes noise correlations into account.
 
-It is worth noting that in fact there are a number of different qualitative approaches to reducing the noise levels in the scintillation channel.  In casual terms, we will refer to "passive" approaches as those in which components of our signals are weighted more or less heavily based on their relative signal-to-noise content.  "Active" approaches, by contrast, will be classified as those which attempt to improve the signal-to-noise content of signal components.  We have identified the following three types of denoising:
+It is worth noting that in fact there are a number of different qualitative approaches to reducing the noise levels in the scintillation channel.  In casual terms, we will refer to ``passive" approaches as those in which components of our signals are weighted more or less heavily based on their relative signal-to-noise content.  ``Active" approaches, by contrast, will be classified as those which attempt to improve the signal-to-noise content of signal components.  We have identified the following three types of denoising:
 \begin{description}
 \item[Frequency weighting] \hfill \\
 On a given channel signal, weight more heavily the frequency components which contain larger signal-to-noise ratio.  This passive denoising scheme requires knowledge of the shapes in fourier space of a signal and the power spectrum of the noise.
@@ -54,7 +54,7 @@ We describe the data as a collection of discretely sampled waveforms, $X_i[\tau]
 
 To break the degeneracy between $M$ and $Y$, we choose to fix the magnitude of the template signal $Y$.  We choose to require that the signal $Y$ has a magnitude of one, as described in figure~\ref{fig:SampleAPDTemplates}.  We assume that the expected magnitude of a signal on channel $i$ from a single-site $2615$-keV deposit is known, and is characterized as a function $L_i(\vec{x}, t)$ of the deposit position $\vec{x}$ and calendar time $t$.  The exact methods for measuring $L_i(\vec{x}, t)$ will be described in chapter~\ref{ch:Lightmap}.  In cases where a multi-site event deposits energy in multiple locations, we will use the charge information to estimate the energy deposited in each location; the estimated lightmap yield from such an event will be a weighted sum:
 \begin{equation}
-L_i^{MS}(\vec{x}_1, \dots, \vec{x}_{n_{max}}, t) = \frac{\sum_n E_n^{charge} L_i(\vec{x}_n, t)}{sum_n E_n^{charge}}.
+L_i^{MS}(\vec{x}_1, \dots, \vec{x}_{n_{max}}, t) = \frac{\sum_n E_n^{charge} L_i(\vec{x}_n, t)}{\sum_n E_n^{charge}}.
 \end{equation}
 For notational simplicity, we will still characterize the expected yield on a gang $i$ from a multi-site event as $L_i(\vec{x}, t)$; in practice it will always be clear how to compute the expected yields for any event from this function.  We can thereby characterize the expected yields $M_{ia}$ from an event with energy $E_a$ as:
 \begin{equation}
@@ -80,6 +80,12 @@ Noise correlations will be much simpler in frequency space, so we take the Fouri
 \begin{equation}
 \widetilde{X}_i[f] = \sum_a M_{ia}\widetilde{Y}_{ia}[f] + \widetilde{N}_i[f].
 \end{equation}
+As with the lightmap, we will assume that all correlations in the noise, of the form
+\begin{IEEEeqnarray}{cc}
+\left< \widetilde{N}^R_i[f]\widetilde{N}^R_j[g] \right> & \left< \widetilde{N}^R_i[f]\widetilde{N}^I_j[g] \right> \notag \\
+\left< \widetilde{N}^I_i[f]\widetilde{N}^R_j[g] \right> & \left< \widetilde{N}^I_i[f]\widetilde{N}^I_j[g] \right>,
+\end{IEEEeqnarray}
+are known; our means of measuring these correlations will be described in chapter~\ref{ch:NoiseMeasurements}.
 
 \section{The Signal Model}
 
@@ -93,7 +99,7 @@ The noise correlations $\left< \widetilde{N}_i[f] \widetilde{N}_j[f] \right>$ ar
 
 The second random variable will be the magnitude of the signal itself, $M_{ia}$.  When an energetic decay occurs in bulk of the detector, it will release some number of photons.  We will denote the number of photons released by signal $a$ by $P^{(0)}_a$, and this is the parameter we wish to measure.  However, the magnitude signal actually observed on APD channels number of photons actually collected by sensors is a random variable whose distribution depends on $P^{(0)}_a$, and we will now identify the chain of events which produce it.
 
-First, each APD gang $i$ has some number $P^{(1)}_{ia}$ of photons which reach them.  The mean fraction of photons reaching a particular gang $i$ from position $\vec{x}_a$, $f_i(\vec{x}_a)$, is assumed to be known; however, the initial paths of the optical photons emitted from the source, their trajectories through the Xenon, and their success in reflecting off of teflon are all random, so we treat $P^{(1)}_{ia}$ as a Poisson-distributed random variable with mean $f_i(\vec{x}_a)P^{(0)}_a$.  A typical deposit from a $\beta\beta 0\nu$ event may deposit $10-100$ photons on each APD gang [CHECK THIS NUMBER], depending strongly on the location of the deposit; thus, we find that the Poisson noise on a single APD channel may be quite significant.
+First, each APD gang $i$ has some number $P^{(1)}_{ia}$ of photons which reach them.  The mean fraction of photons reaching a particular gang $i$ from position $\vec{x}_a$, $f_i(\vec{x}_a)$, is assumed to be known; however, the initial paths of the optical photons emitted from the source, their trajectories through the Xenon, and their success in reflecting off of teflon are all random, so we treat $P^{(1)}_{ia}$ as a Poisson-distributed random variable with mean $f_i(\vec{x}_a)P^{(0)}_a$.  A typical deposit from a $\beta\beta 0\nu$ event may deposit up to roughly $1000$ photons on a nearby APD gang, resulting in roughly $3\%$ uncertainty from photon statistics; in the bulk of the Xenon, it may be that the largest single APD signal is only one-tenth of this size, resulting in closer to $10\%$ uncertainty due to photon statistics on the nearest APD gang.  Thus, we find that the Poisson noise on a single APD channel may be quite significant.
 
 Additionally, the number of photons reaching different gangs are not uncorrelated; since a photon which reaches gang $i$ cannot deposit on a different gang $j$, $P^{(1)}_{ia}$ and $P^{(1)}_{ja}$ are anticorrelated for different gangs $i \ne j$.  This process is described by a multinomial distribution.  Explicitly, we can identify the expectation values of a multinomial distribution:
 \begin{IEEEeqnarray}{cCl}
@@ -101,18 +107,20 @@ Additionally, the number of photons reaching different gangs are not uncorrelate
 \left< P^{(1)}_{ia} P^{(1)}_{jb} \right> &=& \left< P^{(1)}_{ia} \right> \left< P^{(1)}_{jb} \right> + \left[ f_i(\vec{x}_a)\delta_{ij} - f_i(\vec{x}_a)f_j(\vec{x}_a) \right] P^{(0)}_a \delta_{ab}
 \end{IEEEeqnarray}
 
+(As a detail, we should note that the multinomial distribution is an incorrect model in one important respect: photons may reflect off of teflon one or more times on its way to the APD.  Photons incident on the teflon may be absorbed, leading to a reflection efficiency which may be less than one.  Furthermore, it is possible that teflon may be mildly fluorescent at the wavelength of our scintillation, leading to an increase in efficiency for reflection.  As a result, photons which reflect off of teflon experience a combination of variances from each path photons travel and variances in each gain which they undergo.  These conditional variances will always be larger than a simple Poisson distribution would indicate~\cite{ProbabilityTextbook}, so our variance estimate for $P^{(1)}$ is probably an underestimate.)
+
 Following the random process associated with photons reaching the APD gangs, there is also randomness associated with signal amplification internally in the APDs.  These processes are described in detail in~\cite{EXOLAAPD}, but we can summarize that:
 
 \begin{enumerate}
 \item Optical photons in the liquid xenon arrive at the active layer of the APDs have a wavelength of roughly $178$ nm, meaning that each optical photon has an energy of roughly $7.0$ eV.  The energy required to produce one electron-hole pair in silicon is roughly $3.66$ eV, which means that each incident photon produces roughly $1.9$ electron-hole pairs; we will define $P^{(2)}_{ia}$ to be the number of electron-hole pairs actually produced from $P^{(1)}_{ia}$ incident photons.  The corresponding Fano factor for electrons produced in silicon is roughly $0.1$, meaning that in addition to the uncertainty in $P^{(1)}_{ia}$ which we have already characterized, there is an additional uncorrelated variance in $P^{(2)}_{ia}$ equal to $0.1 \left<P^{(2)}_{ia}\right>$.  The correlations in the parameters $P^{(2)}_{ia}$ are therefore:
 \begin{IEEEeqnarray}{cCl}
 \left< P^{(2)}_{ia} \right> &=& 1.9 \cdot P^{(1)}_{ia} \label{eqn:MeanOfP2} \\
-\left< P^{(2)}_{ia} P^{(2)}_{jb} \right> &=& (1.9)^2\left< P^{(1)}_{ia} P^{(1)}_{jb} \right> + 0.1 \left< P^{(2)}_{ia}\right> \delta_{ij}\delta_{ab}
+\left< P^{(2)}_{ia} P^{(2)}_{jb} \right> &=& (1.9)^2\left< P^{(1)}_{ia} P^{(1)}_{jb} \right> + 0.1 \left< P^{(2)}_{ia}\right> \delta_{ij}\delta_{ab} \label{eqn:VarOfP2}
 \end{IEEEeqnarray}
-\item Electron-hole pairs are then amplified by an avalanche process inside the APDs.  The magnitude of this gain is APD-dependent, generally on the order of $200-300$, and can be identified by a time-dependent quantity $G^P_i(t)$; we will call the number of output electrons $P^{(3)}_{ia}$.  In addition to amplification of existing noise in $P^{(2)}_{ia}$, two additional source of noise are introduced.  First, there is statistical variance in the amplification experienced by each electron due to the randomness of the avalanche process.  This variance is dependent on many factors, including the gain, and scales like the square root of the number of electrons; we define the variance on the gain experienced by a single electron as $\sigma^2_{G_i}(t)$.  Second, there are gain non-uniformities in the diode volume, which contribute variance proportional to the square of the number of initial electron-hole pairs; we will identify the proportionality constant as $\sigma^2_{NU}$, which may depend on time and APD gang.  The magnitude of this uncertainty is not well-known, but may be significant.  The correlations in the parameters $P^{(3)}_{ia}$ are therefore:
+\item Electron-hole pairs are then amplified by an avalanche process inside the APDs.  The magnitude of this gain is APD-dependent, generally on the order of $200-300$, and can be identified by a time-dependent quantity $G^P_i(t)$; we will call the number of output electrons $P^{(3)}_{ia}$.  In addition to amplification of existing noise in $P^{(2)}_{ia}$, two additional source of noise are introduced.  First, there is statistical variance in the amplification experienced by each electron due to the randomness of the avalanche process.  This variance is dependent on many factors, including the gain, and scales like the square root of the number of electrons; we define the variance on the gain experienced by a single electron as $\sigma^2_{G_i}(t)$.  From~\cite{EXOLAAPD}, $\sigma^2_{G_i}(t)$ is approximately equal to $\left(G^P_i(t)\right)^2$ when $G^P_i(t)=100$; as a result, we approximate $\sigma^2_{G_i}(t) \approx \left(G^P_i(t)\right)^2$.  Second, there are gain non-uniformities in the diode volume, which contribute variance proportional to the square of the number of initial electron-hole pairs; we will identify the proportionality constant as $\sigma^2_{NU}$, which may depend on time and APD gang.  The magnitude of this uncertainty is not well-known, but may be significant.  Our current code base treats $\sigma^2_{NU}$ as zero; however, future analyses will likely attempt to estimate it, and the derivation which follows will retain it as an aid to that anticipated work.  The correlations in the parameters $P^{(3)}_{ia}$ are therefore:
 \begin{IEEEeqnarray}{cCl}
 \left< P^{(3)}_{ia} \right> &=& G^P_i(t_a)P^{(2)}_{ia} \label{eqn:MeanOfP3} \\
-\left< P^{(3)}_{ia} P^{(3)}_{jb} \right> &=& G^P_i(t_a)G^P_j(t_b) \left< P^{(2)}_{ia} P^{(2)}_{jb} \right> + \left[P^{(2)}_{ia}\sigma^2_{G_i}(t_a) + \left(P^{(2)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab} \nonumber \\*
+\left< P^{(3)}_{ia} P^{(3)}_{jb} \right> &=& G^P_i(t_a)G^P_j(t_b) \left< P^{(2)}_{ia} P^{(2)}_{jb} \right> + \left[P^{(2)}_{ia}\sigma^2_{G_i}(t_a) + \left(P^{(2)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab} \nonumber \\* \label{eqn:VarOfP3}
 \end{IEEEeqnarray}
 \end{enumerate}
 
@@ -132,7 +140,7 @@ Simulations using NEST~\cite{NESTpaper} which have been performed within the EXO
 \begin{equation} \label{eqn:DefnOfP0}
 P^{(0)} = c \cdot E,
 \end{equation}
-where $E$ is the energy measured in units of $2615$ keV.  We will treat this relationship as exact, and attempt to measure $E$ rather than $P^{(0)}$; this means that when we speak of measuring the energy of an event using the APD signals, we really are referring to measuring the "scintillation energy," or a parameter proportional to the number of emitted photons which on average will equal the true energy of the deposit.
+where $E$ is the energy measured in units of $2615$ keV.  We will treat this relationship as exact, and attempt to measure $E$ rather than $P^{(0)}$; this means that when we speak of measuring the energy of an event using the APD signals, we really are referring to measuring the ``scintillation energy," or a parameter proportional to the number of emitted photons which on average will equal the true energy of the deposit.
 
 Ignoring variances for a moment, we can combine equations~\ref{eqn:MeanOfP1}, \ref{eqn:MeanOfP2}, \ref{eqn:MeanOfP3}, \ref{eqn:DefnOfMFromP3}, and \ref{eqn:DefnOfP0} to state that on average,
 \[M_{ia} = 1.9 \cdot c f_i(\vec{x}_a) G^P_i(t_a) G^E_i(t_a) E_a.\]
@@ -146,7 +154,11 @@ We recall that it is assumed the lightmap is a separable function, $L_i(\vec{x},
 \[ R_i(\vec{x}) \propto f_i(\vec{x}) \]
 \[ S_i(t) \propto G^P_i(t) G^E_i(t).\]
 
-Although $G^E_i(t)$ is in principle time-dependent, due to environmental effects on the APD electronics and occasional replacement of electronics cards for certain channels, precision data on its value is not readily available.  Instead, we use a time-independent estimate $G^E_i(t) = 1.1 \cdot 10^{-3}$ ADC counts per electron emitted from the APD; the uncertainty in this figure is dominated by uncertainty in the preamplifier gains, which are controlled by a roughly $5$ pF capacitor.  Other contributors to the gain include shaper gain of $21.2$ (from a combination of amplification and shaping) and a full-scale digitizer range of $2.5$ volts for $12$-bit digitization.
+Although $G^E_i(t)$ is in principle time-dependent, due to environmental effects on the APD electronics and occasional replacement of electronics cards for certain channels, precision data on its value is not readily available.  Instead, we use a time-independent estimate
+\begin{equation}
+G^E_i(t) = 1.1 \cdot 10^{-3} \label{eqn:ValueOfGE}
+\end{equation}
+ADC counts per electron emitted from the APD; the uncertainty in this figure is dominated by uncertainty in the preamplifier gains, which are controlled by a roughly $5$ pF capacitor.  Other contributors to the gain include shaper gain of $21.2$ (from a combination of amplification and shaping) and a full-scale digitizer range of $2.5$ volts for $12$-bit digitization.
 
 We do have independent measurements of the APD gains $G^P_i(t)$ available from laser calibration runs.  These special runs allow a laser to shine into the detector from a fixed point and with a stable amplitude while the bias voltages on the APDs are varied from an effective unity gain to our standard voltage settings.  Using these measurements, we are able to measure $G^P_i(t)$ at weekly intervals from September 2012 to the present time.  Before September 2012, some less-reliable laser data is available, but results from that data are not readily available as of this writing.
 
@@ -736,6 +748,21 @@ These represent the most significant set of computational optimizations.  Howeve
 Another speedup for our vector-vector operations consists of combining multiple operations into one step.  We see on line~\ref{algline:BlBiCGSTAB_alpha} that both $\mathbf{\widetilde{R}}_0^\top \mathbf{V}$ and $\mathbf{\widetilde{R}}_0^\top \mathbf{R}$ are computed.  As described earlier in the context of multiplication of vectors by electronic noise, it is possible to take advantage of caching and speed up vector operations by packing multiple vectors together into a more square-shaped matrix.  In this case, rather than computing these two products separately, we can pack $\mathbf{V}$ and $\mathbf{R}$ together and compute
 \[\mathbf{\widetilde{R}}_0^\top \begin{pmatrix} V & R \end{pmatrix}\]
 as one step.  The rest of the algorithm will not be affected by the fact that these two matrices are stored contiguously in memory.
+
+\section{Denoising in Practice}
+
+The preceding description of denoising has been intended to convey our fullest current understanding of denoising as it should be performed.  However, due to the computational intensity of this algorithm it is not feasible to conduct routine data processing of the full EXO-200 dataset whenever updates to the code base are implemented.  As a result, the most recent denoised data available from EXO-200 demonstrates certain deviations from the description above.  It is known, and has been demonstrated, that correcting some of these flaws can lead to further improvements in resolution, but no physics analysis will be performed with those improvements until the computational cost of denoising is again deemed worthwhile.
+
+In this section we outline the places where the denoising used for the current physics analysis differs from the description above.  Differences in implementation also exist, but will not be described here.  The differences of denoising are:
+\begin{itemize}
+\item The signal variance coming from sources internal to the APDs was not fully understood by this author when denoising was first implemented, and as a result the signal variance is significantly underestimated.  Specifically, in place of equations~\ref{eqn:VarOfP2} and \ref{eqn:VarOfP3} we take
+\[\left< P^{(3)}_{ia} P^{(3)}_{jb} \right> = (1.9)^2 \cdot G^P_i(t_a)G^P_j(t_b) \left< P^{(1)}_{ia} P^{(1)}_{jb} \right>. \]
+\item We have described with equation~\ref{eqn:ValueOfGE} that the electronic gain is treated as having a constant value of $1.1 \cdot 10^{-3}$ ADC counts per electron emitted from the APDs.  The wires use a similar set of electronics; however, their gain is nominally set to a different value of roughly $6.3 \cdot 10^{-4}$ ADC counts per electron collected on the wires, and this author confused the two numbers.  As a result, $G^E_i(t)$ was underestimated by almost a factor of two; the effect of this is to overestimate by almost a factor of two the number of photons being deposited on APDs, which again causes us to underestimate the signal variance introduced within the APDs.
+\end{itemize}
+
+The effect of both of these issues is, loosely speaking, to fool denoising into believing its photon statistics are greater than they truly are; this, in turn, leads it to prefer a higher concentration of signal (more weight on fewer channels) than is ideal.  Thus, the resolution is negatively impacted by these mistakes; the impact has been measured in subsets of the the EXO dataset and this negative impact is apparent.
+
+However, neither of these mistakes have any impact on the correctness of the constraints.  As a result, the denoised energy measurements should still be unbiased, even if they have worse variance than necessary.  Results from the use of this data will be described in chapter~\ref{ch:DenoisingResults}.
 
 \section{Future Plans}
 
