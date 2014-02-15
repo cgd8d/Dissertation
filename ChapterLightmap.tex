@@ -64,7 +64,7 @@ Such a strongly asymmetric cut was chosen to avoid leakage from compton shoulder
 
 The current work has had the benefit of an existing position-corrected scintillation measurement, leading to a rotated energy spectrum with resolution of roughly $1.8\%$.  As a result, it is possible to accept a wider cut (in sigmas) while still keeping Compton shoulder leakage small.  We currently accept all events within $2\sigma$ of the peak, with better than $95\%$ acceptance and only small leakage.  An additional benefit is that this improved resolution allows us to use a symmetric acceptance region, avoiding the implicit bias introduced from the earlier asymmetric cut window.
 
-Preliminary investigations have been conducted to see what impact is observed from using the denoised scintillation measurements which are the subject of this work.  Presently the improvement in resolution \textcolor{red}{(to roughly $1.4\%$) UPDATE WITH REAL NUMBER} has not demonstrated any significant improvement in the quality of the lightmap beyond what we could achieve with $1.8\%$ resolution; however, this is a topic of continuing study which will certainly be revisited.
+Preliminary investigations have been conducted to see what impact is observed from using the denoised scintillation measurements which are the subject of this work.  Presently the improvement in resolution \textcolor{red}{(to roughly $1.4\%$) UPDATE WITH REAL NUMBER when the paper is finalized} has not demonstrated any significant improvement in the quality of the lightmap beyond what we could achieve with $1.8\%$ resolution; however, this is a topic of continuing study which will certainly be revisited.
 
 Beyond the cuts described above (single-site within an appropriate energy window), other basic cuts are applied to ensure only well-behaved scintillation signals are selected:
 \begin{itemize}
@@ -219,18 +219,3 @@ Figures~\ref{fig:LightmapGainFunc1}, \ref{fig:LightmapGainFunc2}, and~\ref{fig:L
 \item The functions $S(t)$ are otherwise dominated by jitter between points, indicating that we do not collect enough statistics from each run to sufficiently constrain $S(t)$.  This is taken as the strongest evidence that we should use a coarser time binning for $S(t)$, as described in section~\ref{sec:LightmapFunctionParametrization}.  Preliminary work has been performed to do this with more recent lightmaps, but no studies have evaluated the impact on energy resolution.
 \item Individual points on these functions may spike by as much as $40\%$.  These points have been investigated, and their cause is not understood.  These jumps, along with the overall jitter, will certainly be reduced by the use of a coarser time binning.
 \end{itemize}
-
-\section{Implications for Signal Reconstruction}
-
-Prior to this work, it was standard to sum all of the scintillation waveforms from gangs on a single anode plane.  The lightmap we have produced provides a trove of information about how light propagates through the detector, and as such it can be used to identify qualitatively how scintillation signal reconstruction might be improved.
-
-Most significantly, figure~\ref{fig:Lightmap3DPlot_zoomed} demonstrates that 
-
-
-
-
-
-
-
-
-
