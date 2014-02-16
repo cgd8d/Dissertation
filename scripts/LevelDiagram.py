@@ -42,14 +42,15 @@ matplotlib.pyplot.plot(*vals_tuple, color='black', lw=3)
 for level in Levels:
     if level[2] > UpperLimit: continue
     matplotlib.pyplot.annotate(level[0],
-                               (float(level[1]) + 0.5, level[2] + 0.4),
+                               (float(level[1]) + 0.5, level[2] + 0.3),
                                ha = "center")
 
     if level[3] == 'beta':
         entryOfDaughter = GetEntryForZ(level[1]+1)
         matplotlib.pyplot.annotate(u'\u03B2',
                                    (float(level[1]) + 1, level[2]),
-                                   xytext = (float(level[1] + 1 + Levels[entryOfDaughter][1])/2, level[2] - 2),
+                                   xytext = (float(level[1] + 1 + Levels[entryOfDaughter][1])/2,
+                                             (level[2] + Levels[entryOfDaughter][2])/2),
                                    arrowprops = dict(arrowstyle="<-"),
                                    ha = "center")
 
@@ -57,7 +58,8 @@ for level in Levels:
         entryOfDaughter = GetEntryForZ(level[1]+2)
         matplotlib.pyplot.annotate(u'\u03B2\u03B2',
                                    (float(level[1]) + 1, level[2]),
-                                   xytext = (float(level[1] + 1 + Levels[entryOfDaughter][1])/2, level[2] - 2),
+                                   xytext = (float(level[1] + 1 + Levels[entryOfDaughter][1])/2,
+                                             (level[2] + Levels[entryOfDaughter][2])/2),
                                    arrowprops = dict(arrowstyle="<-"),
                                    ha = "center")
 
@@ -65,7 +67,8 @@ for level in Levels:
         entryOfDaughter = GetEntryForZ(level[1]-1)
         matplotlib.pyplot.annotate(u'\u03B5',
                                    (float(level[1]), level[2]),
-                                   xytext = (float(level[1] + Levels[entryOfDaughter][1] + 1)/2, level[2] - 2),
+                                   xytext = (float(level[1] + Levels[entryOfDaughter][1] + 1)/2,
+                                             (level[2] + Levels[entryOfDaughter][2])/2),
                                    arrowprops = dict(arrowstyle="<-"),
                                    ha = "center")
 
@@ -73,12 +76,14 @@ for level in Levels:
         entryOfDaughter = GetEntryForZ(level[1]-2)
         matplotlib.pyplot.annotate(u'\u03B5\u03B5',
                                    (float(level[1]), level[2]),
-                                   xytext = (float(level[1] + Levels[entryOfDaughter][1] + 1)/2, level[2] - 2),
+                                   xytext = (float(level[1] + Levels[entryOfDaughter][1] + 1)/2,
+                                             (level[2] + Levels[entryOfDaughter][2])/2),
                                    arrowprops = dict(arrowstyle="<-"),
                                    ha = "center")
 
 matplotlib.pyplot.xlabel('Z (# Protons)')
 matplotlib.pyplot.ylabel(u'\u0394E (MeV)')
+matplotlib.pyplot.gcf().set_size_inches(8, 10.4) # Try to see the Xe-Cs energy difference better.
 matplotlib.pyplot.savefig('LevelDiagram.png')
 
 
