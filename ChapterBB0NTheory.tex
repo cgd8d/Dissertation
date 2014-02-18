@@ -40,6 +40,41 @@
 \label{fig:FeynmanBetaBeta2Nu}
 \end{figure}
 
+Standard-model double beta ($\beta\beta$) decay is the result of the particle interaction $2d \rightarrow 2u + 2e^- + 2\bar{\nu}_e$ mediated by $W^-$-exchange, as depicted in Figure~\ref{fig:FeynmanBetaBeta2Nu}.  It is effectively the simultaneous occurance of two beta ($\beta$) decays from the same nucleus.
+
+$\beta\beta$ decay is the result of a second-order weak interaction, so it has a remarkably slow rate compared to most $\beta$ decay processes.  As a result, although many nuclei are expected to decay by $\beta\beta$, the process is thoroughly masked by conventional $\beta$ decay in most of them.  We can only hope to detect $\beta\beta$ decay in isotopes where $\beta$ decay is forbidden or highly suppressed.
+
+In rare cases, $\beta$ decay may be highly suppressed, enabling $\beta\beta$ decay to have a rate comparable to or exceeding single-$\beta$ decay.  This is, for example, the case in $^{48}_{20}$Ca: the ground state of $^{48}_{20}$Ca has zero units of angular momentum, whereas its single-$\beta$-decay daughter product $^{48}_{21}$Sc has six units of total angular momentum in its ground state.  This $\beta$ decay is thus highly suppressed by angular momentum conservation.  By contrast, $^{48}_{22}$Ti has zero units of total angular momentum, making $\beta\beta$ decay of $^{48}_{20}$Ca permitted by angular momentum considerations, and as a result the $\beta\beta$ decay mode of $^{48}_{20}$Ca dominates.~\cite{MyNuclearPhysicsBook}
+
+However, in most cases of interest $\beta$ decay is forbidden by energy conservation.  It is well-known that nuclei minimize their energy by arranging similar nucleons to have overlapping wavefunctions.~\cite{MyNuclearPhysicsBook}  Thus, isotopes with an even number of protons and an even number of neutrons will have less nucleon-pairing potential energy than an isotope with either an odd number of protons or an odd number of neutrons, which in turn will have less nucleon-pairing potential energy than an isotope with an odd number of protons and an odd number of electrons.
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{scripts/LevelDiagram.png}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Energy diagram of isotopes with atomic mass $A=136$.  The energies $\Delta E$ are the binding energies of the atom, compared to the bare masses of the same nuclei.  Values are from~\cite{AtomicMassEvaluation}.}
+\label{fig:LevelDiagram}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+A typical nuclear energy level diagram is shown in figure~\ref{fig:LevelDiagram} for the $A=136$ isobar: Xenon, Barium, Cerium, and Neodynium are even-even isotopes, and have systematically lower energies than the odd-odd isotopes Iodine, Cesium, Lanthanum, and Praseodymium.  For this particular isobar, we can see that Xenon is energetically forbidden from single-$\beta$ decaying to Cesium because the odd-odd isotope of Cesium has just slightly more potential energy than the even-even isotope of Xenon; as a result, the primary mode of decay of Xenon-136 will be by $\beta\beta$ decay to Barium-136.  (We also note a similar feature, that the primary mode of decay of Cerium-136 will be by double-electron-capture ($\epsilon\epsilon$) to Barium-136.  Many of the same implications of $\beta\beta$ decay also apply to $\epsilon\epsilon$ decay; however, in practice the rates for these decays will be lower than the rates for $\beta\beta$ decay, so we will not consider them further in this work.)
+
+The detection and study of $\beta\beta$ decay provides an opportunity to test a new class of nuclear matrix computations; however, it does not violate any fundamental symmetries and is, in this sense, a mundane prediction of the Standard Model.  The primary appeal of $\beta\beta$ decay is through the opportunity it provides to probe the nature of neutrinos.
+
+It has been suggested as early as 1937 that neutrinos could possess mass through a neutrino-antineutrino interaction, provided that the neutrino is its own antiparticle~\cite{Majorana}.  The theorized Majorana interaction comes from Lagrangian terms of the form (for each of three neutrino eigenstates)
+\begin{align}
+\mathcal{L}_{Maj}&= \begin{aligned}[t]
+ & -\frac{m_{L}}{2} \left( \overline{\Psi_L^c} \Psi_L^{} + \overline{\Psi_L^{}} \Psi_L^c \right)\\
+ & -\frac{m_{R}}{2} \left( \overline{\Psi_R^c} \Psi_R^{} + \overline{\Psi_R^{}} \Psi_R^c \right),
+\end{aligned}
+\end{align}
+where the superscript-$c$ represents charge conjugation.  (This is the reason that Majorana mass terms are only possible for a chargeless lepton.)  The masses $m_L$ and $m_R$ may be tuned independently; since there has never been an observation of right-handed neutrinos or left-handed anti-neutrinos, it is possible that $m_R = 0$ and that the fields $\Psi_R^{}$ and $\Psi_R^c$ do not exist in nature~\cite{RMPbb0n}.
+
 \begin{figure}
 \begin{center}
 \begin{tikzpicture}
@@ -77,65 +112,9 @@
 \label{fig:FeynmanBetaBeta0Nu}
 \end{figure}
 
-\begin{table}
-\begin{center}
-\begin{tabular}{|rccc|}
-\hline Isotope & \shortstack{$\beta\beta 0\nu$ Halflife Limit \\ ($90\%$ CL, in years)} & Collaboration & Citation \\ \hline
-$^{48}$Ca & $1.3 \cdot 10^{22}$ & NEMO-3 & \cite{NEMO2011RandomOtherIsotopes}\\
-$^{76}$Ge & $2.1 \cdot 10^{25}$ & GERDA & \cite{PhysRevLett.111.122503} \\
-$^{82}$Se & $3.6 \cdot 10^{23}$ & NEMO-3 & \cite{NEMO2011RandomOtherIsotopes}\\
-$^{96}$Zr & $9.2 \cdot 10^{21}$ & NEMO-3 & \cite{Argyriades2010168}\\
-$^{100}$Mo & $1.1 \cdot 10^{24}$ & NEMO-3 & \cite{NEMO3-2013-100Mo}\\
-$^{116}$Cd & $1.6 \cdot 10^{22}$ & NEMO-3 & \cite{NEMO2011RandomOtherIsotopes}\\
-$^{130}$Te & $3.0 \cdot 10^{24}$ & Cuoricino & \cite{PhysRevC.78.035502}\\
-$^{136}$Xe & \textcolor{red}{FILL IN} & & \\
-$^{136}$Xe & $1.9 \cdot 10^{25}$ & KamLAND-Zen & \cite{PhysRevLett.110.062502}\\
-$^{150}$Nd & $1.8 \cdot 10^{22}$ & NEMO-3 & \cite{PhysRevC.80.032501}\\
-\hline
-\end{tabular}
-\end{center}
-\caption{A listing of the strongest available $\beta\beta 0\nu$ limits.  $\beta\beta$ isotopes with no known limits on $\beta\beta 0\nu$ are not listed.  For $^{136}$Xe, this author has taken the liberty of including the most recent results from both EXO-200 and Kamland-Zen.}
-\label{tab:0nubb_limits}
-\end{table}
+If neutrinos do have Majorana mass interactions, then any isotope that undergoes $\beta\beta$ decay can also undergo the related process $2d \rightarrow 2u + 2e^-$, depicted in Figure~\ref{fig:FeynmanBetaBeta0Nu}, in which the two outgoing neutrinos in $\beta\beta$ decay are replaced by one virtual neutrino.  We can interpret this as a mixing interaction between a left-handed neutrino and a right-handed antineutrino; this is only possible if neutrinos are Majorana particles.  We refer to the standard process as two-neutrino double beta ($\beta\beta 2\nu$) decay and the novel process as neutrinoless double beta ($\beta\beta 0\nu$) decay.
 
-Standard-model $\beta\beta$ decay is the result of the particle interaction $2d \rightarrow 2u + 2e^- + 2\bar{\nu}_e$ mediated by $W^-$-exchange, as depicted in Figure~\ref{fig:FeynmanBetaBeta2Nu}.  It is effectively the simultaneous occurance of two $\beta$ decays from the same nucleus.
-
-$\beta\beta$ decay is the result of a second-order weak interaction, so it has a remarkably long half-life; however, it does not violate any fundamental symmetries and is, in this sense, a mundane prediction of the Standard Model.  Although many nuclei are expected to decay by $\beta\beta$, the process is thoroughly masked by conventional $\beta$ decay in most of them.  We can only hope to detect $\beta\beta$ decay in isotopes where single-$\beta$ decay is forbidden or highly suppressed.
-
-In rare cases, single-$\beta$ decay may be highly suppressed, enabling $\beta\beta$ decay to have a rate comparable to or exceeding single-$\beta$ decay.  This is, for example, the case in $^{48}_{20}$Ca: the ground state of $^{48}_{20}$Ca has zero units of angular momentum, whereas its single-$\beta$-decay daughter product $^{48}_{21}$Sc has six units of total angular momentum in its ground state.  This $\beta$ decay is thus highly suppressed by angular momentum conservation.  By contrast, $^{48}_{22}$Ti has zero units of total angular momentum, making $\beta\beta$ decay of $^{48}_{20}$Ca permitted by angular momentum considerations, and as a result the $\beta\beta$ decay mode of $^{48}_{20}$Ca is expected to be dominant.~\cite{MyNuclearPhysicsBook}
-
-However, generally the suppression of single-$\beta$ decay comes in the form of energy conservation.  It is well-known that nuclei minimize their energy by arranging similar nucleons to have overlapping wavefunctions.~\cite{MyNuclearPhysicsBook}  Thus, isotopes with an even number of protons and an even number of neutrons will have less nucleon-pairing potential energy than an isotope with either an odd number of protons or an odd number of neutrons, which in turn will have less nucleon-pairing potential energy than an isotope with an odd number of protons and an odd number of electrons.
-
-\begin{figure}
-\begin{center}
-\includegraphics[keepaspectratio=true,width=\textwidth]{scripts/LevelDiagram.png}
-\end{center}
-\renewcommand{\baselinestretch}{1}
-\small\normalsize
-\begin{quote}
-\caption{Energy diagram of isotopes with atomic mass $A=136$.  Values are from~\cite{AtomicMassEvaluation}.  The energies $\Delta E$ are the binding energies of the atom, compared to the bare masses of the same nuclei.}
-\label{fig:LevelDiagram}
-\end{quote}
-\end{figure}
-\renewcommand{\baselinestretch}{2}
-\small\normalsize
-
-A typical nuclear energy level diagram is shown in figure~\ref{fig:LevelDiagram} for the $A=136$ isobar: Xenon, Barium, Cerium, and Neodynium are even-even isotopes, and have systematically lower energies than the odd-odd isotopes Iodine, Cesium, Lanthanum, and Praseodymium.  For this particular isobar, we can see that Xenon is energetically forbidden from single-$\beta$ decaying to Cesium because the odd-odd isotope of Cesium has just slightly more potential energy than the even-even isotope of Xenon; as a result, the primary mode of decay of Xenon-136 will be by $\beta\beta$ decay to Barium-136.  (We also note a similar feature, that the primary mode of decay of Cerium-136 will be by double-electron-capture ($\epsilon\epsilon$) to Barium-136.  Many of the same implications of $\beta\beta$ decay also apply to $\epsilon\epsilon$ decay; however, in practice the rates for these decays will be lower than the rates for $\beta\beta$ decay, so we will not consider them further in this work.)
-
-The detection and study of $\beta\beta$ decay provides an opportunity to test a new class of nuclear matrix computations; however, the primary appeal of $\beta\beta$ decay is through the opportunity it provides to probe the nature of neutrinos.  It has been suggested as early as 1937 that neutrinos could possess mass through a neutrino-antineutrino interaction, provided that the neutrino be its own antiparticle~\cite{Majorana}.  As evidence mounted through the 1990's that neutrinos must have nonzero mass (see, in particular, the observation of neutrino oscillation in ~\cite{SuperK}), interest in possible mass-generating mechanisms has increased -- including Majorana's mechanism.
-
-If neutrinos do have Majorana mass interactions, then any isotope that undergoes $\beta\beta$ decay can also undergo the related process $2d \rightarrow 2u + 2e^-$, depicted in Figure~\ref{fig:FeynmanBetaBeta0Nu}, in which the two outgoing neutrinos in $\beta\beta$ decay are replaced by one virtual neutrino.  We can interpret this as a mixing interaction between a left-handed neutrino and a right-handed antineutrino; this is only possible if neutrinos are Majorana particles.  We refer to the standard process as $\beta\beta 2\nu$ decay and the novel process as $\beta\beta 0\nu$ decay.
-
-A clear observation of $\beta\beta 0\nu$ decay would immediately yield a number of interesting physical insights.  The existence of the process automatically demonstrates non-conservation of total lepton number, since the lepton number changes by 2 in a Majorana interaction.  Numerous theories have suggested other plausible modes of lepton number non-conservation~\cite{ProtonDecay}\cite{MuonToPositron}, but none have yet reported a positive result.  In the conventional Standard Model with massless neutrinos, lepton number conservation is an accidental symmetry~\cite{LeptonConservation}, but since neutrinos are known to have mass, there is no longer \textit{a priori} any reason to expect conservation or non-conservation.
-
-A second conclusion, as discussed above, would be that neutrino mass comes from a Majorana mass term.  This term appears in the Lagrangian (for each mass eigenstate) as 
-\begin{align}
-\mathcal{L}_{Maj}&= \begin{aligned}[t]
- & -\frac{m_{L}}{2} \left( \overline{\Psi_L^c} \Psi_L^{} + \overline{\Psi_L^{}} \Psi_L^c \right)\\
- & -\frac{m_{R}}{2} \left( \overline{\Psi_R^c} \Psi_R^{} + \overline{\Psi_R^{}} \Psi_R^c \right),
-\end{aligned}
-\end{align}
-where the superscript-$c$ represents charge conjugation.  (This is the reason that Majorana mass terms are only possible for a chargeless lepton.)  The masses $m_L$ and $m_R$ may be tuned independently; since there has never been an observation of right-handed neutrinos or left-handed anti-neutrinos, it is possible that $m_R = 0$ and that the fields $\Psi_R^{}$ and $\Psi_R^c$ do not exist in nature~\cite{RMPbb0n}.
+The tree-level diagram for $\beta\beta 0\nu$ has one additional interaction vertex compared to $\beta\beta 2\nu$ decay, and as a result we would expect it to occur at an even slower rate.  However, the more immediate consequence of $\beta\beta 0\nu$ decay is that lepton number conservation would be violated.  The lepton number changes by two units corresponding to the creation of two leptons with no balancing anti-leptons.  Numerous theories have suggested other plausible modes of lepton number non-conservation~\cite{ProtonDecay}\cite{MuonToPositron}, but none have yet reported a positive result.  In the conventional Standard Model with massless neutrinos, lepton number conservation is an accidental symmetry~\cite{LeptonConservation}, but in a model with massive neutrinos there may no longer be any reason \textit{a priori} to expect conservation or non-conservation of lepton number.
 
 \begin{figure}
 \begin{center}
@@ -191,39 +170,84 @@ where the superscript-$c$ represents charge conjugation.  (This is the reason th
 
 It is worth noting that the interaction term above assumes no mediating particles in the mechanism, whereas it is possible that $\beta\beta 0\nu$ could be mediated by some higher-order interaction terms.  However, if $\beta\beta 0\nu$ decay is observed, it leads very generally to a conclusion that neutrinos have an \emph{effective} Majorana mass interaction~\cite{BlackBoxTheorem}.  We can see this by examining the generic diagram for $\beta\beta 0\nu$ decay in figure~\ref{fig:FeynmanBetaBeta0NuBlob}.  No matter what the mechanism of the decay is, we can insert this diagram into figure~\ref{fig:FeynmanBetaBeta0NuImplication} and see that an effective neutrino-antineutrino mass vertex is implied by the existence of $\beta\beta 0\nu$ decay.
 
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{halflife_vs_year.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{$\beta\beta 0\nu$ half-life limits versus the year of the limit.  Colors indicate which isotope is under study.  Open circles indicate experiments which have not yet concluded data-taking.}
+\label{fig:Halflife_vs_year}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+It has long been clear that appealing extensions to the Standard Model can be built around neutrinos with Majorana mass; see eg. the introduction in 1980 of the see-saw mechanism in~\cite{PhysRevLett.44.912}, where the naturalness of the neutrino mass scale is addressed by hypothesizing $m_R$ is inversely related to $m_L$ and $m_L \ll m_R$.  The motivation to search for $\beta\beta 0\nu$ decay became stronger when neutrinos were proven to have mass, particularly by the definitive proof of the oscillation of atmospheric neutrinos in~\cite{SuperK}.  As a result, the number of experiments searching for $\beta\beta$ decays exploded during this time period; figure~\ref{fig:Halflife_vs_year} shows a collection of $\beta\beta 0\nu$ half-life limits obtained versus year, colored by the isotope under study.  The search for $\beta\beta 0\nu$ has by now evolved into a highly competitive field, in which the isotopes $^{130}$Te, $^{76}$Ge, and $^{136}$Xe are particularly dominant but searches are also being actively pursued in many other isotopes.
+
+The Super-Kamiokande experiment was the first one to conclusively observe atmospheric oscillations~\cite{SuperK}; subsequent experiments have...  (We know delta m values, based on such-and-such experiments.)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\textcolor{red}{BELOW THIS POINT, OLD TEXT WHICH IS NOT PROPERLY ORGANIZED.}
+
 If the mechanism of $\beta\beta 0\nu$ decay really is, at tree level, a neutrino mass term as shown in Figure~\ref{fig:FeynmanBetaBeta0Nu}, then it is possible to infer the mass scale of the neutrino from the observed rate of decay.  To lowest order we can assert that
 \begin{equation} \label{eq:DestructiveMassInteraction}
-\left[T^{0\nu}_{1/2}\right]^{-1} \propto \left< m_{\beta\beta} \right>^2 = \left|\Sigma_k m_k U_{ek}^2\right|^2,
+\left[T^{0\nu}_{1/2}\right]^{-1} \propto \left< m_{\beta\beta} \right>^2 = \left|\sum_k m_k U_{ek}^2\right|^2,
 \end{equation}
 where $U_{ek}$ is the neutrino mixing matrix and the $m_k$ identify the three neutrino mass eigenstates.  The constant of proportionality is isotope-dependent; state-of-the-art nuclear matrix computations can provide it within a factor of $2-3$~\cite{RMPbb0n}.  We will not consider the complex challenges of these computations here.
 
 The neutrino mixing matrix $\mathbf{U}$ is often parametrized as:
-\begin{equation}
-\mathbf{U} =
-\begin{aligned}
-\begin{pmatrix}
-1 & 0 & 0 \\
-0 & cos(\theta_{23}) & sin(\theta_{23}) \\
-0 & -sin(\theta_{23}) & cos(\theta_{23})
-\end{pmatrix}
-\begin{pmatrix}
-cos(\theta_{13}) & 0 & sin(\theta_{13})e^{-i\delta} \\
-0 & 1 & 0 \\
--sin(\theta_{13})e^{i\delta} & 0 & cos(\theta_{13})
-\end{pmatrix} \times \\
-\begin{pmatrix}
-cos(\theta_{12}) & sin(\theta_{12}) & 0 \\
--sin(\theta_{12}) & cos(\theta_{12}) & 0 \\
-0 & 0 & 1
-\end{pmatrix}
-\begin{pmatrix}
-e^{i\alpha_1/2} & 0 & 0 \\
-0 & e^{i\alpha_2/2} & 0 \\
-0 & 0 & 1
-\end{pmatrix}.
-\end{aligned}
-\end{equation}
+\begin{align}
+  \mathbf{U} &=
+    \begin{pmatrix}
+    U_{e1} & U_{e2} & U_{e3} \\
+    U_{\mu1} & U_{\mu2} & U_{\mu3} \\
+    U_{\tau1} & U_{\tau2} & U_{\tau3}
+    \end{pmatrix} \notag \\
+  &= \begin{aligned}[t]
+      \begin{pmatrix}
+      1 & 0 & 0 \\
+      0 & cos(\theta_{23}) & sin(\theta_{23}) \\
+      0 & -sin(\theta_{23}) & cos(\theta_{23})
+      \end{pmatrix}
+      \begin{pmatrix}
+      cos(\theta_{13}) & 0 & sin(\theta_{13})e^{-i\delta} \\
+      0 & 1 & 0 \\
+      -sin(\theta_{13})e^{i\delta} & 0 & cos(\theta_{13})
+      \end{pmatrix} \times \\
+      \begin{pmatrix}
+      cos(\theta_{12}) & sin(\theta_{12}) & 0 \\
+      -sin(\theta_{12}) & cos(\theta_{12}) & 0 \\
+      0 & 0 & 1
+      \end{pmatrix}
+      \begin{pmatrix}
+      e^{i\alpha_1/2} & 0 & 0 \\
+      0 & e^{i\alpha_2/2} & 0 \\
+      0 & 0 & 1
+      \end{pmatrix}.
+    \end{aligned}
+\end{align}
 Out of the six parameters used in defining this matrix, the only ones which have been measured are $sin^2(2\theta_{12}) = 0.857^{+0.023}_{-0.025}$~\cite{PhysRevD.83.052002}, $sin^2(2\theta_{13}) = 0.089 \pm 0.010 \pm 0.005$~\cite{1674-1137-37-1-011001}, and $sin^2(2\theta_{23}) > 0.95$~\cite{PhysRevLett.107.241801}.
+
+
 
 \begin{figure}
 \begin{center}
@@ -233,15 +257,69 @@ Out of the six parameters used in defining this matrix, the only ones which have
 \label{fig:NeutrinoMassBounds}
 \end{figure}
 
-For the purpose of $\beta\beta 0\nu$ searches, the most important implication of equation~\ref{eq:DestructiveMassInteraction} is that $\left< m_{\beta\beta}\right>^2$ is a coherent sum of the masses of the neutrino mass eigenstates.  Even though it is known that neutrinos have mass, it is possible for $\left< m_{\beta\beta}\right>^2$ to be arbitrarily small or zero if $\mathbf{U}$ is tuned to create cancellations between the neutrino mass terms.  Figure~\ref{fig:NeutrinoMassBounds} illustrates the relation between $\left< m_{\beta\beta}\right>^2$ and other fundamental neutrino parameters.  We can see that the sum of neutrino masses, $M = \sum m_i$, can be as large as roughly $0.08$ meV without ruling out the possibility of cancellations from $\mathbf{U}$ leading to an extremely small value for $\left< m_{\beta\beta}\right>^2$; conversely, it is possible that neutrinos may be Majorana particles, yet the search to detect $\beta\beta 0\nu$ decay may be hopelessly difficult because of an unfortunate cancellation of terms in the effective Majorana mass.
+For the purpose of $\beta\beta 0\nu$ searches, the most important implication of equation~\ref{eq:DestructiveMassInteraction} is that $\left< m_{\beta\beta}\right>^2$ is a coherent sum of the masses of the neutrino mass eigenstates.  Even though it is known that neutrinos have mass, it is possible for $\left< m_{\beta\beta}\right>^2$ to be arbitrarily small or zero if $\mathbf{U}$ is tuned to create cancellations between the neutrino mass terms.  Figure~\ref{fig:NeutrinoMassBounds} illustrates the relation between $\left< m_{\beta\beta}\right>$ and other fundamental neutrino parameters.  We can see that the sum of neutrino masses, $M = \sum m_i$, can be as large as roughly $0.08$ meV without ruling out the possibility of cancellations from $\mathbf{U}$ leading to an extremely small value for $\left< m_{\beta\beta}\right>$; conversely, it is possible that neutrinos may be Majorana particles, yet the search to detect $\beta\beta 0\nu$ decay may be hopelessly difficult because of an unfortunate cancellation of terms in the effective Majorana mass.
 
-WORKING FROM HERE.
+Figure~\ref{fig:NeutrinoMassBounds} also allows us to compare searches for $\beta\beta 0\nu$ to other experiments which are sensitive to the mass of neutrinos.  The sum of the three mass eigenstates, $M = \sum m_i$, can be constrained by cosmological observations; recent results from Planck combined with WMAP and baryon acoustic oscillations have restricted $M < 0.230$ eV with $95\%$ confidence.~\cite{CosmologicalLimits}  This constraint, like all cosmologically-based constraints, is highly model-dependent; it reflects the expectation that hot dark matter (of which neutrinos are the only known type) left their signature in the shape of resonances in the cosmic microwave background.  Taken at face value it easily constrains $\left< m_{\beta\beta}\right> < 0.1$ eV, making it the strongest existing limit on neutrino mass.
 
-There are bounds on the values that may be seen, based on previous results in $\beta\beta 0\nu$ decay and other measurements.  Figure~\ref{fig:NeutrinoMassBounds} shows how the various mass parameters can be related to each other.  $M$, the combined masses of all three neutrino flavors, can be limited by cosmological observations; recent results from Planck combined with WMAP and baryon acoustic oscillations have restricted $M < 0.23$ eV ~\cite{CosmologicalLimits}.  Measurements of the $\beta$ decay spectrum of Tritium have yielded bounds on $\left< m_\beta \right>$, the weighted average mass of the electron-neutrino; this parameter is currently known to be less than $2.5$ eV~\cite{OldTritium}, and the KATRIN experiment is expected to begin data-taking in 2012 with a sensitivity down to $0.2$ eV~\cite{NewTritium}.
+Closer to home, the mass of neutrinos is also reflected in single-$\beta$ decay.  When an atom undergoes single-$\beta$ decay it emits an electron and an electron-neutrino.  The maximum energy of the emitted electron will be the mass difference between parent and daughter atom, less whatever the effective mass of an electron neutrino $\left< m_\beta \right>$ may be.  Similarly to equation~\ref{eq:DestructiveMassInteraction}, we can write:~\cite{RMPbb0n}
+\begin{equation}
+\left< m_\beta \right>^2 = \sum_k m_k^2 \left| U_{ek} \right|^2.
+\end{equation}
+
+We can see that $\left<m_\beta\right>$, unlike $\left<m_{\beta\beta}\right>$, must be strictly greater than zero because it comes from an incoherent sum of neutrino mass eigenvalues with no possibility of cancellations between terms.  Attempts to measure it require experiments to measure the electon energy spectrum of beta decays at the endpoint, which is complicated by the fact that this portion of the electron spectrum contains only a small fraction of the total electron statistics.  The best existing limit is $\left<m_\beta\right> < 2.05$ eV, with $95\%$ confidence, from the Troitsk experiment which ran from 1994 to 2004.~\cite{OldTritium}  The KATRIN experiment hopes to achieve a sensitivity of $0.2$ eV, and is expected to begin taking data in 2015.~\cite{NewTritium}\cite{NewTritiumTimeline}  We can see from figure~\ref{fig:NeutrinoMassBounds} that the current limit on $\left<m_\beta\right>$ is not a strong constraint on neutrino mass.
 
 The strongest limits on $\left< m_{\beta\beta} \right>$ have been published by the Heidelberg-Moscow experiment studying $^{76}$Ge.  The results of this experiment have been interpreted in conflicting ways by its collaboration:  the faction that asserts a positive detection of $\beta\beta 0\nu$ has most recently published a value of $\left< m_{\beta\beta} \right> = 0.32 \pm 0.03$ eV~\cite{Klapdor}, while the full collaboration's strongest limit was $\left< m_{\beta\beta} \right> < 0.35$ eV (both neglecting uncertainty in the nuclear matrix elements)~\cite{KlapdorDissent}.  In addition to the disagreement within the Heidelberg-Moscow collaboration, though, there is also widespread agreement that it is unreliable to draw conclusions on $\left< m_{\beta\beta} \right>$ from only one isotope due to the poorly-understood uncertainties in the nuclear matrix elements~\cite{RMPbb0n}.  All of this means that there is significant interest by many collaborations, working with many different isotopes in parallel, to probe below the threshold set by the Heidelberg-Moscow experiment to confirm or refute the claimed discovery.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|rccc|}
+\hline Isotope & \shortstack{$\beta\beta 0\nu$ Halflife Limit \\ ($90\%$ CL, in years)} & Collaboration & Citation \\ \hline
+$^{48}$Ca & $5.8 \cdot 10^{22}$ & ELEGANT IV & \cite{ElegantIV}\\
+$^{76}$Ge & $2.1 \cdot 10^{25}$ & GERDA & \cite{PhysRevLett.111.122503} \\
+$^{82}$Se & $3.6 \cdot 10^{23}$ & NEMO-3 & \cite{NEMO2011RandomOtherIsotopes}\\
+$^{96}$Zr & $9.2 \cdot 10^{21}$ & NEMO-3 & \cite{Argyriades2010168}\\
+$^{100}$Mo & $1.1 \cdot 10^{24}$ & NEMO-3 & \cite{NEMO3-2013-100Mo}\\
+$^{116}$Cd & $1.6 \cdot 10^{22}$ & NEMO-3 & \cite{NEMO2011RandomOtherIsotopes}\\
+$^{130}$Te & $3.0 \cdot 10^{24}$ & Cuoricino & \cite{PhysRevC.78.035502}\\
+$^{136}$Xe & \textcolor{red}{FILL IN} & & \\
+$^{136}$Xe & $1.9 \cdot 10^{25}$ & KamLAND-Zen & \cite{PhysRevLett.110.062502}\\
+$^{150}$Nd & $1.8 \cdot 10^{22}$ & NEMO-3 & \cite{PhysRevC.80.032501}\\
+\hline
+\end{tabular}
+\end{center}
+\caption{A listing of the strongest available $\beta\beta 0\nu$ limits.  $\beta\beta$ isotopes with no known limits on $\beta\beta 0\nu$ are not listed.  For $^{136}$Xe, this author has taken the liberty of including the most recent results from both EXO-200 and Kamland-Zen.}
+\label{tab:0nubb_limits}
+\end{table}
 
 Topics to address:
 
 inverted vs normal hierarchy.
 Strength of an experiment.  (Resolution as key factor.)
+We know neutrinos are massive because of mass differences.
+
+
+
+My outline (now that I've figured out how the chapter should flow).
+Not necessarily trying to arrange it into sections, at least for now.
+bb decay
+	which isotopes might we see it in
+Why do we care -- atoms which bb decay could also bb0n decay.
+	What does bb0n decay look like at tree level.
+	This could happen by majorana interaction; but standard model does not include a majorana mass term.
+90s: neutrinos proven to have mass.
+	delta-m known; normal vs inverted hierarchy.
+	flavor/mass eigenstates.
+Now we look for a mechanism for neutrino mass, and majorana interaction is subject to renewed interest.
+We can describe an effective majorana mass term, parametrized by six parameters.
+	Only three known, based on their relation to delta-m.
+The parametrization lets us relate other observables.
+	Planck
+	KATRIN
+Search with bb experiments
+	What elements are popular.
+	relation between half-life and mass (matrix elements are not well-known).
+	What makes an experiment strong.
+	sensitivity function, including resolution.
+	Existing limits.
+	Note that limit is a combination of sensitivity and luck;
+		Current paper is concerned with improving the limit of EXO-200, currently the most sensitive experiment, even though its limit is lower than KZ.
