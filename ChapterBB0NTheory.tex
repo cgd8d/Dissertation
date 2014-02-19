@@ -36,9 +36,11 @@
 
 \end{tikzpicture}
 \end{center}
-\caption{Feynman diagram for $\beta\beta 2 \nu$ decay.  The reaction products are equivalent to two $\beta$ decays in succession, but this reaction can occur even if a single $\beta$ decay would be energetically forbidden.}
+\caption{Feynman diagram for $\beta\beta 2 \nu$ decay.  The reaction products are equivalent to two $\beta$ decays in succession, but this reaction can sometimes occur even if a single $\beta$ decay would be energetically forbidden.}
 \label{fig:FeynmanBetaBeta2Nu}
 \end{figure}
+
+\section{Double-Beta Decay}
 
 Standard-model double beta ($\beta\beta$) decay is the result of the particle interaction $2d \rightarrow 2u + 2e^- + 2\bar{\nu}_e$ mediated by $W^-$-exchange, as depicted in Figure~\ref{fig:FeynmanBetaBeta2Nu}.  It is effectively the simultaneous occurance of two beta ($\beta$) decays from the same nucleus.
 
@@ -63,6 +65,8 @@ However, in most cases of interest $\beta$ decay is forbidden by energy conserva
 \small\normalsize
 
 A typical nuclear energy level diagram is shown in figure~\ref{fig:LevelDiagram} for the $A=136$ isobar: Xenon, Barium, Cerium, and Neodynium are even-even isotopes, and have systematically lower energies than the odd-odd isotopes Iodine, Cesium, Lanthanum, and Praseodymium.  For this particular isobar, we can see that Xenon is energetically forbidden from single-$\beta$ decaying to Cesium because the odd-odd isotope of Cesium has just slightly more potential energy than the even-even isotope of Xenon; as a result, the primary mode of decay of Xenon-136 will be by $\beta\beta$ decay to Barium-136.  (We also note a similar feature, that the primary mode of decay of Cerium-136 will be by double-electron-capture ($\epsilon\epsilon$) to Barium-136.  Many of the same implications of $\beta\beta$ decay also apply to $\epsilon\epsilon$ decay; however, in practice the rates for these decays will be lower than the rates for $\beta\beta$ decay, so we will not consider them further in this work.)
+
+\section{Neutrinoless Double-Beta Decay}
 
 The detection and study of $\beta\beta$ decay provides an opportunity to test a new class of nuclear matrix computations; however, it does not violate any fundamental symmetries and is, in this sense, a mundane prediction of the Standard Model.  The primary appeal of $\beta\beta$ decay is through the opportunity it provides to probe the nature of neutrinos.
 
@@ -136,7 +140,7 @@ The tree-level diagram for $\beta\beta 0\nu$ has one additional interaction vert
 \draw (BlackBox) -- (e2) node[midway,sloped] {$>$};
 \end{tikzpicture}
 \end{center}
-\caption{A generic $\beta\beta 0\nu$ process, with no assumptions of the underlying mechanism.  If $\beta\beta 0\nu$ is observed, it requires that this reaction is possible even though it does not strictly imply that the oscillation in Figure~\ref{fig:FeynmanBetaBeta0Nu} is the cause.}
+\caption{A generic $\beta\beta 0\nu$ process, with no assumptions of the underlying mechanism.  If $\beta\beta 0\nu$ is observed, it requires that this reaction is possible even though it does not strictly imply that the oscillation in figure~\ref{fig:FeynmanBetaBeta0Nu} is the cause.}
 \label{fig:FeynmanBetaBeta0NuBlob}
 \end{figure}
 
@@ -177,7 +181,7 @@ It is worth noting that the interaction term above assumes no mediating particle
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{$\beta\beta 0\nu$ half-life limits versus the year of the limit.  Colors indicate which isotope is under study.  Open circles indicate experiments which have not yet concluded data-taking.}
+\caption{$\beta\beta 0\nu$ half-life limits versus the year of the limit.  Colors indicate which isotope is under study.  Open circles indicate experiments which have not yet concluded data-taking.  Figure from~\cite{CarterReview2014}, \textcolor{red}{with additional isotopes included, plus a couple of additional points for recent results which you prefered not to include -- BUT MAYBE THAT'S MORE TROUBLE THAN IT'S WORTH?}.}
 \label{fig:Halflife_vs_year}
 \end{quote}
 \end{figure}
@@ -186,36 +190,37 @@ It is worth noting that the interaction term above assumes no mediating particle
 
 It has long been clear that appealing extensions to the Standard Model can be built around neutrinos with Majorana mass; see eg. the introduction in 1980 of the see-saw mechanism in~\cite{PhysRevLett.44.912}, where the naturalness of the neutrino mass scale is addressed by hypothesizing $m_R$ is inversely related to $m_L$ and $m_L \ll m_R$.  The motivation to search for $\beta\beta 0\nu$ decay became stronger when neutrinos were proven to have mass, particularly by the definitive proof of the oscillation of atmospheric neutrinos in~\cite{SuperK}.  As a result, the number of experiments searching for $\beta\beta$ decays exploded during this time period; figure~\ref{fig:Halflife_vs_year} shows a collection of $\beta\beta 0\nu$ half-life limits obtained versus year, colored by the isotope under study.  The search for $\beta\beta 0\nu$ has by now evolved into a highly competitive field, in which the isotopes $^{130}$Te, $^{76}$Ge, and $^{136}$Xe are particularly dominant but searches are also being actively pursued in many other isotopes.
 
-The Super-Kamiokande experiment was the first one to conclusively observe atmospheric oscillations~\cite{SuperK}; subsequent experiments have...  (We know delta m values, based on such-and-such experiments.)
+\section{Neutrino Flavor Physics}\label{sec:NeutrinoFlavorPhysics}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\textcolor{red}{BELOW THIS POINT, OLD TEXT WHICH IS NOT PROPERLY ORGANIZED.}
-
-If the mechanism of $\beta\beta 0\nu$ decay really is, at tree level, a neutrino mass term as shown in Figure~\ref{fig:FeynmanBetaBeta0Nu}, then it is possible to infer the mass scale of the neutrino from the observed rate of decay.  To lowest order we can assert that
-\begin{equation} \label{eq:DestructiveMassInteraction}
-\left[T^{0\nu}_{1/2}\right]^{-1} \propto \left< m_{\beta\beta} \right>^2 = \left|\sum_k m_k U_{ek}^2\right|^2,
+Neutrinos are known to come in three flavors, or eigenstates which are diagonal with respect to the lepton interaction terms of the Standard Model.  These flavors are $\nu_e$, $\nu_\mu$, and $\nu_\tau$; they interact, respectively, with $e$, $\mu$, and $\tau$ leptons.  We can hypothesize that neutrinos may also have a basis diagonalized with respect to rest mass which may not be identical to the flavor basis, and call the mass eigenstates $\nu_1$, $\nu_2$, and $\nu_3$ with respective masses $m_1$, $m_2$, and $m_3$.  The unitary operator which translates between the two bases is specified by:
+\begin{equation} \label{eqn:ShortDefinitionOfU}
+\begin{pmatrix} \nu_e \\ \nu_\mu \\ \nu_\tau \end{pmatrix}
+=
+\mathbf{U}
+\begin{pmatrix} \nu_1 \\ \nu_2 \\ \nu_3 \end{pmatrix}
+=
+\begin{pmatrix}
+U_{e1} & U_{e2} & U_{e3} \\
+U_{\mu1} & U_{\mu2} & U_{\mu3} \\
+U_{\tau1} & U_{\tau2} & U_{\tau3}
+\end{pmatrix}
+\begin{pmatrix} \nu_1 \\ \nu_2 \\ \nu_3 \end{pmatrix}.
 \end{equation}
-where $U_{ek}$ is the neutrino mixing matrix and the $m_k$ identify the three neutrino mass eigenstates.  The constant of proportionality is isotope-dependent; state-of-the-art nuclear matrix computations can provide it within a factor of $2-3$~\cite{RMPbb0n}.  We will not consider the complex challenges of these computations here.
 
-The neutrino mixing matrix $\mathbf{U}$ is often parametrized as:
-\begin{align}
+These formalities are uninteresting if the neutrino sector is massless, since the mass eigenstates are degenerate.  However, in the case where neutrinos are massive, we can see that neutrinos which are created in one flavor eigenstate will oscillate between the flavor eigenstates with a period which depends on the differences between masses, as is typical in an N-state quantum system.  In the neutrino sector, we can more specifically state that the probability for a transition from flavor $\alpha$ to flavor $\beta$ will be:~\cite{RevModPhys.75.345}
+\begin{equation}
+P_{\alpha \beta} = \delta_{\alpha \beta} - 4 \sum_{i=1}^2 \sum_{j=i+1}^3 Re \left[ U_{\alpha i} U^{*}_{\beta i} U^{*}_{\alpha j} U_{\beta j} \right] sin^2 \left( \frac{ \left[m_i^2 - m_j^2\right]L}{4E} \right)
+\end{equation}
+where $L$ is the distance (or time, in $c=1$ units) between neutrino source and destination, and $E$ is the relativistic energy of the emitted neutrinos.
+
+The transition probability is sensitive to the masses of the neutrinos, but only in the form $\left| m_i^2 - m_j^2\right|$.  These measurements have now been performed in a variety of neutrino oscillation experiments, and the best current constraints are $\left| m_1^2 - m_2^2 \right| = (7.50 \pm 0.20) \cdot 10^{-5} \text{eV}^2$~\cite{PhysRevD.83.052002} and $\left| m_2^2 - m_3^2 \right| = 2.32^{+0.12}_{-0.08} \cdot 10^{-3} \text{eV}^2$~\cite{PhysRevLett.106.181801}.
+
+However, oscillation experiments cannot constrain the overall mass scale of neutrinos; they can only set a conservative lower limit that $max(m_2, m_3) \ge 0.048$ eV if we assume one of $m_2$ or $m_3$ is zero.  Furthermore, they do not establish the sign of the difference.  We can see that $m_1$ and $m_2$ are fairly close together, and $m_3$ is significantly different; but we cannot see whether $m_3$ is larger or smaller than the other two masses.  We refer to the situation with $m_1 \simeq m_2 \ll m_3$ as the normal hierarchy, and $m_3 \ll m_1 \simeq m_2$ as the inverted hierarchy; the regime where $m_1 \simeq m_2 \simeq m_3 \gg \left| m_2^2 - m_3^2 \right|$ is called the degenerate region.  Distinguishing between these three situations is one of the significant open questions in neutrino physics because of its impact on observable quantities.
+
+\section{Particle Physics Constraints}\label{sec:ParticlePhysicsConstraints}
+
+To produce more detailed constraints on neutrino physics, it is generally useful to provide a parametrization of the mixing matrix $\mathbf{U}$ from equation~\ref{eqn:ShortDefinitionOfU}.  The standard parametrization is:
+\begin{align} \label{eqn:LongDefinitionOfU}
   \mathbf{U} &=
     \begin{pmatrix}
     U_{e1} & U_{e2} & U_{e3} \\
@@ -245,9 +250,47 @@ The neutrino mixing matrix $\mathbf{U}$ is often parametrized as:
       \end{pmatrix}.
     \end{aligned}
 \end{align}
-Out of the six parameters used in defining this matrix, the only ones which have been measured are $sin^2(2\theta_{12}) = 0.857^{+0.023}_{-0.025}$~\cite{PhysRevD.83.052002}, $sin^2(2\theta_{13}) = 0.089 \pm 0.010 \pm 0.005$~\cite{1674-1137-37-1-011001}, and $sin^2(2\theta_{23}) > 0.95$~\cite{PhysRevLett.107.241801}.
+Out of the six parameters used in defining this matrix, the only ones which have been measured are the three mixing angles $sin^2(2\theta_{12}) = 0.857^{+0.023}_{-0.025}$~\cite{PhysRevD.83.052002}, $sin^2(2\theta_{13}) = 0.089 \pm 0.010 \text{(stat)} \pm 0.005\text{(sys)}$~\cite{1674-1137-37-1-011001}, and $sin^2(2\theta_{23}) > 0.95$~\cite{PhysRevLett.107.241801}.  The Dirac phase $\delta$ is in principle observable from oscillation experiments, but no current experiments have achieved the sensitivity necessary to accomplish this.  The Majorana phases $\alpha_1$ and $\alpha_2$ cannot be extracted from neutrino oscillations.~\cite{RMPbb0n}
 
+The sum of the three mass eigenstates, $M = \sum m_i$, can be constrained by cosmological observations.  This constraint (like all cosmologically-based constraints) will be model-dependent; it relies on the expectation that low-mass, hot forms of dark matter similar to neutrinos promote the formation of large-scale structures in the early universe by allowing extremely remote regions of matter to remain in thermal equilibrium.  Recent results from Planck combined with WMAP and baryon acoustic oscillations have restricted $M < 0.230$ eV with $95\%$ confidence.~\cite{CosmologicalLimits}  Considering the assertion in section~\ref{sec:NeutrinoFlavorPhysics} that the heaviest neutrino must have a mass no less than $0.048$eV, we can see that this cosmological constraint pushes $M$ to within a factor of five of its lower limit; taken at face value, the Planck measurement is the strongest existing constraint on the absolute mass scale of neutrinos.
 
+Closer to home, the mass of neutrinos is also reflected in $\beta$ decay, $d -> u + e^- + \bar{\nu}_e$.  The total energy of the daughter products is known, and will be shared between the electron and antineutrino; the minimum energy of the antineutrino will be its rest mass, so by searching for the maximum energy of the electron we can simultaneously measure the rest mass of the neutrino.  The electron anti-neutrino emitted from beta decay has a mix of all three mass eigenstates; since no current or planned experiment has sufficiently good energy resolution to resolve the separate endpoints from the three neutrino masses, we can instead write an effective rest mass of an electron antineutrino as:~\cite{RMPbb0n}
+\begin{equation} \label{eqn:DefinitionOfMBeta}
+\left< m_\beta \right>^2 = \sum_i m_i^2 \left| U_{ei} \right|^2.
+\end{equation}
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{TritiumSpectrum.jpg}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{The electron spectrum of Tritium ($^3H$) $\beta$ decay.  The endpoint contains only a small fraction of the total statistics.  Figure from~\cite{Angrik:2005ep}.}
+\label{fig:TritiumSpectrum}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+Attempts to measure $\left< m_\beta \right>$ require experiments to measure the electon energy spectrum of beta decays at the endpoint, which is complicated by the fact that this portion of the electron spectrum contains only a small fraction of the total electron statistics.  Tritium ($^3H$) is commonly used for these experiments because it has a medium-length halflife of $12.3$ years and an extremely low $\beta$ decay endpoint energy of $18.6$ keV, which maximizes the relative shift in endpoint energy due to $\left< m_\beta \right>$.  Figure~\ref{fig:TritiumSpectrum} shows that for $\left< m_\beta \right> = 1\text{eV}$ in Tritium, experiments must observe a shift in the spectrum which affects only about one decay in $5 \cdot 10^{12}$, making this level of sensitivity extremely difficult to achieve.  The best existing limit from $\beta$ decay is $\left<m_\beta\right> < 2.05$ eV, with $95\%$ confidence, from the Troitsk experiment which ran from 1994 to 2004.~\cite{OldTritium}  The KATRIN experiment hopes to achieve a sensitivity of $0.2$ eV, and is expected to begin taking data in 2015.~\cite{NewTritium}\cite{NewTritiumTimeline}
+
+\section{Nuclear Physics Constraints from \texorpdfstring{$\beta\beta 0\nu$}{Neutrinoless Double-Beta}}
+
+If the mechanism of $\beta\beta 0\nu$ decay really is, at tree level, a neutrino mass term as shown in figure~\ref{fig:FeynmanBetaBeta0Nu}, then the rate of $\beta\beta 0\nu$ decay will also reflect the magnitude of the neutrino mass parameters.  We can write the partial half-life of an isotope which undergoes $\beta\beta 0\nu$ decay as
+\begin{equation}
+\left[T^{0\nu}_{1/2}\right]^{-1} = G_{0\nu}(Q_{\beta\beta}, Z) \left| M_{0\nu}\right|^2 \left< m_{\beta\beta} \right>^2,
+\end{equation}
+where $G_{0\nu}(Q_{\beta\beta}, Z)$ is a phase-space factor coming from the range of possible output states, $M_{0\nu}$ is a nuclear matrix element, and the last factor is the effective $\beta\beta$ neutrino mass, defined as:
+\begin{equation} \label{eq:DestructiveMassInteraction}
+\left< m_{\beta\beta} \right> = \left|\sum_k m_k U_{ek}^2\right|.
+\end{equation}
+
+The phase-space factor $G_{0\nu}(Q_{\beta\beta}, Z)$ is difficult to compute exactly due to nuclear effects; for a recent computation, see~\cite{PhysRevC.85.034316} which estimates errors of $7\%$ dominated by uncertainty in the nuclear radius.  Its main feature is that it scales roughly like $Q_{\beta\beta}^5$, the fifth power of the decay energy.  As a result, using $\beta\beta$ isotopes with high $Q$-values confers a significant advantage in neutrino mass sensitivity.
+
+The dominant uncertainty in translating $\beta\beta 0\nu$ half-life limits into $\left< m_{\beta\beta} \right>$ constraints comes from our knowledge of the matrix elements $M_{0\nu}$, which can have uncertainties as large as a factor of $2-3$.~\cite{RMPbb0n}  Calculations which attempt to estimate these values rely on a variety of matrix models, but often rely on approximations of some sort to make the calculations tractable.  Efforts to improve the accuracy of these values include a combination of more precise computations and experimental feedback to improve the accuracy of these models.  See~\cite{ZuberWorkshop} for more discussion of attempts to improve this situation.
+
+Unlike $\left< m_\beta \right>$, which is an incoherent sum of strictly positive terms in equation~\ref{eqn:DefinitionOfMBeta}, we can see that $\left< m_{\beta\beta} \right>$ is a coherent sum of terms, each of which may have arbitrary complex phase which may increase or decrease the result of equation~\ref{eq:DestructiveMassInteraction}.  In other words it is possible, even if neutrinos do have Majorana mass, for $\left< m_{\beta\beta} \right>$ to be arbitrarily small if $\mathbf{U}$ is tuned to produce cancellations between terms.
 
 \begin{figure}
 \begin{center}
@@ -257,69 +300,50 @@ Out of the six parameters used in defining this matrix, the only ones which have
 \label{fig:NeutrinoMassBounds}
 \end{figure}
 
-For the purpose of $\beta\beta 0\nu$ searches, the most important implication of equation~\ref{eq:DestructiveMassInteraction} is that $\left< m_{\beta\beta}\right>^2$ is a coherent sum of the masses of the neutrino mass eigenstates.  Even though it is known that neutrinos have mass, it is possible for $\left< m_{\beta\beta}\right>^2$ to be arbitrarily small or zero if $\mathbf{U}$ is tuned to create cancellations between the neutrino mass terms.  Figure~\ref{fig:NeutrinoMassBounds} illustrates the relation between $\left< m_{\beta\beta}\right>$ and other fundamental neutrino parameters.  We can see that the sum of neutrino masses, $M = \sum m_i$, can be as large as roughly $0.08$ meV without ruling out the possibility of cancellations from $\mathbf{U}$ leading to an extremely small value for $\left< m_{\beta\beta}\right>$; conversely, it is possible that neutrinos may be Majorana particles, yet the search to detect $\beta\beta 0\nu$ decay may be hopelessly difficult because of an unfortunate cancellation of terms in the effective Majorana mass.
+It is possible to relate the observables $\left< m_{\beta\beta} \right>$, $\left< m_\beta \right>$, and $M$ within the model for $\mathbf{U}$ of equation~\ref{eqn:LongDefinitionOfU}.  These relations are shown in figure~\ref{fig:NeutrinoMassBounds}; we recall from section~\ref{sec:ParticlePhysicsConstraints} that beta spectrum measurements constrain $\left<m_\beta\right> < 2.05$ eV and cosmological observations constrain $M < 0.230$ eV, both with $90\%$ confidence.  The strongest constraints on $\left<m_{\beta\beta}\right>$ from $\beta\beta 0\nu$ searches place $\left<m_{\beta\beta}\right> < 0.15-0.4$ eV, depending on the choice of matrix element calculations.  We can see that if the cosmological limits are to be trusted, they provide the strongest constraints on the neutrino mass parameters; however, all three observables are being probed competitively, and the wide range of experimental approaches means that systematic effects are unlikely to be shared by all three methods.
 
-Figure~\ref{fig:NeutrinoMassBounds} also allows us to compare searches for $\beta\beta 0\nu$ to other experiments which are sensitive to the mass of neutrinos.  The sum of the three mass eigenstates, $M = \sum m_i$, can be constrained by cosmological observations; recent results from Planck combined with WMAP and baryon acoustic oscillations have restricted $M < 0.230$ eV with $95\%$ confidence.~\cite{CosmologicalLimits}  This constraint, like all cosmologically-based constraints, is highly model-dependent; it reflects the expectation that hot dark matter (of which neutrinos are the only known type) left their signature in the shape of resonances in the cosmic microwave background.  Taken at face value it easily constrains $\left< m_{\beta\beta}\right> < 0.1$ eV, making it the strongest existing limit on neutrino mass.
-
-Closer to home, the mass of neutrinos is also reflected in single-$\beta$ decay.  When an atom undergoes single-$\beta$ decay it emits an electron and an electron-neutrino.  The maximum energy of the emitted electron will be the mass difference between parent and daughter atom, less whatever the effective mass of an electron neutrino $\left< m_\beta \right>$ may be.  Similarly to equation~\ref{eq:DestructiveMassInteraction}, we can write:~\cite{RMPbb0n}
+The sensitivity of an experiment for measuring $T_{1/2}^{0\nu}$ can be described by the approximate formula:~\cite{RMPbb0n}
 \begin{equation}
-\left< m_\beta \right>^2 = \sum_k m_k^2 \left| U_{ek} \right|^2.
+T_{1/2}^{0\nu}(n_\sigma) = \frac{4.16 \cdot 10^{26} yrs}{n_\sigma} \left( \frac{\epsilon a}{W}\right) \sqrt{\frac{Mt}{b \Delta E}},
 \end{equation}
+where $M$ is the mass of material, $a$ is the isotopic enrichment, $W$ is the molecular mass of the material in atomic units, and $t$ is the live-time of the experiment; $\epsilon$ is the signal efficiency, $b$ is the background rate (in counts per kg keV year, or some similar units), and $\Delta E$ is the energy resolution of the detector at the $Q$-value; and $n_\sigma$ is the desired confidence limit, in sigmas, where the standard $90\%$ confidence limit will require $n_\sigma = 1.64$.  The scaling of this equation is most accurate when the energy resolution is much smaller than the $Q$-value and the background is uniformly distributed in energy; however as a rough guide it, combined with phase factor and matrix element estimates, allows us to compare the relative strengths of different $\beta\beta$ experiments.
 
-We can see that $\left<m_\beta\right>$, unlike $\left<m_{\beta\beta}\right>$, must be strictly greater than zero because it comes from an incoherent sum of neutrino mass eigenvalues with no possibility of cancellations between terms.  Attempts to measure it require experiments to measure the electon energy spectrum of beta decays at the endpoint, which is complicated by the fact that this portion of the electron spectrum contains only a small fraction of the total electron statistics.  The best existing limit is $\left<m_\beta\right> < 2.05$ eV, with $95\%$ confidence, from the Troitsk experiment which ran from 1994 to 2004.~\cite{OldTritium}  The KATRIN experiment hopes to achieve a sensitivity of $0.2$ eV, and is expected to begin taking data in 2015.~\cite{NewTritium}\cite{NewTritiumTimeline}  We can see from figure~\ref{fig:NeutrinoMassBounds} that the current limit on $\left<m_\beta\right>$ is not a strong constraint on neutrino mass.
+What it tells us, broadly, is that we should prefer experiments for which:
+\begin{itemize}
+\item A large quantity of highly-enriched isotope can be obtained.
+\item Signal detection is highly efficient.
+\item Background contamination around the $Q$-value is small, and does not scale with detector mass.
+\item Good energy resolution can be achieved.
+\end{itemize}
 
-The strongest limits on $\left< m_{\beta\beta} \right>$ have been published by the Heidelberg-Moscow experiment studying $^{76}$Ge.  The results of this experiment have been interpreted in conflicting ways by its collaboration:  the faction that asserts a positive detection of $\beta\beta 0\nu$ has most recently published a value of $\left< m_{\beta\beta} \right> = 0.32 \pm 0.03$ eV~\cite{Klapdor}, while the full collaboration's strongest limit was $\left< m_{\beta\beta} \right> < 0.35$ eV (both neglecting uncertainty in the nuclear matrix elements)~\cite{KlapdorDissent}.  In addition to the disagreement within the Heidelberg-Moscow collaboration, though, there is also widespread agreement that it is unreliable to draw conclusions on $\left< m_{\beta\beta} \right>$ from only one isotope due to the poorly-understood uncertainties in the nuclear matrix elements~\cite{RMPbb0n}.  All of this means that there is significant interest by many collaborations, working with many different isotopes in parallel, to probe below the threshold set by the Heidelberg-Moscow experiment to confirm or refute the claimed discovery.
+Currently the leading choices of materials for $\beta\beta$ searches are:~\cite{RMPbb0n}
+\begin{description}
+\item[$^{76}$Ge] has by far the best energy resolution of any material, around $3$ keV.  It is also possible to grow Germanium crystals with fairly low background, with $0.06$ counts/(kg keV year) having been demonstrated.  However, it is difficult to grow large, clean crystals of Germanium, and as a result it may not be a scalable material.  It also has a $Q$-value of only $2039$ keV, giving it one of the lowest phase factors among the popular isotopes.  GERDA is currently the leading experiment, with data-taking underway.
+\item[$^{130}$Te] also has an excellent energy resolution around $7$ keV.  Its $Q$-value is also higher than $^{76}$Ge, at $2530$ keV.  TeO$_2$ crystals must be grown, though, so it may suffer from some of the same challenges of scalability as Germanium.  The CUORE experiment is expected to begin data-taking in 2014.
+\item[$^{136}$Xe] has a comparatively poor energy resolution around $35-40$ keV.  However, Xenon stands out for its scalability: it is easy to enrich in centrifuges, easy to purify chemically due to its status as a noble element, and it is easy to construct large monolithic detectors because it can be used in a liquid or gaseous state.  Background rates of $1-2\cdot 10^{-3}$ counts/(kg keV year) have been demonstrated.  There are currently two leading experiments.  KamLAND-Zen is the larger experiment, containing $180$ kg of active $^{136}$Xe; however, it detects only scintillation, and as a result its resolution is roughly $100$ keV.  EXO-200 only contains roughly $80$ kg of active $^{136}$Xe, but it detects energy through both the scintillation and ionization modes, and as a result is able to achieve energy resolutions around $35-40$ keV.
+\end{description}
 
 \begin{table}
 \begin{center}
-\begin{tabular}{|rccc|}
-\hline Isotope & \shortstack{$\beta\beta 0\nu$ Halflife Limit \\ ($90\%$ CL, in years)} & Collaboration & Citation \\ \hline
-$^{48}$Ca & $5.8 \cdot 10^{22}$ & ELEGANT IV & \cite{ElegantIV}\\
-$^{76}$Ge & $2.1 \cdot 10^{25}$ & GERDA & \cite{PhysRevLett.111.122503} \\
-$^{82}$Se & $3.6 \cdot 10^{23}$ & NEMO-3 & \cite{NEMO2011RandomOtherIsotopes}\\
-$^{96}$Zr & $9.2 \cdot 10^{21}$ & NEMO-3 & \cite{Argyriades2010168}\\
-$^{100}$Mo & $1.1 \cdot 10^{24}$ & NEMO-3 & \cite{NEMO3-2013-100Mo}\\
-$^{116}$Cd & $1.6 \cdot 10^{22}$ & NEMO-3 & \cite{NEMO2011RandomOtherIsotopes}\\
-$^{130}$Te & $3.0 \cdot 10^{24}$ & Cuoricino & \cite{PhysRevC.78.035502}\\
+\begin{tabular}{|rccr|}
+\hline Isotope & $T_{1/2}^{0\nu}$ (years, $90\%$ CL) & $\left<m_{\beta\beta}\right>$ (eV, $90\%$ CL) & Collaboration \\ \hline
+$^{48}$Ca & $5.8 \cdot 10^{22}$ & $3.7$ & ELEGANT IV \cite{ElegantIV}\\
+$^{76}$Ge & $2.1 \cdot 10^{25}$ & $0.24$ & GERDA \cite{PhysRevLett.111.122503} \\
+$^{82}$Se & $3.6 \cdot 10^{23}$ & $1.1$ & NEMO-3 \cite{NEMO2011RandomOtherIsotopes}\\
+$^{96}$Zr & $9.2 \cdot 10^{21}$ & $8.0$ & NEMO-3 \cite{Argyriades2010168}\\
+$^{100}$Mo & $1.1 \cdot 10^{24}$ & $0.56$ & NEMO-3 \cite{NEMO3-2013-100Mo}\\
+$^{116}$Cd & $1.6 \cdot 10^{22}$ & $6.1$ & NEMO-3 \cite{NEMO2011RandomOtherIsotopes}\\
+$^{130}$Te & $3.0 \cdot 10^{24}$ & $0.34$ & Cuoricino \cite{PhysRevC.78.035502}\\
 $^{136}$Xe & \textcolor{red}{FILL IN} & & \\
-$^{136}$Xe & $1.9 \cdot 10^{25}$ & KamLAND-Zen & \cite{PhysRevLett.110.062502}\\
-$^{150}$Nd & $1.8 \cdot 10^{22}$ & NEMO-3 & \cite{PhysRevC.80.032501}\\
+$^{136}$Xe & $1.9 \cdot 10^{25}$ & $0.16$ & KamLAND-Zen \cite{PhysRevLett.110.062502}\\
+$^{150}$Nd & $1.8 \cdot 10^{22}$ & $3.4$ & NEMO-3 \cite{PhysRevC.80.032501}\\
 \hline
 \end{tabular}
 \end{center}
-\caption{A listing of the strongest available $\beta\beta 0\nu$ limits.  $\beta\beta$ isotopes with no known limits on $\beta\beta 0\nu$ are not listed.  For $^{136}$Xe, this author has taken the liberty of including the most recent results from both EXO-200 and Kamland-Zen.}
+\caption{A listing of the strongest available $\beta\beta 0\nu$ limits; all limits are quoted at $90\%$ confidence.  Limits on $\left<m_{\beta\beta}\right>$ are obtained using phase space factors from~\cite{PhysRevC.85.034316} and matrix elements from~\cite{PhysRevLett.109.042501}, both chosen for the completeness of their tabulations.  For $^{136}$Xe, this author has taken the liberty of including both Kamland-Zen's published results and EXO-200 results described in this work.}
 \label{tab:0nubb_limits}
 \end{table}
 
-Topics to address:
+Table~\ref{tab:0nubb_limits} tabulates the most current $T_{1/2}^{0\nu}$ limits in all $\beta\beta$ isotopes for which $\beta\beta 0\nu$ limits have been published.  Representative limits on $\left< m_{\beta\beta}\right>$ are also included; these come from one particular set of phase space factors and nuclear matrix element calculations chosen because they have been tabulated for a broad range of isotopes and permit comparisons across all available half-life limits.~\cite{PhysRevC.85.034316}\cite{PhysRevLett.109.042501}  However, it should be remembered that errors in the matrix elements may propagate to errors in $\left< m_{\beta\beta}\right>$ of as much as a factor of two for each isotope.  We can see that although there are favoured isotopes, active and successful programs exist in a wide range of isotopes.
 
-inverted vs normal hierarchy.
-Strength of an experiment.  (Resolution as key factor.)
-We know neutrinos are massive because of mass differences.
-
-
-
-My outline (now that I've figured out how the chapter should flow).
-Not necessarily trying to arrange it into sections, at least for now.
-bb decay
-	which isotopes might we see it in
-Why do we care -- atoms which bb decay could also bb0n decay.
-	What does bb0n decay look like at tree level.
-	This could happen by majorana interaction; but standard model does not include a majorana mass term.
-90s: neutrinos proven to have mass.
-	delta-m known; normal vs inverted hierarchy.
-	flavor/mass eigenstates.
-Now we look for a mechanism for neutrino mass, and majorana interaction is subject to renewed interest.
-We can describe an effective majorana mass term, parametrized by six parameters.
-	Only three known, based on their relation to delta-m.
-The parametrization lets us relate other observables.
-	Planck
-	KATRIN
-Search with bb experiments
-	What elements are popular.
-	relation between half-life and mass (matrix elements are not well-known).
-	What makes an experiment strong.
-	sensitivity function, including resolution.
-	Existing limits.
-	Note that limit is a combination of sensitivity and luck;
-		Current paper is concerned with improving the limit of EXO-200, currently the most sensitive experiment, even though its limit is lower than KZ.
+As the table indicates, $^{136}$Xe has provided some of the strongest constraints on $\left< m_{\beta\beta}\right>$ in spite of its relatively poor energy resolution.  The present work will demonstrate that it is possible, in the EXO-200 detector, to produce significant improvements to the energy resolution through offline denoising of the scintillation signals.  This denoising technique will be applied to data from the detector, and will result in a stronger limit on $T_{1/2}^{0\nu}$ from EXO-200 than could be obtained from the same data without denoising.  Recent results will be presented which benefit from this and other improvements, as well as increased livetime.
