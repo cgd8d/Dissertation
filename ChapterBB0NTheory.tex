@@ -1,5 +1,6 @@
 \renewcommand{\thechapter}{1}
 \chapter{Theory of \texorpdfstring{$\beta\beta 0\nu$}{Neutrinoless Double-Beta} Decay}
+\label{ch:BB0NTheory}
 
 \tikzstyle{ParticleInteraction}=[coordinate]
 \tikzstyle{ParticleLabel}=[]
@@ -42,7 +43,11 @@
 
 \section{Double-Beta Decay}
 
-Standard-model double beta ($\beta\beta$) decay is the result of the particle interaction $2d \rightarrow 2u + 2e^- + 2\bar{\nu}_e$ mediated by $W^-$-exchange, as depicted in Figure~\ref{fig:FeynmanBetaBeta2Nu}.  It is effectively the simultaneous occurance of two beta ($\beta$) decays from the same nucleus.
+Standard-model double beta ($\beta\beta$) decay is the result of the particle interaction
+\begin{equation}\label{eqn:bb2n_decay_reaction}
+2d \rightarrow 2u + 2e^- + 2\bar{\nu}_e
+\end{equation}
+mediated by $W^-$-exchange, as depicted in Figure~\ref{fig:FeynmanBetaBeta2Nu}.  It is effectively the simultaneous occurance of two beta ($\beta$) decays from the same nucleus.
 
 $\beta\beta$ decay is the result of a second-order weak interaction, so it has a remarkably slow rate compared to most $\beta$ decay processes.  As a result, although many nuclei are expected to decay by $\beta\beta$, the process is thoroughly masked by conventional $\beta$ decay in most of them.  We can only hope to detect $\beta\beta$ decay in isotopes where $\beta$ decay is forbidden or highly suppressed.
 
@@ -275,7 +280,7 @@ Closer to home, the mass of neutrinos is also reflected in $\beta$ decay, $d -> 
 
 Attempts to measure $\left< m_\beta \right>$ require experiments to measure the electon energy spectrum of beta decays at the endpoint, which is complicated by the fact that this portion of the electron spectrum contains only a small fraction of the total electron statistics.  Tritium ($^3H$) is commonly used for these experiments because it has a medium-length halflife of $12.3$ years and an extremely low $\beta$ decay endpoint energy of $18.6$ keV, which maximizes the relative shift in endpoint energy due to $\left< m_\beta \right>$.  Figure~\ref{fig:TritiumSpectrum} shows that for $\left< m_\beta \right> = 1\text{eV}$ in Tritium, experiments must observe a shift in the spectrum which affects only about one decay in $5 \cdot 10^{12}$, making this level of sensitivity extremely difficult to achieve.  The best existing limit from $\beta$ decay is $\left<m_\beta\right> < 2.05$ eV, with $95\%$ confidence, from the Troitsk experiment which ran from 1994 to 2004.~\cite{OldTritium}  The KATRIN experiment hopes to achieve a sensitivity of $0.2$ eV, and is expected to begin taking data in 2015.~\cite{NewTritium}\cite{NewTritiumTimeline}
 
-\section{Nuclear Physics Constraints from \texorpdfstring{$\beta\beta 0\nu$}{Neutrinoless Double-Beta}}
+\section{Nuclear Physics Constraints from \texorpdfstring{$\beta\beta 0\nu$}{Neutrinoless Double-Beta}}\label{sec:NucPhysConstraintsFromBB0N}
 
 If the mechanism of $\beta\beta 0\nu$ decay really is, at tree level, a neutrino mass term as shown in figure~\ref{fig:FeynmanBetaBeta0Nu}, then the rate of $\beta\beta 0\nu$ decay will also reflect the magnitude of the neutrino mass parameters.  We can write the partial half-life of an isotope which undergoes $\beta\beta 0\nu$ decay as
 \begin{equation}
@@ -303,7 +308,7 @@ Unlike $\left< m_\beta \right>$, which is an incoherent sum of strictly positive
 It is possible to relate the observables $\left< m_{\beta\beta} \right>$, $\left< m_\beta \right>$, and $M$ within the model for $\mathbf{U}$ of equation~\ref{eqn:LongDefinitionOfU}.  These relations are shown in figure~\ref{fig:NeutrinoMassBounds}; we recall from section~\ref{sec:ParticlePhysicsConstraints} that beta spectrum measurements constrain $\left<m_\beta\right> < 2.05$ eV and cosmological observations constrain $M < 0.230$ eV, both with $90\%$ confidence.  The strongest constraints on $\left<m_{\beta\beta}\right>$ from $\beta\beta 0\nu$ searches place $\left<m_{\beta\beta}\right> < 0.15-0.4$ eV, depending on the choice of matrix element calculations.  We can see that if the cosmological limits are to be trusted, they provide the strongest constraints on the neutrino mass parameters; however, all three observables are being probed competitively, and the wide range of experimental approaches means that systematic effects are unlikely to be shared by all three methods.
 
 The sensitivity of an experiment for measuring $T_{1/2}^{0\nu}$ can be described by the approximate formula:~\cite{RMPbb0n}
-\begin{equation}
+\begin{equation}\label{eqn:ApproxHalflifeSensitivity}
 T_{1/2}^{0\nu}(n_\sigma) = \frac{4.16 \cdot 10^{26} yrs}{n_\sigma} \left( \frac{\epsilon a}{W}\right) \sqrt{\frac{Mt}{b \Delta E}},
 \end{equation}
 where $M$ is the mass of material, $a$ is the isotopic enrichment, $W$ is the molecular mass of the material in atomic units, and $t$ is the live-time of the experiment; $\epsilon$ is the signal efficiency, $b$ is the background rate (in counts per kg keV year, or some similar units), and $\Delta E$ is the energy resolution of the detector at the $Q$-value; and $n_\sigma$ is the desired confidence limit, in sigmas, where the standard $90\%$ confidence limit will require $n_\sigma = 1.64$.  The scaling of this equation is most accurate when the energy resolution is much smaller than the $Q$-value and the background is uniformly distributed in energy; however as a rough guide it, combined with phase factor and matrix element estimates, allows us to compare the relative strengths of different $\beta\beta$ experiments.
