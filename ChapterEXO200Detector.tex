@@ -155,31 +155,123 @@ Some materials were dispensed with entirely.  Typically, silicon APDs are encaps
 
 Another example of material avoidance comes from the cabling from wires and APDs to the electrical amplifiers and digitizers.  These electronics contain many high-background plastics and other complex materials, so they were placed outside the lead shielding rather than placing them close to the TPC.  Wires connect the sensors in the TPC to these electronics; ordinarily such long wires would need to be shielded by coaxial cabling to minimize cross-talk noise.  However, the coaxial cabling was expected to contribute a high quantity of radioactive background, and was omitted; instead wires are partially shielded by surrounding them with inactive wires which reduce cross-talk noise.  Furthermore, the total number of wires needed was reduced by ganging together triplets of u- and v-wires and groups of six or seven APDs into single channels; this reduced the fineness of event information available in analysis, but reduced the quantity and complexity of material placed near the detector.  See the wire gangs in figure~\ref{fig:WireTriplet}; APD gangs and wiring to external electronics are visible in figure~\ref{fig:APDgang}.~\cite{detectorPartI}
 
-We can imagine the TPC being shielded by nested layers of clean material designed to prevent backgrounds from reaching the xenon.  In the innermost layer, HFE-7000 refrigerant is used to maintain the detector at liquid xenon temperatures and maintain similar pressures inside and outside of the copper vessel walls.  However, the HFE has a significant quantity of hydrogen, which makes it an excellent stopping agent for thermal neutrons.  The refrigerant layer is more than $50$ cm thick, so most neutron products of muons have time to thermalize and absorb onto hydrogen before reaching the TPC and producing $^{137}$Xe.~\cite{detectorPartI}
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{cleanroom.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{A cutaway schematic image of the TPC and surrounding materials in the cleanroom.  HFE-7000 refrigerant is contained between the cryostat and the LXe vessel.  Figure from~\cite{detectorPartI}.}
+\label{fig:CleanRoomCutaway}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
 
-The following layer of shielding is lead.  This is a common approach for low-background experiments due to the high density of lead, which enables it to stop gammas in a short distance.  Lead bricks surround the detector on all sides; the bricks were designed with an interlocking shape to ensure no seams between bricks left a line-of-sight path from external sources into the TPC.  In the front of the detector, where plumbing must enter and exit the detector through the first lead wall, a second lead wall is assembled with the purpose of blocking any line-of-sight paths into the TPC through the plumbing gaps of the first wall.~\cite{detectorPartI}
+We can imagine the TPC being shielded by nested layers of clean material designed to prevent backgrounds from reaching the xenon.  In the innermost layer, HFE-7000 refrigerant (see figure~\ref{fig:CleanRoomCutaway}) is used to maintain the detector at liquid xenon temperatures and maintain similar pressures inside and outside of the copper vessel walls.  However, the HFE has a significant quantity of hydrogen, which makes it an excellent stopping agent for thermal neutrons.  The refrigerant layer is more than $50$ cm thick, so most neutron products of muons have time to thermalize and absorb onto hydrogen before reaching the TPC and producing $^{137}$Xe.~\cite{detectorPartI}
 
-Outside of the lead shielding, restrictions on materials are less stringent; however, control over the presence of materials is still desired.  The entire apparatus is contained inside a class-1000 clean room facility.  Entire facility is located in the Waste Isolation Pilot Plant (WIPP) facility, a DOE-owned waste repository located in a salt mine in Carlsbad, NM.  The overburden of the facility is $1585$ m water-equivalent, leading to a significant reduction in muon rate compared to the rate observed on the Earth's surface.  \textcolor{red}{Would be nice to find a plot of muon intensity vs depth mwe.}
+The following layer of shielding is lead, shown in figure~\ref{fig:CleanRoomCutaway}.  This is a common approach for low-background experiments due to the high density of lead, which enables it to stop gammas in a short distance.  Lead bricks surround the detector on all sides; the bricks were designed with an interlocking shape to ensure no seams between bricks left a line-of-sight path from external sources into the TPC.  In the front of the detector, where plumbing must enter and exit the detector through the first lead wall, a second lead wall is assembled with the purpose of blocking any line-of-sight paths into the TPC through the plumbing gaps of the first wall.~\cite{detectorPartI}
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{muonflux.eps}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Muon flux as a function of depth, in meters water equivalent.  The WIPP site is indicated in relation to other underground science facilities.  Figure from~\cite{Esch2005516}.}
+\label{fig:MuonFluxVsDepth}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+Outside of the lead shielding, restrictions on materials are less stringent; however, control over the presence of materials is still desired.  The entire apparatus is contained inside a class-1000 clean room facility.  Entire facility is located in the Waste Isolation Pilot Plant (WIPP) facility, a DOE-owned waste repository located in a salt mine in Carlsbad, NM.  The overburden of the facility is $1585$ m water-equivalent, leading to a significant reduction in muon rate compared to the rate observed on the Earth's surface.  Figure~\ref{fig:MuonFluxVsDepth} demonstrated the reduction in muon flux due to depth at the WIPP site and a selection of other underground science facilities.
 
 These passive approaches have all been demonstrated to reduce the rate of backgrounds depositing energy in the liquid xenon.  The following section will describe an active set of background-rejection approaches.
 
 \section{Active Background Rejection}\label{sec:DetectorActiveBackgroundRejection}
-	Charge/Light Ratio rejects alphas.
-	SS/MS ratio rejects significant fraction of gammas.
-	Resolution as background rejector.
 
-\section{Calibration Systems}\label{sec:DetectorCalibration}
-	Source calibrations
-	Laser calibrations
-	Charge injection runs
-	External charge calibrations possible.
+This section will describe the ``active'' forms of background reduction employed by the EXO-200 detector, in which events are observed but discriminated from $\beta\beta$ events based on their characteristics.  We neglect the energy resolution as a background rejection tool here, since section~\ref{sec:DetectorBackgrounds} has already described how the impact of certain backgrounds may be reduced by improvement to the energy resolution.
+
+A number of cosmogenic backgrounds have been described: neutrons and fission products can be produced from muons penetating down to the depth of the WIPP facility.  To reject many of these events, it is sufficient to detect the passage of a muon anywhere near the detector.  This is accomplished by means of a set of veto panels surrounding the cleanroom on four of six sides.  Muons are detected by coincident panel hits on opposite sides of the detector, with $(96.0 \pm 0.5)\%$ efficiency for detecting muons which traverse the TPC.~\cite{detectorPartI}  Further reduction in the impact of muon-induced backgrounds is achieved by searching for muon tracks observed within the TPC itself, and also by applying a one-second coincident event cut as a catch-all for spallation products of muons which may decay multiple times in rapid succession.
+
+Alpha decays within the xenon were identified as another possible source of high-energy backgrounds.  However, it is possible to discriminate alpha decays from beta and gamma decays based on the properties of their energy measurement.  Alphas produce a far more dense energy deposit in liquid xenon than betas and gammas; the dense collection of free electrons and ionized xenon has a higher rate of recombination than is observed with betas and gammas, which translates into a higher ratio of scintillation to ionization for alphas than for betas and gammas.  This feature can be used to eliminate nearly all alpha background.
+
+Discriminating between gamma, beta, and double-beta decays is more difficult.  Gammas generally deposit their energy by ionizing atomic electrons of xenon, so in this way their behavior may closely mimic that of betas.  However, most gammas within our energy window (and particularly gammas near our $Q$-value) will be attenuated by compton (incoherent) scattering, as can be seen in figure~\ref{fig:XrayAttenuationXenon}.  By this process the gamma will deposit energy in more than one discrete location, which beta and double-beta decay will not do.  We are generally able to resolve the positions of these energy deposits and classify the event as multi-site; more than half of external gamma backgrounds are classified as multi-site, whereas the fraction of $\beta\beta$ events classified as multi-site is only $5\%$.~\cite{bb2nEXO2014}
+
+These are some of the basic techniques employed to reduce backgrounds in offline analysis, and the detector has been designed with the goal of facilitating their application.  Although the passive methods of background reduction cannot be improved once construction of the detector is complete, it may be hoped that these active methods may be improved or extended through further analysis.  These improvements could have the potential to reduce backgrounds in data which has already been collected, making them a particularly attractive target now that EXO-200 has collected a significant dataset.
 
 \section{Pulse Amplification and Waveform Readout}\label{sec:DetectorReadout}
-	APDs [Include detail of APD operation; introduce notation consistent with denoising chapter]
-	Wires
-	No coax cables [noisy]
-	DAQ [e-boards might be noisy -- can I reference something?]
-	Trigger (2ms most of the time, not always)
+
+After an APD or wire collects a signal, how is it converted into a waveform on disk?  This section will provide a brief overview of the EXO electronics and waveform readout.  Particular attention will be paid to subsystems which are relevant to the denoising algorithm described in chapter~\ref{ch:DenoisingTheory}, including the APDs and front-end electronics.
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{APDCrossSection.png}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{A cross-sectional schematic of an APD is shown in (a).  The electric field as a function of depth is shown in (b).  Figure from~\cite{Moszynski2002504}.}
+\label{fig:APDCrossSection}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+The APDs are constructed from a silicon semiconductor which is doped and biased so that:~\cite{Moszynski2002504}
+\begin{enumerate}
+\item Photons arriving at the active surface of the APD can deposit their energy by generating an electron-hole pair in the silicon semiconductor.
+\item The electron-hole pair is drifted apart by an electric field.  Here the electric field is low and the silicon is doped to be of p-type (electron-poor), ensuring a similar number of electron-hole pairs are produced by all photons before any amplification can occur.
+\item The electron enters a high-field n-type (electron-rich) region of silicon, and liberates additional electron-hole pairs in an avalanche effect.
+\item Electrons reach another p-type region of silicon, and then are collected on a cathode as an output current pulse.
+\end{enumerate}
+These phases of the APD are illustrated in figure~\ref{fig:APDCrossSection}.
+
+EXO-200 had $851$ APDs specially made with pure aluminum and no casing; from those, $468$ were selected for use based on their excellent noise and gain properties.~\cite{EXOLAAPD}  For each APD, the relative quantum efficiency for electron-hole production and the bias voltage needed to ensure the product of gain and quantum efficiency equals one hundred were both measured.  APDs were assigned to gangs and pies so that their products of gain and quantum efficiency could be set to one hundred as uniformly as possible.~\cite{APDMeasurementAndGanging}  It is impossible to make the gain of all APDs perfectly uniform because of limitations in the configurability of the APD bias voltages in EXO-200.~\cite{detectorPartI}  We note that the current operating conditions of EXO-200 establish a higher operating gain of around $200-300$; this may have the side effect of making the product of gain and quantum efficiency less uniform in each APD gang.
+
+The means by which wires deliver charge is somewhat simpler than for APDs.  In the u-wires, charge is collected and delivered directly to the electronics as current.  In the v-wires, no net charge is delivered, but transient currents are induced in such a way that the v-wire remains at a constant voltage; these transient currents produce a pulse with a different shape than the u-wire pulses, such that the integral (before shaping) is zero.  We note that the pulse shape depends on the path of electrons in the xenon -- both sets of wires deliver a current signal which is induced from approaching charge before the charge deposits on the u-wires, and the path of the electrons can affect the timing of that induced current.  Furthermore, the pulse magnitude will depend on the point of origin of the electrons because at that location positively-charged ions will remain long after the electrons have been collected, and the ions will hold a net charge on the u- and v-wires which is released only on much longer timescales than we can observe in our waveforms.  (Ions, being much more massive than electrons, drift much more slowly through liquid xenon.)~\cite{EnergyDocumentRun2a}~\cite{MCDocumentRun2a}
+
+The front-end electronics, located between the two lead walls in front of the detector, consist of four stages:~\cite{detectorPartI}~\cite{ReconstructionDocument}
+\begin{enumerate}
+\item A transimpedance amplifier which converts the current signals from the detector to voltage signals.  This stage applies amplification and a differentiator with a long time constant (roughly $60\mu$s for wires and $300\mu$s for APDs).
+\item Two differentiators and two integrators, to improve signal-to-noise ratio for real-time triggering.  For the u-wires, each integrator has a time constant of $1.5\mu$s and each differentiator has a time constant of $40\mu$s; for the APDs and v-wires, each integrator has a time constant of $3\mu$s and each differentiator has a time constant of $10\mu$s.  Some signal amplification is applied at this stage as well.
+\item An analog-to-digital converter (ADC) converts voltage pulses into $12$-bit digital waveforms.  The full $12$-bit scale is equivalent to $2.5$V.  Digitization is performed at a rate of $1$MHz.
+\item A triggering module reads the digitized waveforms, and issues a trigger to the data acquisition (DAQ) when signals exceed programmable thresholds.  The triggering module can also accept external requests for a ``solicited'' trigger.
+\end{enumerate}
+In most cases, when a trigger is issued, the DAQ will write out $2048$ samples (just over $2$ms) from all waveforms, centered on the first sample responsible for the trigger.  In cases where the data rate is high, waveforms can be truncated to a length less than $2048$ samples.
+
+\section{Calibration Systems}\label{sec:DetectorCalibration}
+
+Energy resolution has been discussed as a general feature of the detector which can have a significant impact on the reduction of backgrounds.   A significant factor in the resolution is the quality of the detector's absolute energy calibration.  This is particularly important because of the long lifetime of the experiment.  If the calibration of the detector drifts over time, this will be perceived in the cumulative low-background spectrum as a smearing out of energy peaks, worsening the effective resolution.  This section will describe some of the techniques used to produce an accurate time-dependent calibration for the detector.
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{calibration_tube.jpg}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{A guide tube permits gamma sources to be inserted to known locations near the TPC.  Green dots indicate a few of the locations where the source may conventionally be placed.  Figure from~\cite{detectorPartI}.}
+\label{fig:CalibrationGuideTube}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+The most critical type of calibration comes from external gamma sources.  The EXO experiment was constructed with a guide tube passing through the HFE refrigerant and wrapping loosely around the TPC, as shown in figure~\ref{fig:CalibrationGuideTube}.  Currently available to the experiment are sources containing $^{228}$Th (primary gamma line at $2615$ keV), $^{60}$Co (simultaneous emission of gammas at $1173$ and $1332$ keV), and $^{137}$Cs (gamma line at $662$ keV); additionally, a new $^{226}$Ra source became available in the summer of 2013 (numerous gammas, including $2448$ keV).  Together these sources allow us to observe the detector response to external gammas with known energies, permitting energy calibrations, energy resolution measurements, and verification of monte carlo simulations.
+
+All of these sources have been used periodically (roughly every three months) in calibration campaigns intended to permit a full characterization of the detector response across a wide energy range at a particular moment.  Additionally, the $^{228}$Th source has been deployed regularly, typically three times every week for $2-3$ hours, for the entire history of the dataset.  The fullness of the $^{228}$Th source dataset, along with the benefit that it contains a relatively clean high-energy gamma line, make it a particularly convenient dataset to work with; it will play a prominent role in the generation of our lightmap described in chapter~\ref{ch:Lightmap}.
+
+Other calibrations are also performed on the detector, and may in some instances supplement the information provided by the source data.  To perform direct calibrations of the APDs, one APD mount contains a light diffuser rather than an APD device; the diffuser can be illuminated by a laser through optical fibers.~\cite{detectorPartI}  The APDs can be calibrated by pulsing the laser while varying the voltages of the APDs to adjust their gain, and in this way it is possible to measure the gain of the APDs in situ.  A laser system was available at the beginning of the dataset used in this work; however, there were certain deficiencies to the laser system which made its data difficult to use, and as a result a new and more accurate laser system was commissioned in August 2012.  Laser data in some form has been collected roughly once per week for much of the time containing this dataset.  Composing the laser data into a coherent history of the APD gains is an ongoing project, but it has been possible to use APD gain information from specific moments to inform the APD noise model described in section~\ref{sec:DescriptionOfPhotonNoise}.
+
+Just as it is possible and desirable to learn the gain of the APDs separately from other components using laser runs, it is also desirable to learn the gain of the electronics amplifiers separately from other detector function.  This is accomplished using ``internal calibrations:'' simultaneously with software triggers solicited by the data acquisition, a switched capacitor injects charge into the input of the electronics cards of individual or groups of channels.~\cite{EXOElectronicsFunctionalSpecification}  The resulting waveform is then read normally, and the size of the output pulse reflects the gain of the electronics.  This system is employed approximately daily on all channels; it provides an excellent measure of relative changes in the electronics gains over time.  However, the absolute gains cannot be extracted accurately from this data, and must be obtained by other means.
+
+To measure the absolute gains of the electronics, the front-end cards must be physically removed from their enclosures; when this is done, it is possible to use a more accurately calibrated capacitor to make an absolute gain measurement in the same style as the internal calibrations.  These ``external calibrations'' can be performed in two flavors: manual, in which a capacitor calibrated to $1\%$ is used to inject charge, and automatic, in which the calibration is automatically performed at a much faster rate but accuracy is limited to $2-3\%$.  Due to the inconvenience of removing electronics cards from their enclosures, this process has only been performed once in February 2011.  Both styles of external calibration were performed on the u-wire channels.  Less demanding needs for resolution on the v-wires and APD channels were foreseen, so only the less accurate automatic calibration was performed on those channels.  The data from these runs has not been fully analyzed, but may be revived in future analysis to permit a better calibrations of the subsequent internal calibrations which were taken.~\cite{EnergyDocumentRun2a}
+
+
 
 
 
