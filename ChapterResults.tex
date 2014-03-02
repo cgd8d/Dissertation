@@ -179,7 +179,109 @@ Finally, we have found that the most effective way to add electronic noise to th
 
 In this way, we are able to generate simulated data which in most respects resembles real data collected from the detector.  The EXO-200 simulation has shown remarkable agreement with the detector in the properties of energy and cluster location, as illustrated in figure~\ref{fig:RaSourceMCComparison}.  A significant effort has been made to achieve excellent agreement between simulation and data, and the result is that we can claim a strong understanding of the behavior of the EXO-200 detector.
 
-\section{Reconstruction}\label{sec:ResultReconstruction}
+\section{Cluster Reconstruction}\label{sec:ResultReconstruction}
+
+The first stage of data processing involves locating candidate pulses in its waveforms, and fitting for the magnitude and time of any candidate pulses which are found.  The methods of accomplishing this will be described in sections~\ref{sec:ReconPulseFinding} and~\ref{sec:ReconPulseFitting}.  We will complete our description of cluster reconstruction with a brief explanation of the approach to the clustering of waveform pulses into three-dimensional clusters in section~\ref{sec:ReconClustering}.
+
+\subsection{Pulse Finding}\label{sec:ReconPulseFinding}
+
+Pulse-finding proceeds in two steps.  First, on all waveforms a matched filter is applied to do a preliminary search on all channels.  Then, a secondary search is performed on the u-wire signals to improve sensitivity to multiple signals near in time.
+
+The matched filter algorithm was first described by D.O. North in 1943.~\cite{MatchedFilterPaper}  It attempts to decide between the null hypothesis that a waveform $X[\tau]$ consists of only noise and an alternative hypotheses that the waveform contains both signal and noise:
+\begin{equation}\begin{cases}
+H_0: & X[\tau] = n[\tau]\\
+H_1: & X[\tau] = s[\tau] + n[\tau].
+\end{cases}\end{equation}
+We search for a linear functional $L_0$ which will act on $X[\tau]$ and maximize the expected signal-to-noise ratio,
+\begin{equation}
+SNR = \frac{\left(L_0\left\{s[\tau]\right\}\right)^2} {\left<\left(L_0\left\{n[\tau]\right\}\right)^2\right>}.
+\end{equation}
+In other words, if a waveform is composed of only noise, the functional should result in a small value; however, if the waveform contains signal then the functional should result in a large value.
+
+The functional which maximizes the expected signal-to-noise ratio can be expressed as:
+\begin{equation}
+L_0\left\{X[\tau]\right\} = \mathcal{F}^{-1}\left\{ \frac{\mathcal{F}\left\{X\right\}[k] \mathcal{F}\left\{s\right\}^{*}[k]}{\left<\mathcal{F}\left\{N\right\}[k]\mathcal{F}\left\{N\right\}^{*}[k]\right>}\right\}[0],
+\end{equation}
+where $\mathcal{F}$ represents the Fourier transform.  This expression has an added benefit that if instead we'd like to test the hypothesis that the translated signal $s[\tau - \Delta]$ is contained in the waveform, we can do so with the test statistic:
+\begin{equation}
+L_\Delta\left\{X[\tau]\right\} = \mathcal{F}^{-1}\left\{ \frac{\mathcal{F}\left\{X\right\}[k] \mathcal{F}\left\{s\right\}^{*}[k]}{\left<\mathcal{F}\left\{N\right\}[k]\mathcal{F}\left\{N\right\}^{*}[k]\right>}\right\}[\Delta].
+\end{equation}
+Finally, we can define a test statistic $T$ for the waveform $X[\tau]$ to have a signal anywhere with:
+\begin{equation}
+T = \max_{\Delta} L_\Delta\left\{X[\tau]\right\}.
+\end{equation}
+This expression can be computed efficiently using the fast Fourier transform.  The time of the pulse is guessed as the value of $\Delta$ which led to the largest value of $L_\Delta\left\{X[\tau]\right\}$.
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{MFExamp_Raw.eps}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{MFExamp_Applied.eps}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{A u-wire waveform (left) and the output from operation of the matched filter (right).  The red line on the right indicates our signal threshold; the matched filter output exceeds the threshold, so this waveform is determined to contain a signal.~\cite{ReconstructionDocument}}
+\label{fig:MatchedFilterApplication}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+The first phase of pulse-finding performs a search using the matched filter on:
+\begin{itemize}
+\item All u-wire channels.
+\item All v-wire channels.
+\item The sum of all APD channels in the North plane.
+\item The sum of all APD channels in the South plane.
+\end{itemize}
+An example application of the matched filter to a u-wire waveform is shown in figure~\ref{fig:MatchedFilterApplication}.
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{MSF_Raw.eps}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{MSF_MatchedFilter.eps}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{MSF_Unshaped.eps}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{MSF_Reshaped.eps}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{A u-wire waveform composed of two signals near in time is shown (top left); the matched filter (top right) correctly detects the presence of signal, but does not detect the presence of two distinct signals.  At bottom left, the waveform is unshaped; at bottom right the waveform is reshaped with shorter differentiation times, leading to easier detection.~\cite{ReconstructionDocument}}
+\label{fig:MultipleSignalFinderApplication}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+The matched filter has proven to be an excellent metric for deciding whether a waveform has a signal on it or not.  However, it is not as effective at distinguishing between the cases where one or multiple signals occur on a waveform.  We would particularly like to be able to classify u-wire waveforms by the number of distinct signals they contain because these generally provide the best sensitivity for single-site/multi-site discrimination.  The matched filter output function is designed to have a tall peak in the presence of a signal, but it may also be a broad peak which is difficult to resolve as the sum of two distinct signal contributions.
+
+To improve sensitivity to multiple signals in u-wire waveforms, a second pass is performed on u-wire channels using a multiple-signal finder.  This scheme consists of first, unshaping the waveform offline to remove the effect of the shapers; and second, reshaping the waveform using shorter differentiation times than employed by hardware.  In a multiple-signal waveform, this has the effect of damping signals faster to reduce their overlap in time.  It is then possible to search for signals using a simple threshold which is not as sensitive to small signals as the matched filter, but is capable of detecting additional signals to complement the matched filter.  This process is illustrated in figure~\ref{fig:MultipleSignalFinderApplication}, and is the last procedure for finding signals.~\cite{ReconstructionDocument}
+
+\subsection{Pulse Fitting}\label{sec:ReconPulseFitting}
+
+After finding signals, it is necessary to perform a fit to the expected signal shape.  Fits are performed allowing both the signal magnitude and signal shape to float freely, where only the initial guesses for these parameters come from the finding step.  The metric for fits is a simple chi-square between waveform data and the expected signal shape, where error on each point is estimated by the root-mean-square noise of the channel.
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{U_Wire_Fit.eps}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{V_Wire_Fit.eps}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{APD_Sum_Fit.eps}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Fits to data for a u-wire (top left), v-wire (top right), and summed-APD waveform (bottom).  The red model line indicates the time extent of the fit window.~\cite{ReconstructionDocument}}
+\label{fig:ReconExampleFits}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+To minimize the impact of signal templates which may be imperfect, and also to reduce the effect which waveform noise may have on our fit, we do not fit the entire waveform to our signal model.  Instead, we use only an $80 \mu$s fit window in the case of v-wires and APDs, and a $180 \mu$s fit window in the case of u-wires.  The fit windows are illustrated in example events in figure~\ref{fig:ReconExampleFits}.
+
+As signal times and magnitudes are extracted, it may be discovered at this phase of processing that two signals which were reported by the finding phase are extremely close together in time.  In this case, we can generally conclude that the finding phase inadvertently reported the same signal multiple times; the multiple candidate signals should then be merged together, and the waveform refit.  The specific criteria for merging candidate signals includes a combination of signal timing and fit errors from a preliminary fit where all candidate signals are included; details can be found in~\cite{ReconstructionDocument}.
+
+\subsection{Clustering Pulses into Deposit Sites}\label{sec:ReconClustering}
 
 
 \section{Energy Corrections}\label{sec:ResultEnergy}
