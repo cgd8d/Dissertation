@@ -752,7 +752,7 @@ Another speedup for our vector-vector operations consists of combining multiple 
 \[\mathbf{\widetilde{R}}_0^\top \begin{pmatrix} V & R \end{pmatrix}\]
 as one step.  The rest of the algorithm will not be affected by the fact that these two matrices are stored contiguously in memory.
 
-\section{Denoising in Practice}
+\section{Denoising in Practice}\label{sec:DenoisingInPractice}
 
 The preceding description of denoising has been intended to convey our fullest current understanding of denoising as it should be performed.  However, due to the computational intensity of this algorithm it is not feasible to conduct routine data processing of the full EXO-200 dataset whenever updates to the code base are implemented.  As a result, the most recent denoised data available from EXO-200 demonstrates certain deviations from the description above.  It is known, and has been demonstrated, that correcting some of these flaws can lead to further improvements in resolution, but no physics analysis will be performed with those improvements until the computational cost of denoising is again deemed worthwhile.
 

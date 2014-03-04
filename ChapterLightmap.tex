@@ -54,7 +54,7 @@ So, treating equation ~\ref{eqn:SeparableLightmap} as valid, one simple general 
 
 The previous section outlines a general algorithm for computing a four-dimensional lightmap from source data.  In this section we will specify the implementation choices which are made in the code currently being used.  In attempt to encourage future experimentation, alternative options will also be listed in some detail, along with some motivations for these alternatives.  Time has not permitted testing of all of these options, but it is hoped that they will be explored in the future.
 
-\subsection{Event Selection}
+\subsection{Event Selection}\label{sec:LightmapEventSelection}
 
 The single-site Thorium-228 spectrum is well-peaked at 2615 keV, making it an excellent monoenergetic calibration line.  Our challenge is to select truly 2615-keV events as efficiently as possible, while simultaneously avoiding near-2615-keV events which may leak into the dataset.
 
