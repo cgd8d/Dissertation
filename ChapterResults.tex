@@ -3,7 +3,7 @@
 \chapter{EXO-200 Analysis and Results from Denoising}
 \label{ch:DenoisingResults}
 
-Data analyzed for the present work extends from \textcolor{red}{DATE to DATE}.  In this chapter, sections~\ref{sec:ResultSimulation}-\ref{sec:ResultFitting} describe the basic elements of the EXO-200 analysis.  Section~\ref{sec:ResultResults} will present the results from this set of data.  In section~\ref{sec:ResultComparison} we compare the results obtained using the denoising scheme of chapter~\ref{ch:DenoisingTheory} to the results which would have been obtained without that algorithm applied, and demonstrate that denoising has contributed to the strength of our physics reach.
+Data analyzed for the present work extends from October 5, 2011 to September 1, 2013.  In this chapter, sections~\ref{sec:ResultSimulation}-\ref{sec:ResultFitting} describe the basic elements of the EXO-200 analysis.  Section~\ref{sec:ResultResults} will present the results from this set of data.  In section~\ref{sec:ResultComparison} we compare the results obtained using the denoising scheme of chapter~\ref{ch:DenoisingTheory} to the results which would have been obtained without that algorithm applied, and demonstrate that denoising has contributed to the strength of our physics reach.
 
 \section{Simulation}\label{sec:ResultSimulation}
 
@@ -11,7 +11,7 @@ Here we will describe the simulation of radioactive sources in the EXO-200 detec
 
 \subsection{Simulation of Particles using GEANT}
 
-To simulate the deposition of energy from primary decay particles, version 4.9.3p02 of the GEANT software package is used.~\cite{Agostinelli2003250}\cite{1610988}  This package includes a database containing attenuation properties of many common materials as well as detailed decay modes for most radioactive isotopes.  Angular correlations between gammas are not modeled with this version of the software, but that is expected to be a minor detail and will be corrected by upgrading to a newer version of GEANT in the future.  Forbidden beta decays are generated with an incorrect beta spectrum in the default GEANT software; this is addressed by the EXO collaboration by using our own beta spectra where appropriate.
+To simulate the deposition of energy from primary decay particles, version 4.9.3p02 of the GEANT software package is used.~\cite{Agostinelli2003250,1610988}  This package includes a database containing attenuation properties of many common materials as well as detailed decay modes for most radioactive isotopes.  Angular correlations between gammas are not modeled with this version of the software, but that is expected to be a minor detail and will be corrected by upgrading to a newer version of GEANT in the future.  Forbidden beta decays are generated with an incorrect beta spectrum in the default GEANT software; this is addressed by the EXO collaboration by using our own beta spectra where appropriate.
 
 \begin{figure}
 \begin{center}
@@ -29,7 +29,7 @@ To simulate the deposition of energy from primary decay particles, version 4.9.3
 
 \begin{figure}
 \begin{center}
-\includegraphics[keepaspectratio=true,width=\textwidth]{TPC_Cu_RayTracer.png}
+\includegraphics[keepaspectratio=true,width=\textwidth,clip=true,trim=90mm 50mm 10mm 130mm]{TPC_Cu_RayTracer.png}
 \end{center}
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
@@ -143,7 +143,7 @@ We have discussed in section~\ref{sec:DetectorReadout} that charge is induced on
 \begin{equation}
 \delta q_i = Q \delta W_i,
 \end{equation}
-where $Q$ is the total drifting charge and $W_i$ is the weighting potential of electrode $i$, defined as the potential which would be induced in our geometry if the potential on electrode $i$ were set to $1$ and the potential on all other boundaries were set to $0$.~\cite{ShockleyPaper}\cite{1686997}  Figures~\ref{fig:UWireWeightPotential} and~\ref{fig:VWireWeightPotential} illustrate the weighting potentials of a u-wire and v-wire channel, respectively.
+where $Q$ is the total drifting charge and $W_i$ is the weighting potential of electrode $i$, defined as the potential which would be induced in our geometry if the potential on electrode $i$ were set to $1$ and the potential on all other boundaries were set to $0$.~\cite{ShockleyPaper,1686997}  Figures~\ref{fig:UWireWeightPotential} and~\ref{fig:VWireWeightPotential} illustrate the weighting potentials of a u-wire and v-wire channel, respectively.
 
 Finally, the functions of integrated charge versus time must be converted to shaped digitized waveforms, and noise must be added.  The shaping and gain amplification is performed to match the electronics described in section~\ref{sec:DetectorReadout}.  To ensure accurate time shaping, the functions are all sampled at a bandwidth of $10$ MHz, and then downsampled after shaping to the nominal $1$ MHz.  Digitization is performed by converting voltages into units of ADC counts, then truncating to an integer value.  To model saturation effects, this number is pulled into the integer range $[0, 4096)$.
 
@@ -425,7 +425,7 @@ where $E_C$ and $E_S$ are the measured charge and scintillation energies (with c
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Charge-only, scintillation-only, and rotated energy spectra are shown from a thorium source run; the significant improvement in energy resolution with the rotated energy measurement is apparent, as are low-energy features which are washed out in the lower-resolution spectra.  Figure provided by Liangjian Wen.}
+\caption{Charge-only, scintillation-only, and rotated energy spectra are shown from a thorium source run; the significant improvement in energy resolution with the rotated energy measurement is apparent, as are low-energy features which are washed out in the lower-resolution spectra.  The dotted red line indicates the diagonal cut described in section~\ref{sec:ResultFitting}.  Figure provided by Liangjian Wen.}
 \label{fig:LiangjianRotatedSpectrumImprovement}
 \end{quote}
 \end{figure}
@@ -516,7 +516,7 @@ Besides the energy resolution measurements from source data described above, it 
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-One gamma line in the low-background data comes from neutron capture on hydrogen in the HFE refrigerant.  Such events are generally vetoed by the coincidence cuts, primarily the veto panels, so their impact on the low-background data is suppressed; conversely, it is possible to study only events which occur in coincidence with muon detection by the veto panels, thereby enriching our dataset in neutron capture spectra.  Neutron capture on hydrogen can emit a $2.2$ MeV gamma; figure~\ref{fig:neutronHydrogenCheck} shows the spectra from this source.~\cite{NeutronCaptureGammas}\cite{EnergyDocumentRun2ab}
+One gamma line in the low-background data comes from neutron capture on hydrogen in the HFE refrigerant.  Such events are generally vetoed by the coincidence cuts, primarily the veto panels, so their impact on the low-background data is suppressed; conversely, it is possible to study only events which occur in coincidence with muon detection by the veto panels, thereby enriching our dataset in neutron capture spectra.  Neutron capture on hydrogen can emit a $2.2$ MeV gamma; figure~\ref{fig:neutronHydrogenCheck} shows the spectra from this source.~\cite{NeutronCaptureGammas,EnergyDocumentRun2ab}
 
 \begin{figure}
 \begin{center}
@@ -567,13 +567,45 @@ After the energy calibrations have been performed, it is possible to produce a s
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-It is necessary to perform a number of cuts on the dataset before it is usable.  These cuts are intended to reject events which may not agree with the model used to generate background PDFs.  These cuts include:
+It is necessary to perform a number of cuts on the dataset before it is usable.  These cuts are intended to reject events which may not agree with the model used to generate background PDFs.  These cuts include:~\cite{FittingDocument}
 \begin{itemize}
-\item A fiducial volume cut to remove events with energy deposits outside of a pre-defined 
+\item A fiducial volume cut to remove events with any energy deposits outside of a pre-defined volume.  We choose to define a fiducial volume defined in Z by $10 \text{mm} < |Z| < 182 \text{mm}$ and in the X-Y plane as the area within a hexagon with an apothem of $162$ mm, as illustrated in figure~\ref{fig:FidVolDiagram}.  These cuts allow us to ignore regions near the detector walls or v-wire plane where the electic fields may not behave as expected.  They also ensure that beta or alpha backgrounds from the walls of the detector do not penetrate into our fiducial volume, allowing us to simplify the set of backgrounds modeled and included in fits.
+\item A ``diagonal'' cut to remove events with excessive scintillation relative to ionization.  Alpha decays produce a light-to-charge ratio much higher than beta and gamma decays, as described in section~\ref{sec:DetectorActiveBackgroundRejection}, so excluding events with excessive light permits us to neglect alpha-decay backgrounds dissolved in the xenon.  Events with excessive light can also be caused by decays outside of our active xenon, where charge is not collected efficiently; these events will be difficult to calibrate, and should not be included.  Both are excluded by a cut on the light-to-charge ratio, as shown in figure~\ref{fig:LiangjianAnticorrelatedEnergy}.
+\item A coincidence cut to remove events occurring near in time to a passing muon.  Muons and their spallation products can produce a wide range of backgrounds which is difficult to model; most of these backgrounds are quite short-lived, so a coincidence cut can provide an effective means of reducing them.  Currently we cut all events occurring within one minute of a muon observed passing directly through the TPC and within $25$ ms after a muon observed passing through the veto panels.  Furthermore, events which occur within one second of each other are both cut based on the expectation that the events were probably correlated and therefore more likely to be some form of background.  Figure~\ref{fig:Spectrum_noVetoCuts} demonstrates the significant reduction in data rate which is achieved by applying this coincidence cut.
 \end{itemize}
 
+Fits are then performed using the profile-likelihood method, as described in~\cite{ProfileLikelihood}.  Each data point is assigned a likelihood $\text{pdf}(x)$ equal to the evaluation of the normalized pdf at that point; the test statistic of interest is the negative log-likelihood, defined by:
+\begin{equation}
+\text{NLL} = -\sum_i ln\left[\text{pdf}(x_i)\right] + \text{constraints}.
+\end{equation}
+Contraints for us will consist of gaussian penalty terms applied to parameters whose value is constrained by independent studies external to the fit.  The best fit will be the one which minimizes the NLL.  Fit errors on parameters can be extracted by observing how the NLL changes when those parameters are forced away from their best-fit values.  In cases where the best-fit value of a parameter is near its boundary, these errors may not provide a good estimate of the true confidence interval or limits, so when this situation occurs for a parameter of significant interest (specifically, the rate of $\beta\beta 0\nu$, which fits near to zero) we can verify that the confidence limit is not overstated using toy monte carlo studies.~\cite{FittingDocument}
 
-data cuts: fiducial volume, coincidence cuts, diagonal cut.
+The fits make use of three observables.  The first, event energy, has been discussed at length in section~\ref{sec:RotatedEnergyCalibration}.  The second is the event classification as single-site or multi-site; we define an event as single-site if reconstruction located only one cluster, and that cluster deposited charge on no more than two u-wire channels.~\cite{FittingDocument}
+
+The third observable is called standoff, and it attempts to capture the nearness of an event to the TPC walls.  Most backgrounds are external, and can be expected to deposit energy preferentially near the walls of the TPC; by contrast, $\beta\beta 0\nu$ and $\beta\beta 2\nu$ decay come from the xenon, and should be distributed uniformly through the detector.  We define the standoff distance to be the shortest distance between some deposit cluster and either the v-wire planes or the teflon walls.  Ideally, it would be possible to capture finer position information by using all three position coordinates as observables; however, in practice it is difficult to construct a pdf with sufficient statistics in so many dimensions, so the standoff observable has been constructed to capture the most interesting distances in a single observable.  The exact definition is not too important provided it is modeled properly by the simulation; figure~\ref{fig:RaSourceMCComparison} demonstrates that standoff distance is simulated well for all but the smallest values (closest to the TPC walls or anode), and this is accounted for as a shape systematic.~\cite{FittingDocument}
+
+Fit parameters include the number of counts observed from each pdf and the fraction of counts from each pdf which populate the single-site spectrum; the latter is constrained based on the agreement between simulated and observed single-site fraction from source runs, but is allowed to float within those uncertainties.  The pdfs which are included are:
+\begin{itemize}
+\item $^{136}$Xe $\beta\beta 2\nu$ decay.
+\item $^{136}$Xe $\beta\beta 0\nu$ decay.
+\item $^{232}$Th from the TPC vessel.
+\item $^{232}$Th from distant sources (HFE refrigerant or cryostat).
+\item $^{238}$U from the TPC vessel.
+\item $^{214}$Bi from the TPC cathode ($^{238}$U chain).
+\item $^{214}$Bi from the air gap inside the lead wall ($^{238}$U chain).
+\item $^{214}$Pb dissolved in active xenon ($^{238}$U chain).
+\item $^{222}$Rn dissolved in inactive xenon ($^{238}$U chain).
+\item $^{60}$Co from the TPC vessel.
+\item $^{40}$K from the TPC vessel.
+\item $^{65}$Zn from the TPC vessel.
+\item $^{54}$Mn from the TPC vessel.
+\item $^{137}$Xe from neutron capture on $^{136}$Xe.
+\item $^{135}$Xe from neutron capture on $^{134}$Xe.
+\item Various neutron captures on xenon, copper, and hydrogen.
+\end{itemize}
+Similar pdfs from different locations are included because the sharpness and relative intensity of peaks can be affected by intervening material.  The rate of $^{214}$Bi from the air gap is constrained by measurements of radon levels in air, and the rates of $^{214}$Bi from the TPC cathode, $^{214}$Pb dissolved in active xenon, and $^{222}$Rn dissolved in inactive xenon are jointly constrained by independent searches for $^{214}$Bi-$^{214}$Po rates.  The overall rate of neutron captures is allowed to float, but the relative intensities of the captures on xenon, copper, and hydrogen are constrained by simulation, and the single-site fraction is fixed because there are not expected to be sufficient statistics in the single-site spectrum to constrain it.~\cite{FittingDocument}
+
+In addition to the magnitude and single-site fraction parameters of the fit, there are a few global parameters which are also allowed to float.  There is a normalization constant which is allowed to float within constraints and accounts for uncertainty in the fiducial volume or detection efficiency.  Constraints on this term come from comparisons between the predicted and observed event rate from sources.  Denoising does not currently operate on events whose waveforms are shorter than the standard length of $2048 \mu$s; since these occur more in source data than low-background data, an additional correction to the simulated event rate must be generated, and denoising may in this way worsen the event rate agreement in source data even though it is not expected to show a significant effect in low-background data.  Additionally, the normalization constants for gamma and beta particles are allowed to float separately because their reconstruction efficiency may be different.
 
 \begin{figure}
 \begin{center}
@@ -589,15 +621,11 @@ data cuts: fiducial volume, coincidence cuts, diagonal cut.
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-Pdfs included; floating beta scale applied to beta-like.
-	Neglects pair-production partial beta scale.
-
-Three observables: energy, standoff, and two-category SS/MS.
-
-Likelihood is used as test statistic; profile is used for most errors.  Important errors (like bb0n magnitude) may be confirmed with toy MC (which lets us check systematics like shape error in spectrum, calibration errors
-
-Efficiency and mass are estimated, also with some error; denoising appears to have full efficiency in the low-background data, but requires a correction in source data due to truncated events.
-
+Furthermore, it is expected that betas and gammas may need to be calibrated separately.  To a first approximation, gammas deposit energy in the detector by exciting electrons, so these processes should be quite similar.  However, to account for possible differences, we define a beta-scale $\beta$ which quantifies a linear calibration offset between beta and gamma deposits:
+\begin{equation}
+E_\beta = \beta E_\gamma.
+\end{equation}
+The beta scale is permitted to float, and is constrained by the fit; figure~\ref{fig:BetaScaleNLL} shows the NLL profile with various choices of beta scale, and demonstrates that it is possible to constrain the beta scale to a value close to $1$ using only the spectral information in the fit.  Uncertainty on the beta scale is incorporated by permitting it to float freely.  We note that currently the beta scale is implemented by shifting beta-like pdf components ($\beta\beta 0\nu$, $\beta\beta 2\nu$, $^{135}$Xe, $^{137}$Xe) relative to the other components which are gamma-like; this ignores the detail that some events may contain clusters generated through both beta and gamma interactions, such as pair production from energetic gammas.  These issues will be addressed in a future analysis, but for now the beta scale is assigned only to decays whose primary particle is a beta.~\cite{FittingDocument}
 
 \begin{figure}
 \begin{center}
@@ -613,6 +641,25 @@ Efficiency and mass are estimated, also with some error; denoising appears to ha
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
+When all of this is done, it is possible to obtain a fit to the low-background spectrum; the maximum-likelihood fit is shown in figure~\ref{fig:BestFitEnergyFromPaper}.  The best-fit expected background in the $2\sigma$ single-site energy window around our $Q$-value is $31.1 \pm 1.8\text{(stat)} \pm 3.3\text{(sys)}$ counts, corresponding to a background rate of $(1.7 \pm 0.2)\cdot 10^{-3} \text{keV}^{-1} \text{kg}^{−1} \text{yr}^{−1}$.  The backgrounds in this $2\sigma$ energy window come from the thorium decay chain ($51\%$), uranium decay chain ($26\%$), and $^{137}$Xe ($23\%$), with other contributions negligible.  The observed event count in the $2\sigma$ single-site energy window is $39$ counts.~\cite{NewEXObb0nPaper_2014}
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{ROIdistribution_XY.eps}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{ROIdistribution_RZ.eps}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{The positions of events in the $1\sigma$ region of interest (red) and wider energy range $2325-2550$ keV (black) are shown projected onto their X-Y (left) and $R^2$-Z (right) coordinates.  Lines indicate the fiducial volume, with the dotted lines indicating the fiducial cut away from the cathod that is not used as a component to the standoff distance observable. Figure provided by Dave Moore.}
+\label{fig:ROIEventPositionDistribution}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+(We remind the reader at this point that the quoted limit on $\beta\beta 0\nu$ is not simply based on this comparison of counts, but based on the full set of energy and standoff-distance spectral information.  Representative position information can be seen in figure~\ref{fig:ROIEventPositionDistribution}.  However, the simple comparison of counts can be instructive as an easier-to-understand approximation to the following limits.)
+
 \begin{figure}
 \begin{center}
 \includegraphics[keepaspectratio=true,height=3in]{0nubb_profile_frompaper.pdf}
@@ -626,6 +673,8 @@ Efficiency and mass are estimated, also with some error; denoising appears to ha
 \end{figure}
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
+
+The likelihood profile for the total number of $\beta\beta 0\nu$ counts occurring in our detector during the lifetime of the experiment is shown in figure~\ref{fig:bb0nProfileFromPaper}.  Based on the profile, we can see that a $1\sigma$ confidence interval for this parameter would exclude the null hypothesis of zero $\beta\beta 0\nu$ counts; however, only $1\sigma$ exclusion of the null hypothesis is far too weak to make an inference of a non-zero signal.  Instead, we follow the conventions of the field and quote a $90\%$-confidence upper limit of $24$ total counts from $\beta\beta 0\nu$.  This corresponds to a $90\%$-confidence lower limit on the halflife of $^{136}$Xe decay by the $\beta\beta 0\nu$ mode of $1.1 \cdot 10^{25}$ years.~\cite{NewEXObb0nPaper_2014}
 
 
 \section{Results and Physics Reach}\label{sec:ResultResults}
@@ -657,7 +706,7 @@ Efficiency and mass are estimated, also with some error; denoising appears to ha
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{$\beta\beta 0\nu$ constraints are shown from $^{136}$Xe (horizontal) and $^{76}$Ge (vertical).  The four diagonal lines represent four recent matrix element computations \cite{PhysRevLett.105.252503}\cite{Menéndez2009139}\cite{PhysRevC.87.014315}\cite{PhysRevC.87.045501} and one recent phase-space factor~\cite{PhysRevC.85.034316} relating the two half-lives; tick marks along the diagonal represent the corresponding mass $\left<m_{\beta\beta}\right>$.  $90\%$ confidence limits and median $90\%$ sensitivities are shown for the KamLand-Zen~\cite{PhysRevLett.110.062502}, GERDA~\cite{PhysRevLett.111.122503}, and EXO-200 experiments~\cite{NewEXObb0nPaper_2014}; the claimed 2006 discovery by Klapdor-Kleingrothaus and Krivosheina is shown as a $1\sigma$ confidence interval.~\cite{Klapdor}}
+\caption{$\beta\beta 0\nu$ constraints are shown from $^{136}$Xe (horizontal) and $^{76}$Ge (vertical).  The four diagonal lines represent four recent matrix element computations \cite{PhysRevLett.105.252503,Menéndez2009139,PhysRevC.87.014315,PhysRevC.87.045501} and one recent phase-space factor~\cite{PhysRevC.85.034316} relating the two half-lives; tick marks along the diagonal represent the corresponding mass $\left<m_{\beta\beta}\right>$.  $90\%$ confidence limits and median $90\%$ sensitivities are shown for the KamLand-Zen~\cite{PhysRevLett.110.062502}, GERDA~\cite{PhysRevLett.111.122503}, and EXO-200 experiments~\cite{NewEXObb0nPaper_2014}; the claimed 2006 discovery by Klapdor-Kleingrothaus and Krivosheina is shown as a $1\sigma$ confidence interval.~\cite{Klapdor}}
 \label{fig:MatplotlibSensitivity}
 \end{quote}
 \end{figure}
