@@ -3,4 +3,53 @@
 \chapter{Noise Measurements}
 \label{ch:NoiseMeasurements}
 
+We have described in chapter~\ref{ch:DenoisingTheory} the principles and algorithm behind denoising.  Among the points made is that a detailed noise model is required to perform denoising.  Equation~\ref{eq:FirstStatementOfNoiseCorrelations} specifies that the correlations in electronic noise will be taken as inputs to denoising; in this chapter we will describe the measurement of the noise correlations.  Section~\ref{sec:NoiseCorrelationsMath} will specify the desired measurement; section~\ref{sec:NoiseCorrelationsTimeWindows} will identify the time-dependent behavior of noise; and section~\ref{sec:NoiseCorrelationsImplementation} will describe the algorithm employed to measure noise from data.  We conclude in section~\ref{sec:NoiseCorrelationsFuture} with some possible future work to improve the quality of the noise measurements or use them in other aspects of the EXO-200 analysis.
 
+\section{Mathematical Framework for Noise Correlations}\label{sec:NoiseCorrelationsMath}
+
+A waveform on channel $i$ with no pulse on it consists entirely of a noise function $N_i[\tau]$.  The noise is a random function:  its value at each time $\tau$ is a random variable.  Our goal, then, is to describe the joint probability distribution of those random variables.  It has also been observed that noise on different channels is correlated, so our joint probability distribution should describe not only the noise for all time samples $\tau$ on a particular channel $i$, but also the relation between noise on any distinct pair of channels $i$ and $j$.
+
+We can guarantee that the noise is stationary because the waveforms are all subject to shaping which removes low-frequency noise components, as described in section~\ref{sec:DetectorReadout}.  It is conventional to study stationary noise in Fourier space.  This can often lead to sharper features because noise often originates from environmental factors which demonstrate periodic behavior: in EXO-200, example of possible sources of periodic waveform noise include acoustic noise from the cleanroom, mechanical vibrations of the various wires under tension in the TPC, or switching noise from the digital power supplies.  It also can lead to a simpler characterization of noise correlations: in a steady-state environment it is impossible for noise at two different frequencies to be correlated because the $L_2$ inner product of two sinusoidal functions with different frequencies is always zero.
+
+We will write the discrete Fourier transform of $N_i[\tau]$ as $\widetilde{N}_i[f]$, consistent with the notation described in section~\ref{sec:DenoisingNotationSetup}.  Although the specific choice of convention will not matter for any of the analysis in this work, for completeness we specify explicitly the definition of the discrete Fourier transform as
+\begin{equation}
+\widetilde{N}_i[f] = \sum_{\tau = 0}^{T-1} N_i[\tau] e^{-2\pi \tau f \sqrt{-1}/T},
+\end{equation}
+where $T$ is the (unitless) number of samples in the time domain waveform.  The index $f$ takes integer values from 0 to $\lfloor \frac{T}{2} \rfloor$, where $\lfloor\rfloor$ indicates that rounding is performed downward.  This set of conventions matches the conventions of the real-to-complex discrete Fourier transform implemented by the popular FFTW library, available on all computational platforms we have attempted to use.~\cite{FFTW05}
+
+Our sampling frequency of 1 MHz means that we can associate $\widetilde{N}_i[f]$ with noise at a frequency of $f/T$ MHz (where we again recall that $T$ and $f$ are unitless).  The accuracy of this association is dependent on the accuracy of the nominal 1 MHz sampling.  This is controlled by a nominal 80 MHz oscillator in the master TEM unit; preliminary investigations indicate that this frequency changes over time, and may deviate from a true 80 MHz period by as much as ten parts per million.~\cite{DAQWeirdDetails,EXOElectronicsFunctionalSpecification}  Since we apply low-pass filters with a combined effective cutoff frequency around 167 kHz, as described in section~\ref{sec:DetectorReadout}, this is expected to have a negligible effect on our noise measurements.
+
+
+The first moments of the four
+
+
+
+We have seen from equation~\ref{eqn:SystemToSolve} that denoising requires knowledge of the following expectation values as input:
+\begin{align}
+\left<\widetilde{N}^R_i[f]\widetilde{N}^R_j[f]\right>
+\end{align}
+
+
+
+What are we computing with the noise correlations.
+Symmetries; why the results aren't quite phase-symmetric for finite traces.
+
+\section{Time Windows of Constant Noise}\label{sec:NoiseCorrelationsTimeWindows}
+
+Noise windows used.
+Plots to support this.
+
+\section{Algorithm for Measuring Noise}\label{sec:NoiseCorrelationsImplementation}
+
+General algorithm to create noise matrices.
+Selection cuts on events.
+Data format.  (Yes, this is probably useful in the category of unifying notation.)
+U-wire noise collected as well, to support occasional studies.
+
+\section{Future Directions with Noise Measurement}\label{sec:NoiseCorrelationsFuture}
+
+stripping the glitch from noise traces.
+using noise in monte carlo?
+Studying the smoothness of the noise functions vs f (for truncated waveforms).
+Check noise temperature dependence, other rapidly-varying environmental factors.
+Resolution time-dependence can be used to check time windows; other approaches?  (KZ tests for consistency with flat.)

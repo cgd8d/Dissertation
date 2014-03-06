@@ -676,9 +676,11 @@ When all of this is done, it is possible to obtain a fit to the low-background s
 
 The likelihood profile for the total number of $\beta\beta 0\nu$ counts occurring in our detector during the lifetime of the experiment is shown in figure~\ref{fig:bb0nProfileFromPaper}.  Based on the profile, we can see that a $1\sigma$ confidence interval for this parameter would exclude the null hypothesis of zero $\beta\beta 0\nu$ counts; however, only $1\sigma$ exclusion of the null hypothesis is far too weak to make an inference of a non-zero signal.  Instead, we follow the conventions of the field and quote a $90\%$-confidence upper limit of $24$ total counts from $\beta\beta 0\nu$.  This corresponds to a $90\%$-confidence lower limit on the halflife of $^{136}$Xe decay by the $\beta\beta 0\nu$ mode of $1.1 \cdot 10^{25}$ years.~\cite{NewEXObb0nPaper_2014}
 
-
 \section{Results and Physics Reach}\label{sec:ResultResults}
 
+We have stated the half-life limit on $\beta\beta 0\nu$ decay of $^{136}$Xe, which is the main result of the present analysis.  We shall now continue to put this result in context with the expected sensitivity of the experiment and compare it to the limits and sensitivities achieved by other leading $\beta\beta 0\nu$ experiments.
+
+To place the limit derived with the current dataset in context with the overall strength of the experiment, we generate a number of toy monte carlo datasets.  We assume that our best-fit backgrounds are fully accurate and that the null hypothesis (no $\beta\beta 0\nu$) is true; we then use this best-fit background as our pdf and generate toy datasets.  These can be used to study the ``typical'' results our detector would have produced if the same experiment could be repeated many times.
 
 \begin{figure}
 \begin{center}
@@ -695,9 +697,9 @@ The likelihood profile for the total number of $\beta\beta 0\nu$ counts occurrin
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
+The resulting distributions are shown in figure~\ref{fig:ToyMCSensitivitySelectivity}.  The top plot shows the distribution of $90\%$-confidence upper limits on the number of $\beta\beta 0\nu$ counts; we can see that typical datasets from the EXO-200 experiment result in limits ranging from 8 to 22 counts.  The median limit, is 14 counts; this value is called the median sensitivity, and it illustrates the overall strength of an experiment.  We contrast this with the observed limit of 24 counts; as is apparent from the distribution, this limit is consistent with an unlucky upward fluctuation in the backgrounds observed by EXO-200.
 
-
-
+We saw in the NLL profile on the total number of $\beta\beta 0\nu$ counts in figure~\ref{fig:bb0nProfileFromPaper} that the NLL for the hypothesis of no $\beta\beta 0\nu$ counts is about 1.1 higher than for the best fit; this quantity reflects how well we can reject the null hypothesis in favor of the best fit.  To put this in context, we also observe the distribution of this value from toy monte carlo datasets in the bottom plot of figure~\ref{fig:ToyMCSensitivitySelectivity}.  Here, we see that $10.8\%$ of identical experiments will yield an NLL profile which is at least 1.1 worse for no $\beta\beta 0\nu$ than for the best fits even though no $\beta\beta 0\nu$ is simulated.  We can conclude that this difference in NLL is not strong enough to reject the null hypothesis with high confidence.
 
 \begin{figure}
 \begin{center}
@@ -713,8 +715,14 @@ The likelihood profile for the total number of $\beta\beta 0\nu$ counts occurrin
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
+The wide spread of limits produced in toy monte carlo studies illustrates the significant role that luck plays in the limits set by low-statistics experiments such as EXO-200.  To compare EXO-200 to other experiments, it is useful to compare both the limits and the median sensitivities (median $90\%$-confidence limits).  This is done in figure~\ref{fig:MatplotlibSensitivity}.  Vertical lines correspond to the reported median sensitivities of the two leading $^{136}$Xe experiments, KamLAND-Zen and EXO-200; right-pointing arrows indicate the actual limits set by each.  For both experiments we can see that statistical fluctuations in the background account for factor-of-two differences between median sensitivity and observed limits; EXO-200 claims to be the most sensitive $^{136}$Xe experiment, but KamLAND-Zen currently reports the strongest limit.  Both experiments intend to continue running, and EXO-200 hopes that their next dataset is atypical in the other way.
 
+Nuclear matrix elements are difficult to compute, as described in \textcolor{red}{the section I need to expand}.  However, figure~\ref{fig:MatplotlibSensitivity} illustrated four diagonal lines corresponding to four different modern nuclear matrix calculations, and uses these values to relate the half-lives of $^{136}$Xe and $^{76}$Ge.  The current median sensitivity and limit on the $\beta\beta 0\nu$ half-life of $^{76}$Ge from GERDA are shown as a horizontal line and vertical arrow, respectively.  This is contrasted with the 2006 claimed discovery by Klapdor-Kleingrothaus and Krivosheina of $\beta\beta 0\nu$ decay, which is not excluded by the more recent GERDA limit.
+
+Furthermore, the nuclear matrix elements permit us to translate half-life lower limits into upper limits on the effective Majorana neutrino mass $\left<m_{\beta\beta}\right>$.  The relation is indicated, for each choice of nuclear matrix elements, by tick marks on the corresponding diagonal line.  We can see that the GERDA and EXO-200 experiments are of similar strengths, depending most on the choice nuclear matrix elements; KamLAND-Zen is comparable in strength to GERDA for the RQRPA nuclear matrix elements, and stronger for all other choices in this plot.  The $90\%$-confidence mass limit quoted by EXO-200 is $\left<m_{\beta\beta}\right> < 190-450$ meV, depending on the choice of matrix elements.  Recalling figure~\ref{fig:NeutrinoMassBounds}, this corresponds to a $90\%$-confidence limit on the mass of the lightest neutrino eigenstate of $m_{min} < 0.69–1.63$ eV under the most conservative choice of Majorana phases.~\cite{NewEXObb0nPaper_2014}
 
 \section{Comparison to Results without Denoising}\label{sec:ResultComparison}
+
+\textcolor{red}{I should do this -- but need to finalize plots, which still needs a little more processing.}
 
 \section{Summary}\label{sec:ResultSummary}

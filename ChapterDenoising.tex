@@ -37,7 +37,7 @@ This active form of denoising consists of using correlations between noise on di
 
 In the following, we will describe a general linear operator on the APD signals which in principle can accomplish each of these forms of denoising, and we will presume that all of the described inputs are available; by identifying the parameters for that linear operator which are optimal, we can be confident that the denoising operator we produce will accomplish all three forms of denoising described above.
 
-\section{Setup}
+\section{Setup}\label{sec:DenoisingNotationSetup}
 
 We first establish a number of notational conventions:
 \begin{itemize}
@@ -95,7 +95,9 @@ It is first important to characterize the response of the APDs to energy deposit
 \subsection{APD Noise}\label{sec:DescriptionOfPhotonNoise}
 
 We will assume that there are two sources of noise in this model.  First, the electronic noise $N_i[\tau]$ is assumed to be random.  We require that noise with different frequencies is uncorrelated:
-\[\left< \widetilde{N}_i[f] \widetilde{N}_j[g] \right> = 0 \text{~when~} f \ne g.\]
+\begin{equation}\label{eq:FirstStatementOfNoiseCorrelations}
+\left< \widetilde{N}_i[f] \widetilde{N}_j[g] \right> = 0 \text{~when~} f \ne g.
+\end{equation}
 The noise correlations $\left< \widetilde{N}_i[f] \widetilde{N}_j[f] \right>$ are assumed to be known; our means for measuring them are described in chapter~\ref{ch:NoiseMeasurements}.
 
 The second random variable will be the magnitude of the signal itself, $M_{ia}$.  When an energetic decay occurs in bulk of the detector, it will release some number of photons.  We will denote the number of photons released by signal $a$ by $P^{(0)}_a$, and this is the parameter we wish to measure.  However, the magnitude signal actually observed on APD channels number of photons actually collected by sensors is a random variable whose distribution depends on $P^{(0)}_a$, and we will now identify the chain of events which produce it.
@@ -727,7 +729,7 @@ The majority of non-zero matrix entries comes from the electronic noise matrix $
 The key points here which create an opportunity for optimization are that:
 \begin{itemize}
 \item The electronic noise terms generally do not change event-by-event.  They are treated as constant across many runs.
-\item It is possible to multiply two $N \times N$ matrices together much faster than it is possible to perform $N$ multiplications of an $N \times N$ matrix with $N$ $N \times 1$ matrices.  This can be achieved with a combination of algorithms faster than naive $O(N^3)$ speed and exploitation of low-level computer hardware features such as the CPU cache.~\cite{BLASFirstReference}~\cite{AnatomyOfMatrixMultiply}
+\item It is possible to multiply two $N \times N$ matrices together much faster than it is possible to perform $N$ multiplications of an $N \times N$ matrix with $N$ $N \times 1$ matrices.  This can be achieved with a combination of algorithms faster than naive $O(N^3)$ speed and exploitation of low-level computer hardware features such as the CPU cache.~\cite{BLASFirstReference,AnatomyOfMatrixMultiply}
 \end{itemize}
 What we wish to do, then, is reorganize the solver algorithm so that whenever multiplication by the electronic noise matrix is required, rather than performing that multiplication on a ``skinny" $150 \times O(1)$ matrix, we pack together many such ``skinny" matrices into a single matrix with many columns.  Multiplication can then be performed in bulk; and individual columns from the result can be extracted and used as before.
 
