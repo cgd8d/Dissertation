@@ -15,26 +15,56 @@ We will write the discrete Fourier transform of $N_i[\tau]$ as $\widetilde{N}_i[
 \begin{equation}
 \widetilde{N}_i[f] = \sum_{\tau = 0}^{T-1} N_i[\tau] e^{-2\pi \tau f \sqrt{-1}/T},
 \end{equation}
-where $T$ is the (unitless) number of samples in the time domain waveform.  The index $f$ takes integer values from 0 to $\lfloor \frac{T}{2} \rfloor$, where $\lfloor\rfloor$ indicates that rounding is performed downward.  This set of conventions matches the conventions of the real-to-complex discrete Fourier transform implemented by the popular FFTW library, available on all computational platforms we have attempted to use.~\cite{FFTW05}
+where $T$ is the (unitless) number of samples in the time domain waveform.  The index $f$ takes integer values from 0 to $\lfloor \frac{T}{2} \rfloor$ (inclusive), where $\lfloor\rfloor$ indicates that rounding is performed downward.  This set of conventions matches the conventions of the real-to-complex discrete Fourier transform implemented by the popular FFTW library, available on all computational platforms we have attempted to use.~\cite{FFTW05}
 
 Our sampling frequency of 1 MHz means that we can associate $\widetilde{N}_i[f]$ with noise at a frequency of $f/T$ MHz (where we again recall that $T$ and $f$ are unitless).  The accuracy of this association is dependent on the accuracy of the nominal 1 MHz sampling.  This is controlled by a nominal 80 MHz oscillator in the master TEM unit; preliminary investigations indicate that this frequency changes over time, and may deviate from a true 80 MHz period by as much as ten parts per million.~\cite{DAQWeirdDetails,EXOElectronicsFunctionalSpecification}  Since we apply low-pass filters with a combined effective cutoff frequency around 167 kHz, as described in section~\ref{sec:DetectorReadout}, this is expected to have a negligible effect on our noise measurements.
 
+% Phase is not uniform on 2pi, since some frequency components are real-valued.  There is 180-degree symmetry, but I'm not sure how to explain this or justify why.
+%We assume that the phase of the noise is random.  Since a shift in the phase of a Fourier component corresponds to a translation in the time-domain, this assumption is equivalent to assuming that waveforms are sampled at random times without any periodicity; this is certainly true for all except the solicited trigger.  The solicited trigger is taken at 10 second intervals, but the trigger time of each individual event is observed to have a root-mean-square error around 3 milliseconds.~\cite{DAQWeirdDetails}  The waveform only has a length of 2 milliseconds, so even the solicited trigger events can be assumed to have approximately random phase.  This means that the first moments of the noise, $\left<\widetilde{N}_i[f]\right>$, are all equal to zero except for the zero-frequency component $\left<\widetilde{N}_i[0]\right>$.
 
-The first moments of the four
+To quantify the second moments of the noise, we have seen in equation~\ref{eqn:SystemToSolve} that it will be useful to measure expectation values of the following real-values quantities for each pair of channels $i$, $j$ and each frequency index $f$:
+\begin{subequations}\begin{align}
+&\left<\widetilde{N}^R_i[f]\widetilde{N}^R_j[f]\right>\label{eq:NoiseChapterFirstExpValue}\\
+&\left<\widetilde{N}^R_i[f]\widetilde{N}^I_j[f]\right>\label{eq:NoiseChapterSecondExpValue}\\
+&\left<\widetilde{N}^I_i[f]\widetilde{N}^I_j[f]\right>\label{eq:NoiseChapterThirdExpValue},
+\end{align}\end{subequations}
+where $\widetilde{N}^R$ and $\widetilde{N}^I$ denote the real and imaginary parts of the noise in Fourier space, respectively.
 
-
-
-We have seen from equation~\ref{eqn:SystemToSolve} that denoising requires knowledge of the following expectation values as input:
-\begin{align}
-\left<\widetilde{N}^R_i[f]\widetilde{N}^R_j[f]\right>
-\end{align}
-
-
-
-What are we computing with the noise correlations.
-Symmetries; why the results aren't quite phase-symmetric for finite traces.
+We can see that there are symmetries in equations~\ref{eq:NoiseChapterFirstExpValue} and \ref{eq:NoiseChapterThirdExpValue} under exchange of channel indices $i$ and $j$, so we can store these values on disk more compactly by only storing the expectation values where $i \leq j$.  For equation~\ref{eq:NoiseChapterSecondExpValue} no such symmetry exists, and all pairs $i$ and $j$ must be stored.  Given 71 channels and waveforms of 2048 samples in the time domain (corresponding to 1025 samples in the frequency domain), we can see that over ten million real values must be stored to describe these correlations; this translates into files of more than 80 MB for each snapshot of the noise correlations.  To keep this quantity of data reasonable, we will show in section~\ref{sec:NoiseCorrelationsTimeWindows} that periodic snapshots do appear to be sufficient, so this can be a managable dataset.
 
 \section{Time Windows of Constant Noise}\label{sec:NoiseCorrelationsTimeWindows}
+
+Section~\ref{sec:NoiseCorrelationsMath} has described the renoise information which is required, and demonstrated that a snapshot of the noise will require roughly 80 MB of data.  Although EXO-200 has a significant amount of noise information available and could in principle produce a detailed history of the noise variations in time, taking such an approach would quickly produce an unmanagable quantity of data.  THis section will explain how the noise behavior is approximately constant for long periods of time, reducing that burden.
+
+The approach to identifying these constant-noise time windows will be two-fold.  Firstly, we can identify certain environmental changes which are likely to have a significant impact on the noise observed on the APDs.  Since the time at which these changes occurred is generally known precisely (and usually falls between runs), we can place time boundaries accurately when an environmental change is traced as the origin of a change.
+
+Secondly, we develop a set of parameters which can easily be viewed in plots versus time.  These trend plots can then be reviewed qualitatively by collaboration members, and stepwise changes in any of these parameters can be taken to indicate a possible change detector noise at this point in time.  Although sometimes it is necessary to guess the precise time when the change in noise occurred, when possible we review the environmental conditions of the detector in more detail and search for possible causes for the change in noise which would permit us to pinpoint the time of the change.
+
+\begin{table}
+\begin{tabular}{|c|c|p{.52\textwidth}|}\hline
+Runs & Dates & Comments \\\hline
+2401-2423 & 9/28/2011-9/30/2011 & APDs biased to special ``9-28-11'' settings. \\\hline
+2424-2690 & 9/30/2011-11/2/2011 &    \\\hline
+2691-2852 & 11/2/2011-11/28/2011 & \\\hline
+2853-2891 & 11/28/2011-12/4/2011 & \\\hline
+2892-3117 & 12/4/2011-1/13/2012 & \\\hline
+3118-3326 & 1/13/2012-2/23/2012 & \\\hline
+3327-3700 & 2/23/2012-5/11/2012 & \\\hline
+3701-3949 & 5/11/2012-7/12/2012 & \\\hline
+3950-4140 & 7/12/2012-9/2/2012 & \\\hline
+4141-4579 & 9/2/2012-12/24/2012 & \\\hline
+4580-4779 & 12/24/2012-2/20/2013 & \\\hline
+4780-5197 & 2/20/2013-6/7/2013 & \\\hline
+5198-5590 & 6/7/2013-8/31/2013 & \\\hline
+5591-5892 & 8/31/2013-11/11/2013 & \\\hline
+\end{tabular}
+\end{table}
+
+
+
+
+
+
 
 Noise windows used.
 Plots to support this.
