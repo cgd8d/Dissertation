@@ -32,6 +32,18 @@ where $\widetilde{N}^R$ and $\widetilde{N}^I$ denote the real and imaginary part
 
 We can see that there are symmetries in equations~\ref{eq:NoiseChapterFirstExpValue} and \ref{eq:NoiseChapterThirdExpValue} under exchange of channel indices $i$ and $j$, so we can store these values on disk more compactly by only storing the expectation values where $i \leq j$.  For equation~\ref{eq:NoiseChapterSecondExpValue} no such symmetry exists, and all pairs $i$ and $j$ must be stored.  Given 71 channels and waveforms of 2048 samples in the time domain (corresponding to 1025 samples in the frequency domain), we can see that over ten million real values must be stored to describe these correlations; this translates into files of more than 80 MB for each snapshot of the noise correlations.  To keep this quantity of data reasonable, we will show in section~\ref{sec:NoiseCorrelationsTimeWindows} that periodic snapshots do appear to be sufficient, so this can be a managable dataset.
 
+\textcolor{red}{OK, finally figured out the symmetry issue between real and imaginary.  Should write it up, below are just notes.}
+
+Noise in time domain looks like some unique choice of $A_i cos(\omega t + \theta_i)$ for each frequency.  This applies to all frequencies strictly below the Nyquist frequency of $1/2B$, where B is the bandwidth (1 microsecond for us).  That means that our highest frequency, 0.5 MHz, is not represented uniquely; we break that degeneracy by choosing a particular theta = 0.  Similarly for frequency 0: we break the degeneracy by choosing theta = 0.  But if we don't break the degeneracy by setting theta = 0, then there can't be any advantaged theta; in other words, you can't attribute meaning to $\theta_i + \theta_j$, only $\theta_i - \theta_j$.  (Correspond to a redefinition of $t=0$ -- we are translation-invariant in time.  But only if we don't break degeneracy with a particular choice of theta.)
+
+Then in frequency space this is $n_i = A_i e^{\theta_i i}$.  (Similar for the negative frequency component; symmetry lets us ignore it.)
+$<n^R_i n^R_j> = A_i A_j <cos(\theta_i) cos(\theta_j)> = A_i A_j <cos(\theta_i + \theta_j) + cos(\theta_i - \theta_j)>/2 = A_i A_j <cos(\theta_i - \theta_j)>$.
+That last equality comes from $<cos(\theta_i + \theta_j)> = 0$ because no matter how they are correlated, they cannot have any directional preference.  Put another way: there can't be any dependence on how we define theta=0.
+Similarly for when both are imaginary; so in the case described above where no degeneracy in theta is broken, $<n^R_i n^R_j> = <n^I_i n^I_j>$.
+And also similarly, $<n^R_i n^I_j> = -<n^I_i n^R_j>$.
+
+So: symmetry/antisymmetry found, FINALLY!
+
 \section{Time Windows of Constant Noise}\label{sec:NoiseCorrelationsTimeWindows}
 
 Section~\ref{sec:NoiseCorrelationsMath} has described the renoise information which is required, and demonstrated that a snapshot of the noise will require roughly 80 MB of data.  Although EXO-200 has a significant amount of noise information available and could in principle produce a detailed history of the noise variations in time, taking such an approach would quickly produce an unmanagable quantity of data.  THis section will explain how the noise behavior is approximately constant for long periods of time, reducing that burden.
@@ -40,36 +52,46 @@ The approach to identifying these constant-noise time windows will be two-fold. 
 
 Secondly, we develop a set of parameters which can easily be viewed in plots versus time.  These trend plots can then be reviewed qualitatively by collaboration members, and stepwise changes in any of these parameters can be taken to indicate a possible change detector noise at this point in time.  Although sometimes it is necessary to guess the precise time when the change in noise occurred, when possible we review the environmental conditions of the detector in more detail and search for possible causes for the change in noise which would permit us to pinpoint the time of the change.
 
-\begin{table}
+\begin{table}\label{tab:NoiseTimeWindows}
+\begin{singlespace}
+\begin{center}
 \begin{tabular}{|c|c|p{.52\textwidth}|}\hline
 Runs & Dates & Comments \\\hline
 2401-2423 & 9/28/2011-9/30/2011 & APDs biased to special ``9-28-11'' settings. \\\hline
-2424-2690 & 9/30/2011-11/2/2011 &    \\\hline
-2691-2852 & 11/2/2011-11/28/2011 & \\\hline
-2853-2891 & 11/28/2011-12/4/2011 & \\\hline
-2892-3117 & 12/4/2011-1/13/2012 & \\\hline
-3118-3326 & 1/13/2012-2/23/2012 & \\\hline
-3327-3700 & 2/23/2012-5/11/2012 & \\\hline
-3701-3949 & 5/11/2012-7/12/2012 & \\\hline
-3950-4140 & 7/12/2012-9/2/2012 & \\\hline
-4141-4579 & 9/2/2012-12/24/2012 & \\\hline
-4580-4779 & 12/24/2012-2/20/2013 & \\\hline
-4780-5197 & 2/20/2013-6/7/2013 & \\\hline
-5198-5590 & 6/7/2013-8/31/2013 & \\\hline
-5591-5892 & 8/31/2013-11/11/2013 & \\\hline
+2424-2690 & 9/30/2011-11/2/2011 & FEC voltage adjustment on 11/2/2011. \\\hline % Need to make supporting plot to show it matters.  Doesn't show in RMS plots from Josiah.
+2691-2852 & 11/2/2011-11/28/2011 & Cooling fan installed on Ebox 1, 11/28/2011. \\\hline
+2853-2891 & 11/28/2011-12/4/2011 & Cooling fan installed on Ebox 2, 12/4/2011. \\\hline
+2892-3117 & 12/4/2011-1/13/2012 & Power outage, no data 1/13-1/19. \\\hline
+3118-3326 & 1/13/2012-2/23/2012 & During runs 3314-3320 (2/22) APD channel 163 was disconnected.  During runs 3324-3331 (2/23) front-end cards were swapped.\\\hline
+3327-3700 & 2/23/2012-5/11/2012 & Brief power outage on 5/11. \\\hline
+3701-3933 & 5/11/2012-7/10/2012 & Possibly associated with a TEM temperature spike on the morning of 7/10; cause not known. \\\hline
+3934-4003 & 7/10/2012-7/24/2012 & Possibly associated with a new TEM module on 7/24. \\\hline
+4004-4126 & 7/24/2012-8/28/2012 & Power outage, no data 8/28-8/30, messy recovery of APD01. \\\hline
+4127-4589 & 8/28/2012-12/27/2012 & Pump reset on 12/27, but it's not clear this is the cause of the short spike in APD noise. \\\hline
+4590-4609 & 12/27/2012-1/1/2013 & As mysteriously as the noise came on 12/27, it left sometime between 1/1 and 1/2. \\\hline
+4609-4779 & 1/1/2013-2/20/2013 & Not clear that anything happened on 2/20; we should review this boundary to ensure it is significant. \\\hline
+4780-5061 & 2/20/2013-5/14/2013 & Noise on TPC2 changed sometime around 5/14-5/20.  Thermal stores stopped cooling on the evening of 5/17, but it it unclear how this would impact the APDs. \\\hline
+5062-5197 & 5/14/2013-6/7/2013 & Modifications to electronics boards on 6/7. \\\hline
+5198-5590 & 6/7/2013-8/31/2013 & Temperature excursions in the cleanroom around 8/31 permanently impacted the APD behavior. \\\hline
+5591-5892 & 8/31/2013-11/11/2013 & Differential-pressure excursion on 11/11. \\\hline
 \end{tabular}
+\end{center}
+\end{singlespace}
+\caption{Recommended noise windows, based on the current understanding of changes in noise and their possible causes.  This is not the same as the noise windows actually used in the present analysis.}
+\label{tab:NoiseWindowsRecommendedForFuture}
 \end{table}
 
+\textcolor{red}{Still need to finish noise time window stuff -- but would like to double-check based on more detail from Josiah's plots.}
 
 
-
-
-
+For charge analysis, other factors might also be important; for example, period when channel 16 is missing.  Generally, charge is more stable than light.
 
 Noise windows used.
 Plots to support this.
 
 \section{Algorithm for Measuring Noise}\label{sec:NoiseCorrelationsImplementation}
+
+For each of the noise windows specified in table~\ref{tab:NoiseTimeWindows}
 
 General algorithm to create noise matrices.
 Selection cuts on events.
@@ -77,6 +99,11 @@ Data format.  (Yes, this is probably useful in the category of unifying notation
 U-wire noise collected as well, to support occasional studies.
 
 \section{Future Directions with Noise Measurement}\label{sec:NoiseCorrelationsFuture}
+
+Continued work on noise windows:
+\begin{itemize}
+\item Runs 3321-3323 should be excluded from noise measurements for the run window 3118-3326 so they don't bias our measurement of the noise on channel 163.  Channel 163 should be marked as bad in the channel map after February 22, 2012 so that it is excluded from scintillation measurements after being disconnected.
+\end{itemize}
 
 stripping the glitch from noise traces.
 using noise in monte carlo?

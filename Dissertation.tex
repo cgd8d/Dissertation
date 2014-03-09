@@ -4,15 +4,10 @@
 %Thesis Main Page used with thesis.sty based on the
 %University of Maryland Electronic Thesis and Dissertation (ETD) Style Guide
 
-\documentclass[12pt]{report}  %12pt is larger than 11pt
+\documentclass[12pt]{report}
 
 % Control chapter headings -- this is REQUIRED for compliance with UMD style requirements.
 \usepackage{titlesec}
-%\titleformat{\chapter}[hang]{14pt}{\thechapter.}{20pt}{\\}
-%\titleformat{\chapter}[display]{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
-%\titleformat{\chapter}[display]{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{}
-%\titleformat{\chapter}[display]{\normalfont\bfseries}{\chaptertitlename\ \thechapter}{20pt}{}
-%\titleformat{\chapter}[display]{\large\bfseries}{\chaptertitlename\ \thechapter}{20pt}{}
 \titleformat{\chapter}[block]{\LARGE\bfseries}{\chaptertitlename\ \thechapter:}{20pt}{}
 \titlespacing*{\chapter}{0pt}{0.5in}{1in}
 
@@ -22,6 +17,7 @@
 \usepackage{amsmath} % For producing high-quality multi-line math displays.
 \usepackage{IEEEtrantools} % Alternative for complicated math -- allows specifying column alignment.
 \usepackage{verbatim} % For producing blocks of comments.
+\usepackage{setspace} % Permit us to single-space sections like tables, as permitted by UMD guidelines.
 \usepackage{algorithmic} % For producing algorithms.
 \usepackage{algorithm} % For producing floating figures which hold an algorithmic environment.
 \usepackage{multirow} % For merging table entries vertically.
