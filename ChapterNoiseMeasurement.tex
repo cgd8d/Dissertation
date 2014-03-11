@@ -1,9 +1,9 @@
 
 \renewcommand{\thechapter}{4}
-\chapter{Noise Measurements}
+\chapter{Electronic Noise Measurements}
 \label{ch:NoiseMeasurements}
 
-We have described in chapter~\ref{ch:DenoisingTheory} the principles and algorithm behind denoising.  Among the points made is that a detailed noise model is required to perform denoising.  Equation~\ref{eq:FirstStatementOfNoiseCorrelations} specifies that the correlations in electronic noise will be taken as inputs to denoising; in this chapter we will describe the measurement of the noise correlations.  Section~\ref{sec:NoiseCorrelationsMath} will specify the desired measurement; section~\ref{sec:NoiseCorrelationsTimeWindows} will identify the time-dependent behavior of noise; and section~\ref{sec:NoiseCorrelationsImplementation} will describe the algorithm employed to measure noise from data.  We conclude in section~\ref{sec:NoiseCorrelationsFuture} with some possible future work to improve the quality of the noise measurements or use them in other aspects of the EXO-200 analysis.
+We have described in chapter~\ref{ch:DenoisingTheory} the principles and algorithm behind denoising.  Among the points made is that a detailed noise model is required to perform denoising.  Equation~\ref{eq:FirstStatementOfNoiseCorrelations} specifies that the correlations in electronic noise will be taken as inputs to denoising; in this chapter we will describe the measurement of the electronic noise correlations.  Section~\ref{sec:NoiseCorrelationsMath} will specify the desired measurement; section~\ref{sec:NoiseCorrelationsTimeWindows} will identify the time-dependent behavior of noise; and section~\ref{sec:NoiseCorrelationsImplementation} will describe the algorithm employed to measure noise from data.  We conclude in section~\ref{sec:NoiseCorrelationsFuture} with some possible future work to improve the quality of the noise measurements or use them in other aspects of the EXO-200 analysis.
 
 \section{Mathematical Framework for Noise Correlations}\label{sec:NoiseCorrelationsMath}
 
@@ -19,9 +19,6 @@ N_i[\tau] &= \frac{1}{T}\cdot \sum_{f = 0}^{T-1} \widetilde{N}_i[f] e^{2\pi \tau
 where $T$ is the (unitless) number of samples in the time domain waveform.  In principle both of these waveforms are periodic and extend forever; in practice we store $N[\tau]$ with $\tau \in [0, T)$ and $\widetilde{N}[f]$ with $f \in \left[0, \lfloor \frac{T}{2} \rfloor\right]$, where $\lfloor\,\rfloor$ indicates that rounding is performed downward.  This set of conventions matches the conventions of the real-to-complex discrete Fourier transform implemented by the popular FFTW library, available on all computational platforms we have attempted to use.~\cite{FFTW05}
 
 Our sampling frequency of 1 MHz means that we can associate $\widetilde{N}_i[f]$ with noise at a frequency of $f/T$ MHz (where we again recall that $T$ and $f$ are unitless).  The accuracy of this association is dependent on the accuracy of the nominal 1 MHz sampling.  This is controlled by a nominal 80 MHz oscillator in the master TEM unit; preliminary investigations indicate that this frequency changes over time, and may deviate from a true 80 MHz period by as much as ten parts per million.~\cite{DAQWeirdDetails,EXOElectronicsFunctionalSpecification}  Since we apply low-pass filters with a combined effective cutoff frequency around 167 kHz, as described in section~\ref{sec:DetectorReadout}, this is expected to have a negligible effect on our noise measurements.
-
-% Phase is not uniform on 2pi, since some frequency components are real-valued.  There is 180-degree symmetry, but I'm not sure how to explain this or justify why.
-%We assume that the phase of the noise is random.  Since a shift in the phase of a Fourier component corresponds to a translation in the time-domain, this assumption is equivalent to assuming that waveforms are sampled at random times without any periodicity; this is certainly true for all except the solicited trigger.  The solicited trigger is taken at 10 second intervals, but the trigger time of each individual event is observed to have a root-mean-square error around 3 milliseconds.~\cite{DAQWeirdDetails}  The waveform only has a length of 2 milliseconds, so even the solicited trigger events can be assumed to have approximately random phase.  This means that the first moments of the noise, $\left<\widetilde{N}_i[f]\right>$, are all equal to zero except for the zero-frequency component $\left<\widetilde{N}_i[0]\right>$.
 
 To quantify the second moments of the noise, we have seen in equation~\ref{eqn:SystemToSolve} that it will be useful to measure expectation values of the following real-values quantities for each pair of channels $i$, $j$ and each frequency index $f$:
 \begin{subequations}\label{eq:NoiseChapterAllExpValues}\begin{align}
@@ -50,8 +47,8 @@ We can then expand equation~\ref{eq:NoiseChapterFirstExpValue}, taking (as discu
 
 We can see from equations~\ref{eqn:NoiseChapterPhaseEqnOne}-\ref{eqn:NoiseChapterPhaseEqnThree} that for frequencies other than $0$ and $T/2$, the following identities hold:
 \begin{align}
-\left<\widetilde{N}^R_i[f]\widetilde{N}^R_j[f]\right> &= \left<\widetilde{N}^I_i[f]\widetilde{N}^I_j[f]\right> \\
-\left<\widetilde{N}^R_i[f]\widetilde{N}^I_j[f]\right> &= -\left<\widetilde{N}^R_j[f]\widetilde{N}^I_i[f]\right>.
+\left<\widetilde{N}^R_i[f]\widetilde{N}^R_j[f]\right> &= \left<\widetilde{N}^I_i[f]\widetilde{N}^I_j[f]\right> \label{eqn:NoiseSymmetryRRII}\\
+\left<\widetilde{N}^R_i[f]\widetilde{N}^I_j[f]\right> &= -\left<\widetilde{N}^R_j[f]\widetilde{N}^I_i[f]\right>.\label{eqn:NoiseSymmetryRIRI}
 \end{align}
 
 Taking advantage of these symmetries, we can compute that for $71$ channels and waveforms containing $2048$ samples we will need to store roughly five million independent values to characterize the noise correlations; this results in a file of size roughly $40$ megabytes for each snapshot of the noise correlations.  We will show in section~\ref{sec:NoiseCorrelationsTimeWindows} that only a small number of snapshots appear to be necessary, so this can be a managable dataset.
@@ -66,12 +63,26 @@ Secondly, we develop a set of parameters which can easily be viewed in plots ver
 
 \begin{figure}
 \begin{center}
-\includegraphics[keepaspectratio=true,page=7,width=\textwidth,clip=true,trim=1.5in 6.8in 1.5in 1.15in]{Coherent_APD_Noise.pdf}
+\includegraphics[keepaspectratio=true,width=\textwidth]{APDNoiseVsActions_sumall.pdf}
 \end{center}
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Sum noise for each APD plane measured from charge injection runs, with environmental changes indicated.~\cite{JosiahCoherentAPDNoise}}
+\caption{Sum noise for all APD channels measured from charge injection runs.  Data provided by Josiah Walton.}
+\label{fig:APDSumAllNoise_JosiahEnvironmental}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{APDNoiseVsActions_planes.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Sum noise for each APD plane measured from charge injection runs, with environmental changes indicated.  Data provided by Josiah Walton.}
 \label{fig:APDSumPlaneNoise_JosiahEnvironmental}
 \end{quote}
 \end{figure}
@@ -80,12 +91,12 @@ Secondly, we develop a set of parameters which can easily be viewed in plots ver
 
 \begin{figure}
 \begin{center}
-\includegraphics[keepaspectratio=true,page=7,width=\textwidth,clip=true,trim=1.5in 2.4in 1.5in 5.6in]{Coherent_APD_Noise.pdf}
+\includegraphics[keepaspectratio=true,width=\textwidth]{APDNoiseVsActions_boards.pdf}
 \end{center}
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Sum noise for each APD electronics board measured from charge injection runs, with environmental changes indicated.~\cite{JosiahCoherentAPDNoise}}
+\caption{Sum noise for each APD electronics board measured from charge injection runs, with environmental changes indicated.  Data provided by Josiah Walton.}
 \label{fig:APDSumBoardNoise_JosiahEnvironmental}
 \end{quote}
 \end{figure}
@@ -94,27 +105,13 @@ Secondly, we develop a set of parameters which can easily be viewed in plots ver
 
 \begin{figure}
 \begin{center}
-\includegraphics[keepaspectratio=true,page=4,width=\textwidth,clip=true,trim=1.5in 2.05in 1.5in 5.6in]{Coherent_APD_Noise.pdf}
+\includegraphics[keepaspectratio=true,width=\textwidth]{APDNoiseVsActions_pies.pdf}
 \end{center}
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Sum noise for each APD pie (6-7 channels) measured from charge injection runs.~\cite{JosiahCoherentAPDNoise}}
+\caption{Sum noise for each APD pie (6-7 channels) measured from charge injection runs.  Data provided by Josiah Walton.}
 \label{fig:APDSumPieNoise_JosiahEnvironmental}
-\end{quote}
-\end{figure}
-\renewcommand{\baselinestretch}{2}
-\small\normalsize
-
-\begin{figure}
-\begin{center}
-\includegraphics[keepaspectratio=true,page=3,width=\textwidth,clip=true,trim=1.5in 6.8in 1.5in 1.15in]{Coherent_APD_Noise.pdf}
-\end{center}
-\renewcommand{\baselinestretch}{1}
-\small\normalsize
-\begin{quote}
-\caption{Sum noise for all APD channels measured from charge injection runs.~\cite{JosiahCoherentAPDNoise}}
-\label{fig:APDSumAllNoise_JosiahEnvironmental}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
@@ -207,7 +204,7 @@ One source of noise information is provided from charge injection runs.  These r
 
 The approach described in~\cite{JosiahCoherentAPDNoise} is to use the pretrace samples between 200 and 800 $\mu$s from charge injection runs as noise samples.  A subset of waveforms -- APD pies, electronics boards, planes, or all APD channels together -- are summed together for each event, and the root-mean-square variation in the summed waveform is averaged over the samples between 200 and 800 $\mu$s and over all events in the charge injection run.  Each charge injection run contains 13,200 events, all of which can be used to improve the quality of this average root-mean-square measurement of noise on that subset of channels.
 
-Figures~\ref{fig:APDSumPlaneNoise_JosiahEnvironmental} and~\ref{fig:APDSumBoardNoise_JosiahEnvironmental} show the noise for summed APD planes and electronics boards, respectively, with notable environmental changes overlaid to demonstrate their correlation with changes in noise; figures~\ref{fig:APDSumPieNoise_JosiahEnvironmental} and~\ref{fig:APDSumAllNoise_JosiahEnvironmental} illustrate the noise on APD pies and noise for all APDs summed together, respectively, without overlaid events.  These trending plots demonstrate that although the noise does undergo day-to-day fluctuations (possibly due to insufficient statistics in the charge injection runs) and some gradual changes over time, the dominant effects are from stepwise changes which are generally correlated with a change in the detector environment.
+Figures~\ref{fig:APDSumAllNoise_JosiahEnvironmental}, \ref{fig:APDSumPlaneNoise_JosiahEnvironmental}, \ref{fig:APDSumBoardNoise_JosiahEnvironmental}, and \ref{fig:APDSumPieNoise_JosiahEnvironmental} show the noise for all APDs summed together, summed APD planes, and summed APD electronics boards, and summed APD pies respectively, with notable environmental changes overlaid to demonstrate their correlation with changes in noise.  These trending plots demonstrate that although the noise does undergo day-to-day fluctuations (possibly due to insufficient statistics in the charge injection runs) and some gradual changes over time, the dominant effects are from stepwise changes which are generally correlated with a change in the detector environment.
 
 Another approach to understanding the behavior of noise with respect to time is to compute noise correlations $\left<\widetilde{N}^R_i[f]\widetilde{N}^R_j[f]\right>$, $\left<\widetilde{N}^R_i[f]\widetilde{N}^I_j[f]\right>$, and $\left<\widetilde{N}^I_i[f]\widetilde{N}^I_j[f]\right>$ for some particular channels $i$ and $j$ and frequency $f$, and identify changes in those particular values over time.  The algorithm for computing these noise correlations will be described fully in section~\ref{sec:NoiseCorrelationsImplementation}; the philosophy is simply that it is difficult to visualize changes in a dataset of five million values, but easy to visualize changes in some very small subset of those values.  We imagine that changes in the small subset may be representative of overall changes in noise behavior.
 
@@ -227,19 +224,62 @@ The most significant future work, though, simply consists of more careful study 
 
 \section{Algorithm for Measuring Noise}\label{sec:NoiseCorrelationsImplementation}
 
-For each of the noise windows specified in table~\ref{tab:NoiseWindowsUsedThisAnalysis}
+For each of the noise windows specified in table~\ref{tab:NoiseWindowsUsedThisAnalysis}, it is necessary to locate a pool of ``clean'' events when no pulse occurred; these will be interpretted as samples of pure noise.  This section will describe the selection cuts for clean events, followed by the data format currently used to store noise correlation information.
 
-General algorithm to create noise matrices.
-Selection cuts on events.
-Data format.  (Yes, this is probably useful in the category of unifying notation.)
-U-wire noise collected as well, to support occasional studies.
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{scripts/livetime.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Cumulative low-background livetime collected in EXO-200.  Figure provided by David Auty.}
+\label{fig:CumulativeLivetime}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+Although EXO-200 does occasionally take noise data, which consists of rapid requests for waveforms without any corresponding physics trigger, these runs have not been taken consistently throughout the EXO-200 dataset and will not be usable for measuring noise that changes over time.  However, during all low-background datataking it has been standard practice to request one trigger every ten seconds.  These solicited triggers, though infrequent, have cumulatively amounted to an enormous quantity of data which is expected to be purely noise.  Figure~\ref{fig:CumulativeLivetime} shows the cumulative low-background livetime which has been collected, and we can see that it is approximately evenly distributed across the dataset and, at a rate of $0.1$ Hz, millions of solicited triggers have been taken during the livetime of the detector.
+
+The cuts we will make to select clean events are:
+\begin{itemize}
+\item Only golden-quality low-background runs (those deemed usable for final fits) will be used for noise measurements, to reduce the inclusion of anomalously noisy runs.
+\item Events which occur during a ``bad'' time (times identified as anomalous within a run, eg. due to loud noises) are excluded.  Also, events occurring during the clean room siren are explicitly excluded, even though these times should generally also be marked as bad.
+\item Only solicited-trigger events are used; events where a physics trigger fired may contain a pulse, regardless of what is found by reconstruction.
+\item Truncated waveforms are not used, because they cannot provide the same set of noise frequencies as a full 2048-sample waveform.
+\item Waveforms which saturate in any channel are not used.
+\item Waveforms which are flagged as a known type of sporadic noise are excluded.
+\item Events on which any u-wire or APD signal was found by reconstruction are excluded.
+\end{itemize}
+
+From the set of acceptable events produced in this way, calculation of the noise correlation values is done in exactly the way implied by the definition of our noise correlation terms.  The expectation values are computed as averages over the set of events, so for example $\left<\widetilde{N}^R_i[f] \widetilde{N}^R_j[f]\right>$ is evaluated for a particular pair of channels $i$, $j$ and frequency index $f$ by computing $\widetilde{N}^R_i[f] \widetilde{N}^R_j[f]$ for all acceptable events, and then using the average of these values.  The symmetries of equations~\ref{eqn:NoiseSymmetryRRII} and \ref{eqn:NoiseSymmetryRIRI} are not currently used, but future versions of the code will exploit these symmetries to effectively double the number of independent measurements of each noise correlation.
+
+The data are currently stored in a binary file as a sequency of eight-byte floating point numbers.  Binary portability has not been a serious concern because all machines on which the files are used have a similar architecture (little-endian, IEEE floating point format).  To studies of u-wire denoising, correlations are computed between all u-wire and APD channels, so the ordered list of channels is $[0,1,2,...,36,37,76,77,...,112,113,152,153,...,225]$.  No channel mapping is included in the file, so the set of included channels must be fixed regardless of the addition or subtraction of channels in the data (specifically, channel 163 and channel 16, both of which are only present in some of our data, and channels 178, 191, and 205, which were never active channels); these channels are included in the noise file, with noise fixed to zero where appropriate, and it is assumed that downstream software will be intelligent enough to use only those noise values which are meaningful.
+
+The file describes first noise corresponding to $f = 1$, then $f = 2$, and so forth to $f = 1025$; the zero-frequency baseline components are omitted, since no current analysis which uses these files requires knowledge of the baselines of the channels.  We write to the file in order:
+\begin{enumerate}
+\item Write $\left<\widetilde{N}^R_i[f] \widetilde{N}^R_j[f]\right>$, for $i = 0$ and $f = 1$, with $j$ ranging through the set of channels.
+\item Write $\left<\widetilde{N}^R_i[f] \widetilde{N}^I_j[f]\right>$, for $i = 0$ and $f = 1$, with $j$ ranging through the set of channels.
+\item Repeat steps 1-2 for $i$ incrementing through the set of channels.
+\item Write $\left<\widetilde{N}^R_i[f] \widetilde{N}^I_j[f]\right>$, for $j = 0$ and $f = 1$, with $i$ ranging through the set of channels.
+\item Write $\left<\widetilde{N}^I_i[f] \widetilde{N}^I_j[f]\right>$, for $j = 0$ and $f = 1$, with $i$ ranging through the set of channels.
+\item Repeat steps 4-5 for $j$ incrementing through the set of channels.
+\item Repeat steps 1-6 for $f$ incrementing up to (but not including) 1025.
+\item For $f = 1025$ all components are real-valued, so only $\left<\widetilde{N}^R_i[1025] \widetilde{N}^R_j[1025]\right>$ is non-zero.  Write $\left<\widetilde{N}^R_i[1025] \widetilde{N}^R_j[1025]\right>$ with $(i,j) = (0,0)$, $(0,1)$, ..., $(0,225)$, $(1,0)$, ..., $(225,225)$.
+\end{enumerate}
+
+The format identified here is likely to be changed in future versions of the code.  Not all symmetries have been exploited for their space-savings, and this in particular should be improved in future versions of this data format.  Additionally, some applications have been considered which would require knowledge of the noise on all channels, so the noise on v-wire channels should be recorded as well.  As another means of improving the usability of these files for other applications, an independent interface to the file format should be designed.  This could perhaps be written as a wrapper around some matrix serialization library, which could simplify the conversion between packed (for storage) and unpacked (for computation) symmetric matrix formats.
+
+The highest priority, of course, will continue to be improving the quality of the noise correlations which are calculated.  Future topics for improvement are detailed in the next section.
 
 \section{Future Directions with Noise Measurement}\label{sec:NoiseCorrelationsFuture}
 
-Continued work on noise windows:
-\begin{itemize}
-\item Runs 3321-3323 should be excluded from noise measurements for the run window 3118-3326 so they don't bias our measurement of the noise on channel 163.  Channel 163 should be marked as bad in the channel map after February 22, 2012 so that it is excluded from scintillation measurements after being disconnected.
-\end{itemize}
+Although the noise correlations described in this chapter have been sufficient for the present analysis, and there are no current indications that they are the limiting factor on denoising, still there are a number of possible improvements and extensions which could be investigated in future work.  Here we describe possible improvements to the quality of the noise correlations, followed by possible applications outside of denoising which may benefit from the use of noise correlations described in this chapter.
+
+The general algorithm for creating noise correlations has been fairly straightforward: identify time windows of constant noise behavior, select events within a noise window which appear to be clean representations of noise, and measure the average noise correlations (pairwise products) within those clean events.  However, there are potential improvements in all of these steps which may be subjects for future study.
+
+For identifying the time windows, the current analysis has been quite detailed in its attempt to correlate dramatic changes in noise behavior to known changes to the detector.  However, we have only begun to understand the more gradual changes to noise; one can imagine slow changes to noise on the order of weeks or months, or daily variations due to varying temperature, and neither would be well-captured by the current methods of identifying noise windows.  Combining charge injection noise and low-background noise studies should allow us to form a high-resolution map of the noise behavior over time, and it should be possible for us to understand exactly how stable the detector noise is over all time scales.  This is perhaps the most pressing need for future noise analysis.
 
 \begin{figure}
 \begin{center}
@@ -248,15 +288,25 @@ Continued work on noise windows:
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{The amplitude of the trigger-time ``glitch'' over time for channel 158.  Figure provided by Sam Homiller.}
+\caption{The amplitude of the TEM injected pulses (``glitch'' pulses) over time for channel 158.  Figure provided by Sam Homiller.}
 \label{fig:GlitchPeakAmplitudeVsTime}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-stripping the glitch from noise traces.
-using noise in monte carlo?
-Studying the smoothness of the noise functions vs f (for truncated waveforms).
-Check noise temperature dependence, other rapidly-varying environmental factors.
-Resolution time-dependence can be used to check time windows; other approaches?  (KZ tests for consistency with flat.)
+The selection of clean events is also a topic requiring further study.  Although solicited triggers are treated as clean events, it has long been known that the TEM can inject pulses into events during solicited triggers; the mechanism by which it does so is unknown.  This injected pulse is correlated with the trigger time, meaning that it has a non-random phase; Sam Homiller has made a preliminary study to separate the injected pulses from noise by exploiting this property of non-random phase, and the amplitudes of these pulses over time for a particular channel are shown in figure~\ref{fig:GlitchPeakAmplitudeVsTime}.  In the present analysis these injected pulses are assumed to be small and ignored.  However, the tools to subtract the mean injected pulses have already been developed, and we should investigate:
+\begin{itemize}
+\item Do injected pulses occur with all trigger types, or only solicited triggers?
+\item Does subtraction of injected pulses improve the quality of the noise correlations and/or the results from denoising?
+\end{itemize}
+
+Finally, section~\ref{sec:NoiseCorrelationsMath} described how we neglect the possible aliasing of extremely low-frequency noise.  To a first approximation this would simply be observed as a drift in the baseline of waveforms, which has no significant effect on the offline analysis (though it may have an impact on the online triggering threshold).  However, a more accurate treatment may observe that low-frequency noise is aliased into the low Fourier components with $f = 0, 1, 2, ...$ in a way which does not accurately reflect the true noise in the detector.  Such aliasing would perhaps lead to an event-by-event bias in reconstructed peak magnitudes, both from standard reconstruction and denoising.  It may be possible to estimate the contribution from aliasing by looking for periodicity in the low frequency Fourier components event-by-event; noise runs (such as run 4796, a ten-minute 50-Hz solicited trigger run taken under normal running conditions) would be a particularly good place to look for such an effect because of the higher rate of usable noise events in that data.  One approach to combining many events into a single estimate of noise frequency components that extends to lower frequency could be to use a non-equispaced Fourier transform.~\cite{Keiner:2009:UNS:1555386.1555388}
+
+Another extension of the current work with noise correlations, related to the question of whether aliasing is a significant effect, is to study whether we can interpolate from the noise correlations of a 2048-sample waveform what the expected noise correlations for a shorter (truncated) waveform would be.  Generally, it is expected that the longer a waveform is, the more information it will provide; so it should be true that a 2048-sample noise waveform provides more information than a truncated waveform provides.  We would like to be able to downsample the noise correlations from a 2048-sample waveform to the expected noise correlations for a truncated waveform on this premise.  However, if aliasing is a significant factor then it may be that the low-frequency aliasing observed in a 2048-sample waveform is different from the aliasing observed in a truncated waveform, and it may be that a simple interpolation of the 2048-sample noise correlations is not an accurate reflection of the noise observed on truncated waveforms.  (Conversely, it may be that truncated waveforms are more vulnerable to low-frequency aliasing than 2048-sample waveforms; in this case it may be that the downsampled noise from a 2048-sample waveform is an accurate reflection of noise on the truncated waveform, but that the Fourier transform of the shorter waveform still exhibits too much aliasing to be usable.)  Understanding the degree to which we can understand noise on truncated waveforms and evade low-frequency aliasing issues for truncated waveforms would be a key step to understanding whether denoising can be extended to operate on such events.
+
+It may also be hoped that these noise correlations will find uses beyond denoising and other signal processing applications.  One example which is currently under consideration is for simulated noise.  It is a general observation within EXO-200 that the noise model employed in our simulations is simple, ignoring all correlations and all noise frequency peaks which have been observed in data.  For many purposes this is sufficient, but to fully model our energy threshold a more accurate model is needed.  Preliminary investigations have focused on sampling noise directly from the observed waveforms and using these noise samples, as described in section~\ref{sec:ResultsDigitization}.  However, it would also be possible to use the noise correlations described in this chapter to represent our most complete understanding of the noise in the detector, and simulate noise which matches those noise correlations.  This can be accomplished by computing the Cholesky decomposition of the noise correlations, viewed as a covariance matrix, as described in~\cite{ross2012simulation}.
+
+\textcolor{red}{Can I make it so we discuss the noise correlations in the context of a covariance matrix before this point?  It is stated briefly in the denoising chapter, but I should be using it more universally.}
+
+This chapter has described the measurement of electronic noise correlations from low-background data, with significant input from charge injection runs as well.  Noise is one of the central features of the EXO-200 analysis, and understanding it in detail is a critical component to an effective denoising strategy.  Thus, the result of this chapter can be understood as one of the two key inputs to denoising.  The other, the APD lightmap, will be described in chapter~\ref{ch:Lightmap}.

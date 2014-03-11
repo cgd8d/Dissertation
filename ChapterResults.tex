@@ -85,7 +85,7 @@ This approach has the effect of using GEANT to simulate the properties of partic
 
 The result of these GEANT simulations is a measurement of the efficiency with which events from various sources reach the liquid xenon, and also an understanding of the energy and position distributions of energy deposits from these sources.  Representative spectra of our primary backgrounds, $^{238}$U and $^{232}$Th, are shown in figures~\ref{fig:UGeantSpectra} and \ref{fig:ThGeantSpectra} respectively.
 
-\subsection{Digitization of Waveforms}
+\subsection{Digitization of Waveforms}\label{sec:ResultsDigitization}
 
 After energy deposits are simulated using GEANT, it is necessary to model the conversion of those energy deposits into collection of scintillation and ionization, and then the generation of digitized waveforms resembling the waveforms which are collected in real data.
 
@@ -161,7 +161,9 @@ Finally, the functions of integrated charge versus time must be converted to sha
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-Finally, we have found that the most effective way to add electronic noise to the signals is by extracting a set of representative noise waveforms from real data.  These are taken from a large number of solicited triggers which have been checked for the absence of a coincident event.  To increase the number of noise signals available, the noise waveforms sampled from the detector are spliced together, and simulated events may draw their noise from any subrange of the spliced-together noise waveform.  This method has been found to agree better with data than noise simulations using a random-number generator.  Figure~\ref{fig:MCPulseComparison} compares waveforms observed from a sample event in data and simulation.~\cite{MCDocumentRun2a}
+We have the ability to add electronic noise to the signals by extracting a set of representative noise waveforms from real data.  These are taken from a large number of solicited triggers which have been checked for the absence of a coincident event.  To increase the number of noise signals available, the noise waveforms sampled from the detector are spliced together, and simulated events may draw their noise from any subrange of the spliced-together noise waveform.  This method provides our most accurate noise model because it can include all noise frequency peaks and channel correlations without requiring a full understanding of those features.
+
+However, current analyses do not emply this method; instead, we simulate noise which is white (has a flat Fourier spectrum) before shaping, and then shaped to have a spectrum which roughly resembles the one observed in the detector.  Figure~\ref{fig:MCPulseComparison} compares waveforms observed from a sample event in data and simulation, and demonstrates that at high energies excellent agreement is achieved.~\cite{MCDocumentRun2a}
 
 \begin{figure}
 \begin{center}
