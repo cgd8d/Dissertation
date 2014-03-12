@@ -1,9 +1,8 @@
-
-\renewcommand{\thechapter}{3}
-\chapter{Denoising Theory}
+\renewcommand{\thechapter}{4}
+\chapter{Denoising Theory and Implementation}
 \label{ch:DenoisingTheory}
 
-As has been discussed, the performance of double-beta experiments like EXO-200 is partially determined by their energy resolution.  In EXO-200, the energy resolution is limited by the scintillation energy resolution, which in turn is dominated by electronic noise in the APDs.  Significant effort must therefore be expended to understand and reduce the noise in the scintillation signals.
+As has been discussed, the performance of double-beta experiments like EXO-200 is partially determined by their energy resolution.  In EXO-200, the energy resolution is limited by the scintillation energy resolution, which in turn is dominated by electronic noise in the APDs.  It is therefore worthwhile to understand and reduce the noise in the scintillation signals.
 
 \begin{figure}
 \begin{center}
@@ -19,11 +18,11 @@ As has been discussed, the performance of double-beta experiments like EXO-200 i
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-When the noise in the APDs is studied, it was found that the individual APD channels met targetted root-mean-square noise levels of 2000 electrons.  However, rather than observing the noise on summed APD channels increase proportionally to the square root of the number of channels, the summed APD noise is roughly two to three times higher than projected.  This worse-than-expected scaling of the noise with channels indicates that noise across different channels is correlated, and further analysis confirms that the bulk of the noise on an unshaped APD waveform is correlated with other channels, as shown in Figure~\ref{fig:APDNoisePowerSpectrum}.  There are many possible sources of coherent noise in the hardware, and reducing the amount of coherent noise is a topic for further research.~\cite{ElectronicsUpgradeReport}
+When the noise in the APDs is studied, it is found that the individual APD channels meet targetted root-mean-square noise levels of 2000 electrons.~\cite{ElectronicsUpgradeReport}  However, rather than observing the noise on summed APD channels increase proportionally to the square root of the number of channels, the summed APD noise is roughly two to three times higher than projected.  This unfortunate scaling of the noise with channels indicates that noise across different channels is correlated, and further analysis confirms that the bulk of the noise on an unshaped APD waveform is correlated with other channels, as shown in Figure~\ref{fig:APDNoisePowerSpectrum}.  There are many possible sources of coherent noise in the hardware, and reducing the amount of coherent noise is a topic for further research.~\cite{ElectronicsUpgradeReport}
 
-However, the observation that coherent noise is the dominant source of noise in the APDs, and thus also the limiting factor in EXO-200's energy resolution, means that it should be possible to exploit these correlations and reduce the level of noise in offline analysis.  This chapter will describe a scheme to accomplish that goal and produce an optimal estimate of scintillation energy which takes noise correlations into account.
+However, since coherent noise is the dominant type of noise in the APDs, and thus also the limiting factor in EXO-200's energy resolution, it should be possible to exploit the correlations and reduce the level of noise in offline analysis.  This chapter describes a scheme to accomplish that goal and produce an optimal estimate of scintillation energy which takes noise correlations into account.
 
-It is worth noting that in fact there are a number of different qualitative approaches to reducing the noise levels in the scintillation channel.  In casual terms, we will refer to ``passive" approaches as those in which components of our signals are weighted more or less heavily based on their relative signal-to-noise content.  ``Active" approaches, by contrast, will be classified as those which attempt to improve the signal-to-noise content of signal components.  We have identified the following three types of denoising:
+It is worth noting that in fact there are a number of different qualitative approaches to reducing the noise levels in the scintillation channel.  We will refer to ``passive" approaches as those in which components of our signals are weighted based on their relative signal-to-noise content.  ``Active" approaches, by contrast, will be classified as those which attempt to improve the signal-to-noise content of the waveforms.  We identify the following three types of denoising:
 \begin{description}
 \item[Frequency weighting] \hfill \\
 On a given channel signal, weight more heavily the frequency components which contain larger signal-to-noise ratio.  This passive denoising scheme requires knowledge of the shapes in fourier space of a signal and the power spectrum of the noise.
@@ -82,10 +81,12 @@ Noise correlations will be much simpler in frequency space, so we take the Fouri
 \widetilde{X}_i[f] = \sum_a M_{ia}\widetilde{Y}_{ia}[f] + \widetilde{N}_i[f].
 \end{equation}
 As with the lightmap, we will assume that all correlations in the noise, of the form
-\begin{IEEEeqnarray}{cc}
-\left< \widetilde{N}^R_i[f]\widetilde{N}^R_j[g] \right> & \left< \widetilde{N}^R_i[f]\widetilde{N}^I_j[g] \right> \notag \\
-\left< \widetilde{N}^I_i[f]\widetilde{N}^R_j[g] \right> & \left< \widetilde{N}^I_i[f]\widetilde{N}^I_j[g] \right>,
-\end{IEEEeqnarray}
+\begin{subequations}\begin{align}
+&\left< \widetilde{N}^R_i[f]\widetilde{N}^R_j[g] \right> \\
+&\left< \widetilde{N}^R_i[f]\widetilde{N}^I_j[g] \right> \\
+&\left< \widetilde{N}^I_i[f]\widetilde{N}^R_j[g] \right> \\
+&\left< \widetilde{N}^I_i[f]\widetilde{N}^I_j[g] \right>,
+\end{align}\end{subequations}
 are known; our means of measuring these correlations will be described in chapter~\ref{ch:NoiseMeasurements}.
 
 \section{The Signal Model}
@@ -106,8 +107,8 @@ First, each APD gang $i$ has some number $P^{(1)}_{ia}$ of photons which reach t
 
 Additionally, the number of photons reaching different gangs are not uncorrelated; since a photon which reaches gang $i$ cannot deposit on a different gang $j$, $P^{(1)}_{ia}$ and $P^{(1)}_{ja}$ are anticorrelated for different gangs $i \ne j$.  This process is described by a multinomial distribution.  Explicitly, we can identify the expectation values of a multinomial distribution:
 \begin{IEEEeqnarray}{cCl}
-\left< P^{(1)}_{ia} \right> &=& f_i(\vec{x}_a)P^{(0)}_a \label{eqn:MeanOfP1} \\
-\left< P^{(1)}_{ia} P^{(1)}_{jb} \right> &=& \left< P^{(1)}_{ia} \right> \left< P^{(1)}_{jb} \right> + \left[ f_i(\vec{x}_a)\delta_{ij} - f_i(\vec{x}_a)f_j(\vec{x}_a) \right] P^{(0)}_a \delta_{ab}
+\left< P^{(1)}_{ia} \right> &=& f_i(\vec{x}_a)P^{(0)}_a \IEEEyesnumber\IEEEyessubnumber\label{eqn:MeanOfP1}\\
+\left< P^{(1)}_{ia} P^{(1)}_{jb} \right> &=& \left< P^{(1)}_{ia} \right> \left< P^{(1)}_{jb} \right> + \left[ f_i(\vec{x}_a)\delta_{ij} - f_i(\vec{x}_a)f_j(\vec{x}_a) \right] P^{(0)}_a \delta_{ab} \IEEEyessubnumber
 \end{IEEEeqnarray}
 
 (As a detail, we should note that the multinomial distribution is an incorrect model in one important respect: photons may reflect off of teflon one or more times on its way to the APD.  Photons incident on the teflon may be absorbed, leading to a reflection efficiency which may be less than one.  Furthermore, it is possible that teflon may be mildly fluorescent at the wavelength of our scintillation, leading to an increase in efficiency for reflection.  As a result, photons which reflect off of teflon experience a combination of variances from each path photons travel and variances in each gain which they undergo.  These conditional variances will always be larger than a simple Poisson distribution would indicate~\cite{ProbabilityTextbook}, so our variance estimate for $P^{(1)}$ is probably an underestimate.)
@@ -117,13 +118,13 @@ Following the random process associated with photons reaching the APD gangs, the
 \begin{enumerate}
 \item Optical photons in the liquid xenon arrive at the active layer of the APDs have a wavelength of roughly $178$ nm, meaning that each optical photon has an energy of roughly $7.0$ eV.  The energy required to produce one electron-hole pair in silicon is roughly $3.66$ eV, which means that each incident photon produces roughly $1.9$ electron-hole pairs; we will define $P^{(2)}_{ia}$ to be the number of electron-hole pairs actually produced from $P^{(1)}_{ia}$ incident photons.  The corresponding Fano factor for electrons produced in silicon is roughly $0.1$, meaning that in addition to the uncertainty in $P^{(1)}_{ia}$ which we have already characterized, there is an additional uncorrelated variance in $P^{(2)}_{ia}$ equal to $0.1 \left<P^{(2)}_{ia}\right>$.  The correlations in the parameters $P^{(2)}_{ia}$ are therefore:
 \begin{IEEEeqnarray}{cCl}
-\left< P^{(2)}_{ia} \right> &=& 1.9 \cdot P^{(1)}_{ia} \label{eqn:MeanOfP2} \\
-\left< P^{(2)}_{ia} P^{(2)}_{jb} \right> &=& (1.9)^2\left< P^{(1)}_{ia} P^{(1)}_{jb} \right> + 0.1 \left< P^{(2)}_{ia}\right> \delta_{ij}\delta_{ab} \label{eqn:VarOfP2}
+\left< P^{(2)}_{ia} \right> &=& 1.9 \cdot P^{(1)}_{ia} \IEEEyesnumber\IEEEyessubnumber \label{eqn:MeanOfP2}\\
+\left< P^{(2)}_{ia} P^{(2)}_{jb} \right> &=& (1.9)^2\left< P^{(1)}_{ia} P^{(1)}_{jb} \right> + 0.1 \left< P^{(2)}_{ia}\right> \delta_{ij}\delta_{ab} \IEEEyessubnumber \label{eqn:VarOfP2}
 \end{IEEEeqnarray}
 \item Electron-hole pairs are then amplified by an avalanche process inside the APDs.  The magnitude of this gain is APD-dependent, generally on the order of $200-300$, and can be identified by a time-dependent quantity $G^P_i(t)$; we will call the number of output electrons $P^{(3)}_{ia}$.  In addition to amplification of existing noise in $P^{(2)}_{ia}$, two additional source of noise are introduced.  First, there is statistical variance in the amplification experienced by each electron due to the randomness of the avalanche process.  This variance is dependent on many factors, including the gain, and scales like the square root of the number of electrons; we define the variance on the gain experienced by a single electron as $\sigma^2_{G_i}(t)$.  From~\cite{EXOLAAPD}, $\sigma^2_{G_i}(t)$ is approximately equal to $\left(G^P_i(t)\right)^2$ when $G^P_i(t)=100$; as a result, we approximate $\sigma^2_{G_i}(t) \approx \left(G^P_i(t)\right)^2$.  Second, there are gain non-uniformities in the diode volume, which contribute variance proportional to the square of the number of initial electron-hole pairs; we will identify the proportionality constant as $\sigma^2_{NU}$, which may depend on time and APD gang.  The magnitude of this uncertainty is not well-known, but may be significant.  Our current code base treats $\sigma^2_{NU}$ as zero; however, future analyses will likely attempt to estimate it, and the derivation which follows will retain it as an aid to that anticipated work.  The correlations in the parameters $P^{(3)}_{ia}$ are therefore:
 \begin{IEEEeqnarray}{cCl}
-\left< P^{(3)}_{ia} \right> &=& G^P_i(t_a)P^{(2)}_{ia} \label{eqn:MeanOfP3} \\
-\left< P^{(3)}_{ia} P^{(3)}_{jb} \right> &=& G^P_i(t_a)G^P_j(t_b) \left< P^{(2)}_{ia} P^{(2)}_{jb} \right> + \left[P^{(2)}_{ia}\sigma^2_{G_i}(t_a) + \left(P^{(2)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab} \nonumber \\* \label{eqn:VarOfP3}
+\left< P^{(3)}_{ia} \right> &=& G^P_i(t_a)P^{(2)}_{ia} \IEEEyesnumber\IEEEyessubnumber \label{eqn:MeanOfP3}\\
+\left< P^{(3)}_{ia} P^{(3)}_{jb} \right> &=& G^P_i(t_a)G^P_j(t_b) \left< P^{(2)}_{ia} P^{(2)}_{jb} \right> + \left[P^{(2)}_{ia}\sigma^2_{G_i}(t_a) + \left(P^{(2)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab} \nonumber \\* \IEEEyessubnumber\label{eqn:VarOfP3}
 \end{IEEEeqnarray}
 \end{enumerate}
 
@@ -148,7 +149,9 @@ P^{(0)} = c \cdot E,
 where $E$ is the energy measured in units of $2615$ keV.  We will treat this relationship as exact, and attempt to measure $E$ rather than $P^{(0)}$; this means that when we speak of measuring the energy of an event using the APD signals, we really are referring to measuring the ``scintillation energy," or a parameter proportional to the number of emitted photons which on average will equal the true energy of the deposit.
 
 Ignoring variances for a moment, we can combine equations~\ref{eqn:MeanOfP1}, \ref{eqn:MeanOfP2}, \ref{eqn:MeanOfP3}, \ref{eqn:DefnOfMFromP3}, and \ref{eqn:DefnOfP0} to state that on average,
-\[M_{ia} = 1.9 \cdot c f_i(\vec{x}_a) G^P_i(t_a) G^E_i(t_a) E_a.\]
+\begin{equation}
+M_{ia} = 1.9 \cdot c f_i(\vec{x}_a) G^P_i(t_a) G^E_i(t_a) E_a.
+\end{equation}
 We can compare this to our empirical lightmap measurements, which are expressed by $M_{ia} = L_i(\vec{x}_a,t_a) E_a$,
 and we conclude that:
 \begin{equation}
@@ -156,8 +159,10 @@ L_i(\vec{x},t) = 1.9 \cdot c f_i(\vec{x}) G^P_i(t) G^E_i(t).
 \end{equation}
 
 We recall that it is assumed the lightmap is a separable function, $L_i(\vec{x},t) = R_i(\vec{x})S_i(t)$, and we can provide the two proportionalities:
-\[ R_i(\vec{x}) \propto f_i(\vec{x}) \]
-\[ S_i(t) \propto G^P_i(t) G^E_i(t).\]
+\begin{subequations}\begin{align}
+R_i(\vec{x}) &\propto f_i(\vec{x}) \\
+S_i(t) &\propto G^P_i(t) G^E_i(t).
+\end{align}\end{subequations}
 
 Although $G^E_i(t)$ is in principle time-dependent, due to environmental effects on the APD electronics and occasional replacement of electronics cards for certain channels, precision data on its value is not readily available.  Instead, we use a time-independent estimate
 \begin{equation}
@@ -168,16 +173,20 @@ ADC counts per electron emitted from the APD; the uncertainty in this figure is 
 We do have independent measurements of the APD gains $G^P_i(t)$ available from laser calibration runs.  These special runs allow a laser to shine into the detector from a fixed point and with a stable amplitude while the bias voltages on the APDs are varied from an effective unity gain to our standard voltage settings.  Using these measurements, we are able to measure $G^P_i(t)$ at weekly intervals from September 2012 to the present time.  Before September 2012, some less-reliable laser data is available, but results from that data are not readily available as of this writing.
 
 It would be possible, and should be a goal for future improvements, to make use of this full range of laser data.  However, the laser data provides a less uniform history of APD gains over the full data-taking window of EXO-200 from September 2011 to November 2013, and it is much easier to track time-dependent behavior from Thorium source data which have been collected regularly throughout that period.  As a result, a compromise is used to characterize $G^P_i(t)$.  One particular laser run, run 4540 (taken on December 13, 2012), is used to fix $G^P_i(t_{4540})$, and the function is extrapolated using Thorium source data with:
-\[G^P_i(t) \approx G^P_i(t_{4540}) \cdot S_i(t)/S_i(t_{4540}).\]
+\begin{equation}
+G^P_i(t) \approx G^P_i(t_{4540}) \cdot S_i(t)/S_i(t_{4540}).
+\end{equation}
 This assumption makes use of the approximation that $G^E_i(t)$ is roughly constant in time, which is probably only accurate to one significant figure; therefore when an electronics change is made to a channel, we can expect that the accuracy of $G^P_i(t)$ is no better than one significant figure.  These results mean that we can also estimate with the same level of accuracy:
-\[f_i(\vec{x}) \approx \frac{S_i(t_{4540})}{G^P_i(t_{4540})} \cdot \frac{R_i(\vec{x})}{1.9 \cdot c G^E_i(t)}.\]
+\begin{equation}
+f_i(\vec{x}) \approx \frac{S_i(t_{4540})}{G^P_i(t_{4540})} \cdot \frac{R_i(\vec{x})}{1.9 \cdot c G^E_i(t)}.
+\end{equation}
 
 It is then possible to express the full correlations in signal magnitudes in terms of the scintillation energies of deposits as:
 \begin{IEEEeqnarray}{cCl}
-\left< M_{ia} \right> &=& L_i(\vec{x}_a,t_a) E_a \\
+\left< M_{ia} \right> &=& L_i(\vec{x}_a,t_a) E_a \IEEEyesnumber\IEEEyessubnumber \\
 \left< M_{ia} M_{jb} \right> &=& L_i(\vec{x}_a,t_a)L_j(\vec{x}_b,t_b) E_a E_b \left[1 + \frac{\sigma^2_{NU}}{\left(G^P_i(t)\right)^2} \delta_{ij}\delta_{ab} \right] \nonumber \\
 && {} - L_i(\vec{x}_a,t_a) L_j(\vec{x}_a,t_a) E_a \delta_{ab}/c \nonumber \\
-&& {} + L_i(\vec{x}_a,t_a) G^E_i(t) E_a \delta_{ij} \delta_{ab} \left[\left(0.1 + 1.9\right)G^P_i(t) + \frac{\sigma^2_{G_i}(t)}{G^P_i(t)}\right]. \label{eqn:MMcorrelations}
+&& {} + L_i(\vec{x}_a,t_a) G^E_i(t) E_a \delta_{ij} \delta_{ab} \left[\left(0.1 + 1.9\right)G^P_i(t) + \frac{\sigma^2_{G_i}(t)}{G^P_i(t)}\right]. \IEEEyessubnumber\label{eqn:MMcorrelations}
 \end{IEEEeqnarray}
 \begin{comment}
 THE FOLLOWING IS MY WORK IN EXPANDING THE M_M CORRELATIONS.
@@ -287,13 +296,13 @@ IF NEEDED, IT CAN BE UNCOMMENTED AND IS VALID LATEX CODE.
 \end{comment}
 
 We combine this with our knowledge of the noise coefficients:
-\begin{align*}
+\begin{subequations}\begin{align}
 \left< \widetilde{N}_i[f] \right> &= 0 \\
 \left< \widetilde{N}_i[f] \widetilde{N}_j[g] \right> &= \left\{ \begin{aligned}
 0~ &\text{if}~ f \ne g \\
 \text{known}~ &\text{if}~ f = g
 \end{aligned}\right.
-\end{align*}
+\end{align}\end{subequations}
 and can claim to now have a complete description of the signals and noise observed in the APD channels.
 
 \section{Derivation}
@@ -315,7 +324,9 @@ Our goal is then to minimize $\epsilon^2_a$ under the constraint of no bias, ie.
 \left<\widehat{E}_a - E_a\right> = 0
 \end{equation}
 or, equivalently,
-\[\sum_{ifb}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) E_b = E_a.\]
+\begin{equation}
+\sum_{ifb}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) E_b = E_a.
+\end{equation}
 However, we will find that it is necessary to specify a slightly stronger constraint.  In particular, it will be desirable to ensure that the constraints are as independent of energy as possible to reduce the need to input an estimated energy into our energy estimator; therefore we will freely employ the stronger constraint
 \begin{equation}
 \sum_{if}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) = \delta_{ab} \text{~for all b,} \label{eqn:ConstraintForm3}
@@ -323,7 +334,7 @@ However, we will find that it is necessary to specify a slightly stronger constr
 which implies the earlier forms and leads to advantageous cancellations of terms.
 
 We now proceed with the optimization.  We start by expanding $\epsilon^2_a$:
-\begin{align*}
+\begin{align}
 \epsilon^2_a &= \left< \left(\widehat{E}_a - E_a\right)^2\right> \\
 %
 &= \left< \widehat{E}^2_a \right> - E_a \left<\widehat{E}_a\right> - \left< \widehat{E}_a - E_a \right> E_a \\
@@ -341,26 +352,26 @@ We now proceed with the optimization.  We start by expanding $\epsilon^2_a$:
 %
 \intertext{The noise $\widetilde{N}$ and signal $M_{ia}$ are uncorrelated, so multiplicative cross-terms will have an expectation value of zero:}
 %
-\epsilon^2_a &= \left< \left(\sum_{if} \left[ A_{ifa} \widetilde{N}_i^R[f] + B_{ifa} \widetilde{N}_i^I[f]\right]\right)^2\right> \\
+\epsilon^2_a &= \left< \left(\sum_{if} \left[ A_{ifa} \widetilde{N}_i^R[f] + B_{ifa} \widetilde{N}_i^I[f]\right]\right)^2\right> \nonumber \\
 &\quad + \left<\left(\sum_{ifb} \left[ A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]M_{ib} \right)^2 \right> - E^2_a \\
 %
 \intertext{Additionally, electronic noise cross-terms between different frequencies will not survive:}
 %
-\epsilon^2_a &= \left< \sum_{ijf} \left[ A_{ifa} \widetilde{N}_i^R[f] + B_{ifa} \widetilde{N}_i^I[f]\right] \left[ A_{jfa} \widetilde{N}_j^R[f] + B_{jfa} \widetilde{N}_j^I[f]\right] \right> \\
+\epsilon^2_a &= \left< \sum_{ijf} \left[ A_{ifa} \widetilde{N}_i^R[f] + B_{ifa} \widetilde{N}_i^I[f]\right] \left[ A_{jfa} \widetilde{N}_j^R[f] + B_{jfa} \widetilde{N}_j^I[f]\right] \right> \nonumber \\
 &\quad + \left<\left(\sum_{ifb} \left[ A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]M_{ib} \right)^2 \right> - E^2_a \\
 %
 & \begin{aligned}
-  = \sum_{ijf} \bigg[ & A_{ifa}A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + A_{ifa}B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right> \\
-  & + B_{ifa}A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ifa}B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\bigg] \end{aligned} \\
+  = \sum_{ijf} \bigg[ & A_{ifa}A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + A_{ifa}B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right> \nonumber \\
+  & + B_{ifa}A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ifa}B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\bigg] \end{aligned} \nonumber \\
 &\quad + \sum_{\substack{ifb\\jgc}} \left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]\left[A_{jga} \widetilde{Y}_{jc}^R[g] + B_{jga} \widetilde{Y}_{jc}^I[g]\right] \left<M_{ib}M_{jc}\right> - E^2_a \\
 %
 \intertext{We will now expand $\left<M_{ib}M_{jc}\right>$ using equation~\ref{eqn:MMcorrelations} and take advantage of the stronger form of our constraint~\ref{eqn:ConstraintForm3} to simplify the expression:}
 %
 \epsilon^2_a & \begin{aligned}[t]
   = \sum_{ijf} \bigg[ & A_{ifa}A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + A_{ifa}B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right> \\
-  & + B_{ifa}A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ifa}B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\bigg] \end{aligned} \\
-&\quad + \left( \sum_{ifb} \left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) E_b \right)^2 - E^2_a \\
-&\quad - \sum_b \left( \sum_{if} \left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) \right)^2 \frac{E_b}{c} \\
+  & + B_{ifa}A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ifa}B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\bigg] \end{aligned} \nonumber \\
+&\quad + \left( \sum_{ifb} \left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) E_b \right)^2 - E^2_a \nonumber \\
+&\quad - \sum_b \left( \sum_{if} \left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) \right)^2 \frac{E_b}{c} \nonumber \\
 &\quad \begin{aligned}
   + \sum_{ifgb} &\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]\left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \cdot \\
   & \begin{aligned}
@@ -370,19 +381,19 @@ We now proceed with the optimization.  We start by expanding $\epsilon^2_a$:
 %
 & \begin{aligned}
   = \sum_{ijf} \bigg[ & A_{ifa}A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + A_{ifa}B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right> \\
-  & + B_{ifa}A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ifa}B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\bigg] \end{aligned} \\
+  & + B_{ifa}A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ifa}B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\bigg] \end{aligned} \nonumber \\
 &\quad \begin{aligned}
   + \sum_{ib} &\left( \sum_f \left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]\right)^2 \cdot \\
   & \begin{aligned}
     L_i(\vec{x}_b,t_b) E_b \bigg[ &(0.1 + 1.9) G^E_i(t_b) G^P_i(t_b) \\
     & + \frac{G^E_i(t_b)}{G^P_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t_b)\right)^2} \bigg]
-\end{aligned} \end{aligned} \\
+\end{aligned} \end{aligned} \nonumber \\
 &\quad - \frac{E_a}{c}
-\end{align*}
+\end{align}
 
 We are now in a position to evaluate the partial derivatives of $\epsilon^2_a$ with respect to the parameters $A_{ifa}$ and $B_{ifa}$.  They are:
-\begin{align*}
-\frac{\partial \epsilon^2_a}{\partial A_{ifa}} &= 2 \sum_j \left[ A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right>\right] \\
+\begin{subequations}\begin{align}
+\frac{\partial \epsilon^2_a}{\partial A_{ifa}} &= 2 \sum_j \left[ A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right>\right] \nonumber \\
 &\quad \begin{aligned}
   + 2 \sum_{gb} & E_b\widetilde{Y}_{ib}^R[f] L_i(\vec{x}_b,t_b)\left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \cdot \\
   & \begin{aligned}
@@ -390,41 +401,45 @@ We are now in a position to evaluate the partial derivatives of $\epsilon^2_a$ w
   & + \frac{G^E_i(t_b)}{G^P_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t_b)\right)^2} \bigg]
 \end{aligned} \end{aligned}\\
 %
-\frac{\partial \epsilon^2_a}{\partial B_{ifa}} &= 2 \sum_j \left[ A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\right] \\
+\frac{\partial \epsilon^2_a}{\partial B_{ifa}} &= 2 \sum_j \left[ A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\right] \nonumber \\
 &\quad \begin{aligned}
   + 2 \sum_{gb} & E_b\widetilde{Y}_{ib}^I[f] L_i(\vec{x}_b,t_b)\left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \cdot \\
   & \begin{aligned}
     \bigg[ &(0.1 + 1.9) G^E_i(t_b) G^P_i(t_b) \\
   & + \frac{G^E_i(t_b)}{G^P_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t_b)\right)^2} \bigg]
 \end{aligned} \end{aligned}
-\end{align*}
+\end{align}\end{subequations}
 
 We will use Lagrange's method to minimize $\epsilon^2_a$ while satisfying our constraints; we define
-\[C_{ab} = \sum_{if}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b),\]
+\begin{equation}
+C_{ab} = \sum_{if}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b),
+\end{equation}
 with ordered indices, and restate the constraints of equation~\ref{eqn:ConstraintForm3} as
-\[C_{ab} = \delta_{ab}.\]
+\begin{equation}
+C_{ab} = \delta_{ab}.
+\end{equation}
 Then, the partial derivatives of these constrained expressions are:
-\begin{align*}
+\begin{subequations}\begin{align}
 \frac{\partial C_{bc}}{\partial A_{ifa}} &= \widetilde{Y}^R_{ic}[f] L_i(\vec{x}_c,t_c) \delta_{ab} \\
 \frac{\partial C_{bc}}{\partial B_{ifa}} &= \widetilde{Y}^I_{ic}[f] L_i(\vec{x}_c,t_c) \delta_{ab}
-\end{align*}
+\end{align}\end{subequations}
 
 Denoting the set of Lagrange multipliers for $\epsilon^2_a$ with $\lambda_{ab}$, where the indices are ordered, and allowing these parameters to absorb constant factors, we can at last identify the full set of linear equations describing the optimal energy estimator $\widehat{E}_a$:
-\begin{align*}
-&\sum_j \left[ A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right>\right]\\
+\begin{subequations}\begin{align}
+&\sum_j \left[ A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right>\right]\nonumber\\
 &+ \sum_{gb} \begin{aligned}[t]
   & E_b\widetilde{Y}_{ib}^R[f] L_i(\vec{x}_b,t_b)\left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \cdot \\
-  & \left[ (0.1 + 1.9) G^E_i(t_b) G^P_i(t_b) + \frac{G^E_i(t_b)}{G^P_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t_b)\right)^2} \right] \end{aligned} \\
+  & \left[ (0.1 + 1.9) G^E_i(t_b) G^P_i(t_b) + \frac{G^E_i(t_b)}{G^P_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t_b)\right)^2} \right] \end{aligned} \nonumber \\
 &+ \sum_b \lambda_{ab} \widetilde{Y}^R_{ib}[f] L_i(\vec{x}_b,t_b) = 0 \qquad \qquad \qquad \qquad \quad \text{for each $i$, $f$}\\
 %
-&\sum_j \left[ A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\right]\\
+&\sum_j \left[ A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\right]\nonumber\\
 &+ \sum_{gb} \begin{aligned}[t]
   & E_b\widetilde{Y}_{ib}^I[f] L_i(\vec{x}_b,t_b)\left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \cdot \\
-  & \left[ (0.1 + 1.9) G^E_i(t_b) G^P_i(t_b) + \frac{G^E_i(t_b)}{G^P_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t_b)\right)^2} \right] \end{aligned} \\
+  & \left[ (0.1 + 1.9) G^E_i(t_b) G^P_i(t_b) + \frac{G^E_i(t_b)}{G^P_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t_b)\right)^2} \right] \end{aligned} \nonumber\\
 &+ \sum_b \lambda_{ab} \widetilde{Y}^I_{ib}[f] L_i(\vec{x}_b,t_b) = 0 \qquad \qquad \qquad \qquad \quad \text{for each $i$, $f$}\\
 %
 &\sum_{if}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) = \delta_{ab} \qquad \text{for each $b$}
-\end{align*}
+\end{align}\end{subequations}
 
 To simplify the notation, let us define a new function:
 \begin{equation} \label{eqn:DefinitionOfQ}
@@ -474,20 +489,20 @@ We can then define the electronic noise blocks as:
 \end{cases}
 \end{equation}
 where $\mathbf{COV}$ specifies the covariance matrix of an ordered list of random variables,
-\begin{equation}
+\begin{equation}\label{eqn:DefnOfCovarianceMatrix}
 \mathbf{COV}\left( x_1, x_2, \dots, x_n \right) = \begin{pmatrix}
-  cov(x_1 x_1) & cov(x_1 x_2) & \cdots & cov(x_1 x_n) \\
-  cov(x_2 x_1) & cov(x_2 x_2) & \cdots & cov(x_2 x_n) \\
+  cov(x_1, x_1) & cov(x_1, x_2) & \cdots & cov(x_1, x_n) \\
+  cov(x_2, x_1) & cov(x_2, x_2) & \cdots & cov(x_2, x_n) \\
   \vdots & \vdots & \ddots & \vdots \\
-  cov(x_n x_1) & cov(x_n x_2) & \cdots & cov(x_n x_n)
+  cov(x_n, x_1) & cov(x_n, x_2) & \cdots & cov(x_n, x_n)
 \end{pmatrix}. \end{equation}
-Note that because our noise variables $\widetilde{N}_i^R[f]$ and $\widetilde{N}_i^I[f]$ have mean zero, we can move smoothly between expectation values of products and covariances:
-\begin{equation} \begin{aligned}
+Note that because our noise variables $\widetilde{N}_i^R[f]$ and $\widetilde{N}_i^I[f]$ have mean zero (for $f \ne 0$), we can move smoothly between expectation values of products and covariances:
+\begin{subequations} \begin{align}
 cov(\widetilde{N}_i^R[f], \widetilde{N}_j^R[f]) &= \left< \widetilde{N}_i^R[f] \widetilde{N}_j^R[f] \right>\\
 cov(\widetilde{N}_i^R[f], \widetilde{N}_j^I[f]) &= \left< \widetilde{N}_i^R[f] \widetilde{N}_j^I[f] \right>\\
 cov(\widetilde{N}_i^I[f], \widetilde{N}_j^R[f]) &= \left< \widetilde{N}_i^I[f] \widetilde{N}_j^R[f] \right>\\
 cov(\widetilde{N}_i^I[f], \widetilde{N}_j^I[f]) &= \left< \widetilde{N}_i^I[f] \widetilde{N}_j^I[f] \right>.
-\end{aligned} \end{equation}
+\end{align} \end{subequations}
 
 We pack together the blocks of equation~\ref{eqn:BlocksOfN} into a sparse noise matrix:
 \begin{equation} \label{eqn:DefinitionOfN}
@@ -556,14 +571,14 @@ We also note the important observation that this matrix is sparse.  Given roughl
 We have specified a matrix equation which we now wish to solve.  However, it is generally recommended that large matrix equations should not be solved directly.  Instead, it is recommended that the matrix should be preconditioned.  This means that if a matrix equation $\mathbf{A}\vec{x} = \vec{b}$ should be solved, one should first find a matrix $\mathbf{A}'$ which is approximately equal to $\mathbf{A}$ and which is easily invertible.  Finding the right balance between the quality of the approximation $\mathbf{A}' \approx \mathbf{A}$ and the difficulty of computing the inverse $\left(\mathbf{A}'\right)^{-1}$ is more art than science, but we will present here a preconditioning matrix which seems to strike a good balance for this particular system.
 
 The matrix equation we wish to solve takes the form:
-\[\begin{pmatrix}
+\begin{equation}\begin{pmatrix}
 \mathbf{N}+\mathbf{P} & \mathbf{C}^\top\\
 \mathbf{C} & \mathbf{0}
 \end{pmatrix}
 \mathbf{A} = 
 \begin{pmatrix}
 \mathbf{0} \\ \mathbf{I}
-\end{pmatrix}\]
+\end{pmatrix}\end{equation}
 Let us define $\mathbf{D} = diag(\mathbf{N})$ and approximate
 \begin{equation}\begin{pmatrix}
 \mathbf{N}+\mathbf{P} & \mathbf{C}^\top\\
@@ -577,8 +592,7 @@ Let us define $\mathbf{D} = diag(\mathbf{N})$ and approximate
 This approximate form is easy to invert (assuming every frequency component of every channel has non-zero noise and every constraint is satisfiable, which is true in practice), and can be used to precondition our problem for better numerical behavior.
 
 We can further factor this approximate form of the matrix:
-\begin{equation}
-\begin{array}{cccc}
+\begin{IEEEeqnarray}{rCcc}
 \begin{pmatrix}
 \mathbf{D} & \mathbf{C}^\top \\
 \mathbf{C} & \mathbf{0}
@@ -594,7 +608,6 @@ We can further factor this approximate form of the matrix:
 \mathbf{0} & -\mathbf{H}^\top
 \end{pmatrix}\\[1em]
 &=&
-
 \begin{pmatrix}
 \mathbf{D}^{1/2} & \mathbf{0}\\
 \mathbf{0} & \mathbf{I}
@@ -611,14 +624,12 @@ We can further factor this approximate form of the matrix:
 \begin{pmatrix}
 \mathbf{D}^{1/2} & \mathbf{0}\\
 \mathbf{0} & \mathbf{I}
-\end{pmatrix}
-
-\end{array}
-\end{equation}
+\end{pmatrix}\quad\quad
+\end{IEEEeqnarray}
 where $\mathbf{H}$ is a lower-diagonal square matrix defined uniquely as the Cholesky decomposition $\mathbf{HH}^\top = \mathbf{C} \mathbf{D}^{-1} \mathbf{C}^\top$.  (The solution is guaranteed to be real because $\mathbf{D}$ is positive-semidefinite in all cases, and positive-definite in practice -- it consists of noise variance terms, which are strictly positive in practice.)  Note that $\mathbf{C} \mathbf{D}^{-1} \mathbf{C}^\top$ has dimensions equal to the number of signals in an event, which in practice will be small enough that we can compute its Cholesky decomposition $\mathbf{HH}^\top$ directly.
 
 The two diagonal factors are easily inverted; we further define
-\begin{align}
+\begin{subequations}\begin{align}
 \mathbf{K}_1 &=
 \begin{pmatrix}
 \mathbf{I} & \mathbf{0}\\
@@ -641,9 +652,9 @@ The two diagonal factors are easily inverted; we further define
 \mathbf{I} & \mathbf{D}^{-1/2}\mathbf{C}^\top \mathbf{H}^{-\top}\\
 \mathbf{0} & -\mathbf{H}^{-\top}
 \end{pmatrix},
-\end{align}
+\end{align}\end{subequations}
 where $\mathbf{M}^{-\top}$ represents the inverse of the transpose of $\mathbf{M}$.  We then follow the standard proscription for preconditioning a linear system by replacing our original matrix equation with the new form:
-\begin{gather*}
+\begin{subequations}\begin{gather}
 \mathbf{K}_1^{-1} \begin{pmatrix}\mathbf{D}^{-1/2}&\mathbf{0}\\ \mathbf{0}&\mathbf{I}\end{pmatrix}
 \begin{pmatrix}
 \mathbf{N}+\mathbf{P} & \mathbf{C}^\top \\
@@ -652,9 +663,9 @@ where $\mathbf{M}^{-\top}$ represents the inverse of the transpose of $\mathbf{M
 \begin{pmatrix}\mathbf{D}^{-1/2}&\mathbf{0}\\ \mathbf{0}&\mathbf{I}\end{pmatrix} \mathbf{K}_2^{-1} \mathbf{\widetilde{A}} = 
 \mathbf{K}_1^{-1} \begin{pmatrix}\mathbf{D}^{-1/2}&\mathbf{0}\\\mathbf{0}&\mathbf{I}\end{pmatrix} \begin{pmatrix}\mathbf{0}\\ \mathbf{I}\end{pmatrix}\\
 \mathbf{\widetilde{A}} = \mathbf{K}_2 \begin{pmatrix}\mathbf{D}^{1/2} & \mathbf{0}\\ \mathbf{0} & \mathbf{I}\end{pmatrix}\mathbf{A}
-\end{gather*}
+\end{gather}\end{subequations}
 which reduces to
-\begin{gather}
+\begin{subequations}\begin{gather}
 \mathbf{K}_1^{-1} 
 \left[
 \begin{pmatrix}\mathbf{D}^{-1/2}\mathbf{ND}^{-1/2}&\mathbf{0}\\ \mathbf{0}&\mathbf{0}\end{pmatrix}
@@ -664,14 +675,14 @@ which reduces to
 \mathbf{K}_2^{-1} \mathbf{\widetilde{A}} = 
 \begin{pmatrix}\mathbf{0}\\ \mathbf{H}^{-1}\end{pmatrix}\\
 \mathbf{A} = \begin{pmatrix}\mathbf{D}^{-1/2}&\mathbf{0}\\ \mathbf{0}&\mathbf{I}\end{pmatrix}\mathbf{K}_2^{-1}\mathbf{\widetilde{A}}
-\end{gather}
+\end{gather}\end{subequations}
 
 This preconditioned set of equations is numerically quite stable.  It is also possible to provide an excellent initial guess $\mathbf{\widetilde{A}}_0$ by taking the approximate form of the matrix to be exact, yielding
-\[
+\begin{equation}
 \mathbf{\widetilde{A}}_0 = \begin{pmatrix}\mathbf{0}\\ \mathbf{H}^{-1}\end{pmatrix}
-\]
+\end{equation}
 Based on these various advantages, it is this system which we attempt to solve rather than the original form.  Below we define matrices $\mathbf{M}$ and $\mathbf{B}$ for convenience, and summarize the system to be solved:
-\begin{align}
+\begin{subequations}\begin{align}
 \mathbf{M} &= \mathbf{K}_1^{-1} 
 \left[
 \begin{pmatrix}\mathbf{D}^{-1/2}\mathbf{ND}^{-1/2}&\mathbf{0}\\ \mathbf{0}&\mathbf{0}\end{pmatrix}
@@ -682,7 +693,7 @@ Based on these various advantages, it is this system which we attempt to solve r
 \mathbf{B} &= \mathbf{\widetilde{A}}_0 = \begin{pmatrix}\mathbf{0}\\ \mathbf{H}^{-1}\end{pmatrix}\\
 \mathbf{M\widetilde{A}} &= \mathbf{B}\\
 \mathbf{A} &= \begin{pmatrix}\mathbf{D}^{-1/2}&\mathbf{0}\\ \mathbf{0}&\mathbf{I}\end{pmatrix}\mathbf{K}_2^{-1}\mathbf{\widetilde{A}}
-\end{align}
+\end{align}\end{subequations}
 
 
 \section{Solver}
@@ -751,7 +762,9 @@ As a result, and because the bulk of our computational time is spent multiplying
 These represent the most significant set of computational optimizations.  However, there are also smaller optimizations which can still produce non-negligible speedups.  The naive Block-BiCGSTAB algorithm (in the case of only one signal in an event) requires two matrix-vector multiplications, but it also requires a number of vector-vector operations, and the cumulative cost of these vector-vector operations can become non-negligible.  One obvious shortcut is to reuse our computation of $\mathbf{\widetilde{R}}_0^\top \mathbf{V}$ from line~\ref{algline:BlBiCGSTAB_alpha} of Algorithm~\ref{alg:BlBiCGSTAB} to save work in line~\ref{algline:BlBiCGSTAB_beta}.
 
 Another speedup for our vector-vector operations consists of combining multiple operations into one step.  We see on line~\ref{algline:BlBiCGSTAB_alpha} that both $\mathbf{\widetilde{R}}_0^\top \mathbf{V}$ and $\mathbf{\widetilde{R}}_0^\top \mathbf{R}$ are computed.  As described earlier in the context of multiplication of vectors by electronic noise, it is possible to take advantage of caching and speed up vector operations by packing multiple vectors together into a more square-shaped matrix.  In this case, rather than computing these two products separately, we can pack $\mathbf{V}$ and $\mathbf{R}$ together and compute
-\[\mathbf{\widetilde{R}}_0^\top \begin{pmatrix} V & R \end{pmatrix}\]
+\begin{equation}
+\mathbf{\widetilde{R}}_0^\top \begin{pmatrix} V & R \end{pmatrix}
+\end{equation}
 as one step.  The rest of the algorithm will not be affected by the fact that these two matrices are stored contiguously in memory.
 
 \section{Denoising in Practice}\label{sec:DenoisingInPractice}
@@ -761,7 +774,9 @@ The preceding description of denoising has been intended to convey our fullest c
 In this section we outline the places where the denoising used for the current physics analysis differs from the description above.  Differences in implementation also exist, but will not be described here.  The differences of denoising are:
 \begin{itemize}
 \item The signal variance coming from sources internal to the APDs was not fully understood by this author when denoising was first implemented, and as a result the signal variance is significantly underestimated.  Specifically, in place of equations~\ref{eqn:VarOfP2} and \ref{eqn:VarOfP3} we take
-\[\left< P^{(3)}_{ia} P^{(3)}_{jb} \right> = (1.9)^2 \cdot G^P_i(t_a)G^P_j(t_b) \left< P^{(1)}_{ia} P^{(1)}_{jb} \right>. \]
+\begin{equation}
+\left< P^{(3)}_{ia} P^{(3)}_{jb} \right> = (1.9)^2 \cdot G^P_i(t_a)G^P_j(t_b) \left< P^{(1)}_{ia} P^{(1)}_{jb} \right>.
+\end{equation}
 \item We have described with equation~\ref{eqn:ValueOfGE} that the electronic gain is treated as having a constant value of $1.1 \cdot 10^{-3}$ ADC counts per electron emitted from the APDs.  The wires use a similar set of electronics; however, their gain is nominally set to a different value of roughly $6.3 \cdot 10^{-4}$ ADC counts per electron collected on the wires, and this author confused the two numbers.  As a result, $G^E_i(t)$ was underestimated by almost a factor of two; the effect of this is to overestimate by almost a factor of two the number of photons being deposited on APDs, which again causes us to underestimate the signal variance introduced within the APDs.
 \end{itemize}
 
