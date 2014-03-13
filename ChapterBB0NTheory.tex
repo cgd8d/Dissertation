@@ -2,58 +2,35 @@
 \chapter{Theory of \texorpdfstring{$\beta\beta 0\nu$}{Neutrinoless Double-Beta} Decay}
 \label{ch:BB0NTheory}
 
-\tikzstyle{ParticleInteraction}=[coordinate]
-\tikzstyle{ParticleLabel}=[]
+Toward the end of the 1990s neutrinos were conclusively proven to possess a non-zero mass.  Subsequent effort has been directed toward understanding the absolute scale of neutrino mass and the nature of the interaction which causes it.  Neutrinoless double-beta ($\beta\beta 0\nu$) decay, if it occurs, would provide a window onto both questions.  This chapter presents the theoretical motivations for searching for $\beta\beta 0\nu$ decay.  Section~\ref{sec:TheoryStandardDoubleBeta} describes the closely-related two-neutrino double-beta ($\beta\beta 2\nu$) decay which is allowed in the standard model.  Section~\ref{sec:TheoryNeutrinolessDoubleBeta} defines $\beta\beta 0\nu$ decay and reasons for hypothesizing its occurrence.  Considerations and challenges in nuclear physics are described in section~\ref{sec:NuclearMatrixCalculations}.  The parametrization of the neutrino sector is provided in section~\ref{sec:NeutrinoFlavorPhysics}.  Section \ref{sec:ParticlePhysicsConstraints} summarizes constraints on neutrino masses which can be obtained from observations of single-$\beta$ decay and cosmology, and section \ref{sec:NucPhysConstraintsFromBB0N} describes in detail the considerations and challenges involved in searching for $\beta\beta 0\nu$ decay.  The reader will obtain a general understanding of the state of the field before continuing on to the details of the EXO-200 detector in chapter~\ref{ch:EXO200Detector}.
 
 \begin{figure}
 \begin{center}
-\begin{tikzpicture}
-
-\node[ParticleLabel] (u1) {u};
-\node[ParticleLabel] (e1) [below of=u1] {$e^{-}$};
-\node[ParticleLabel] (nu1) [below of=e1] {$\overline{\nu}$};
-\node[ParticleInteraction] (Weak1) [left of=e1] {};
-\node[ParticleInteraction] (Strong1) [above left of=Weak1] {};
-\node[ParticleLabel] (d1) [left of=Strong1] {d};
-
-\node[ParticleLabel] (nu2) [below of=nu1] {$\overline{\nu}$};
-\node[ParticleLabel] (e2) [below of=nu2] {$e^{-}$};
-\node[ParticleLabel] (u2) [below of=e2] {u};
-\node[ParticleInteraction] (Weak2) [left of=e2] {};
-\node[ParticleInteraction] (Strong2) [below left of=Weak2] {};
-\node[ParticleLabel] (d2) [left of=Strong2] {d};
-
-\draw (Weak1) -- (nu1) node[midway,sloped] {$<$};
-\draw (Strong1) -- (u1) node[midway,sloped] {$>$};
-\draw[snake=snake] (Strong1) -- (Weak1) node[midway,below left] {$W^{-}$};
-\draw (Weak1) -- (e1) node[midway,sloped] {$>$};
-\draw (d1) -- (Strong1) node[midway,sloped] {$>$};
-
-\draw (Weak2) -- (nu2) node[midway,sloped] {$<$};
-\draw (Strong2) -- (u2) node[midway,sloped] {$>$};
-\draw[snake=snake] (Strong2) -- (Weak2) node[midway,above left] {$W^{-}$};
-\draw (Weak2) -- (e2) node[midway,sloped] {$>$};
-\draw (d2) -- (Strong2) node[midway,sloped] {$>$};
-
-\end{tikzpicture}
+\includegraphics[keepaspectratio=true,width=2in]{Avignone_fig02a.eps}
 \end{center}
-\caption{Feynman diagram for $\beta\beta 2 \nu$ decay.  The reaction products are equivalent to two $\beta$ decays in succession, but this reaction can sometimes occur even if a single $\beta$ decay would be energetically forbidden.}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Feynman diagram for $\beta\beta 2 \nu$ decay.  The reaction products are equivalent to two $\beta$ decays in succession, but this reaction can sometimes occur even if a single $\beta$ decay would be energetically forbidden.  Figure from~\cite{RMPbb0n}.}
 \label{fig:FeynmanBetaBeta2Nu}
+\end{quote}
 \end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
 
-\section{Double-Beta Decay}
+\section{Double-Beta Decay}\label{sec:TheoryStandardDoubleBeta}
 
-Standard-model double beta ($\beta\beta$) decay is the result of the particle interaction
+Standard-model two-neutrino double beta ($\beta\beta 2\nu$) decay is the result of the particle interaction
 \begin{equation}\label{eqn:bb2n_decay_reaction}
 2d \rightarrow 2u + 2e^- + 2\bar{\nu}_e
 \end{equation}
 mediated by $W^-$-exchange, as depicted in Figure~\ref{fig:FeynmanBetaBeta2Nu}.  It is effectively the simultaneous occurrence of two beta ($\beta$) decays from the same nucleus.
 
-Because $\beta\beta$ decay is of a second-order weak interaction, it has a remarkably slow rate compared to most $\beta$ decay processes.  Although many nuclei are expected to decay by $\beta\beta$, the process is thoroughly masked by conventional $\beta$ decay in most of them.  In most cases, we can only hope to detect $\beta\beta$ decay in isotopes where $\beta$ decay is forbidden or highly suppressed.
+Because $\beta\beta 2\nu$ decay is of a second-order weak interaction, it has a remarkably slow rate compared to most $\beta$ decay processes.  Although many nuclei are expected to decay by $\beta\beta 2\nu$, the process is thoroughly masked by conventional $\beta$ decay in most of them.  In most cases, we can only hope to detect $\beta\beta 2\nu$ decay in isotopes where $\beta$ decay is forbidden or highly suppressed.
 
-In rare cases, $\beta$ decay may be highly suppressed, enabling $\beta\beta$ decay to have a rate comparable to or exceeding single-$\beta$ decay.  This is, for example, the case in $^{48}_{20}$Ca: the ground state of $^{48}_{20}$Ca has zero units of angular momentum, whereas its single-$\beta$-decay daughter product $^{48}_{21}$Sc has six units of total angular momentum in its ground state, and is thus highly suppressed by angular momentum conservation.  In contrast, $^{48}_{22}$Ti has zero units of total angular momentum, making $\beta\beta$ decay of $^{48}_{20}$Ca permitted by angular momentum and energy considerations, and as a result the $\beta\beta$ decay mode of $^{48}_{20}$Ca dominates.~\cite{MyNuclearPhysicsBook}
+An example of an isotope for which $\beta$ decay is highly suppressed is $^{48}_{20}$Ca.  The ground state of $^{48}_{20}$Ca has zero units of angular momentum, whereas its single-$\beta$-decay daughter product $^{48}_{21}$Sc has six units of total angular momentum in its ground state, and is thus highly suppressed by angular momentum conservation.  In contrast, $^{48}_{22}$Ti has zero units of total angular momentum, making $\beta\beta 2\nu$ decay of $^{48}_{20}$Ca permitted by angular momentum and energy considerations, and as a result the $\beta\beta 2\nu$ decay mode of $^{48}_{20}$Ca dominates~\cite{MyNuclearPhysicsBook}.
 
-In most $\beta\beta$ candidates, single $\beta$ decay is forbidden by energy conservation.  It is well-known that nuclei minimize their energy by arranging similar nucleons to have overlapping wavefunctions.~\cite{MyNuclearPhysicsBook}  Thus, isotopes with an even number of protons and an even number of neutrons will have less nucleon-pairing potential energy than an isotope with either an odd number of protons or an odd number of neutrons, which in turn will have less nucleon-pairing potential energy than an isotope with an odd number of protons and an odd number of electrons.
+In most $\beta\beta 2\nu$ candidates, single $\beta$ decay is forbidden by energy conservation.  It is well-known that nuclei minimize their energy by arranging similar nucleons to have overlapping wavefunctions~\cite{MyNuclearPhysicsBook}.  Thus, isotopes with an even number of protons and an even number of neutrons will have less nucleon-pairing potential energy than an isotope with either an odd number of protons or an odd number of neutrons, which in turn will have less nucleon-pairing potential energy than an isotope with an odd number of protons and an odd number of electrons.
 
 \begin{figure}
 \begin{center}
@@ -69,11 +46,11 @@ In most $\beta\beta$ candidates, single $\beta$ decay is forbidden by energy con
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-A typical nuclear energy level diagram is shown in figure~\ref{fig:LevelDiagram} for the $A=136$ isobar: Xenon, Barium, Cerium, and Neodynium are even-even isotopes, and have systematically lower energies than the odd-odd isotopes Iodine, Cesium, Lanthanum, and Praseodymium.  For this particular isobar, we can see that Xenon is energetically forbidden from single-$\beta$ decaying to Cesium because the odd-odd isotope of Cesium has slightly more potential energy than the even-even isotope of Xenon. As a result, the primary mode of decay of Xenon-136 will be $\beta\beta$ decay to Barium-136.  Similarly, the primary mode of decay of Cerium-136 will be by double-electron-capture ($\epsilon\epsilon$) to Barium-136.  Many of the same implications of $\beta\beta$ decay also apply to $\epsilon\epsilon$ decay; however, in practice the rates for these decays will be lower than the rates for $\beta\beta$ decay, so we will not consider them further in this work.
+A typical nuclear energy level diagram is shown in figure~\ref{fig:LevelDiagram} for the $A=136$ isobar: Xenon, Barium, Cerium, and Neodynium are even-even isotopes, and have systematically lower energies than the odd-odd isotopes Iodine, Cesium, Lanthanum, and Praseodymium.  For this particular isobar, we can see that Xenon is energetically forbidden from single-$\beta$ decaying to Cesium because the odd-odd isotope of Cesium has slightly more potential energy than the even-even isotope of Xenon. As a result, the primary mode of decay of Xenon-136 will be $\beta\beta 2\nu$ decay to Barium-136.  Similarly, the primary mode of decay of Cerium-136 will be by double-electron-capture with neutrino emission ($\epsilon\epsilon 2\nu$) to Barium-136.  Many of the same implications of $\beta\beta 0\nu$ decay also apply to the theorized $\epsilon\epsilon 0\nu$ decay; however, in practice the expected rates for these decays will be lower than the rates for $\beta\beta 0\nu$ decay, so we will not consider them further in this work.
 
-\section{Neutrinoless Double-Beta Decay}
+\section{Neutrinoless Double-Beta Decay}\label{sec:TheoryNeutrinolessDoubleBeta}
 
-The detection and study of $\beta\beta$ decay provides an opportunity to test a class of nuclear matrix element computations; however, it does not violate any fundamental symmetries and is, in this sense, a mundane prediction of the Standard Model.  The primary appeal of $\beta\beta$ decay is through the opportunity it provides to probe the nature of neutrinos.
+The detection and study of $\beta\beta 2\nu$ decay provides an opportunity to test a class of nuclear matrix element computations; however, it does not violate any fundamental symmetries and is, in this sense, a mundane prediction of the Standard Model.  The primary appeal of isotopes which undergo $\beta\beta 2\nu$ decay is the opportunity these isotopes provide to probe the nature of neutrinos.
 
 It has been suggested as early as 1937 that neutrinos could possess mass through a neutrino-antineutrino interaction, provided that the neutrino is its own antiparticle~\cite{Majorana}.  The theorized Majorana interaction comes from Lagrangian terms of the form (for each of three neutrino eigenstates)
 \begin{align}
@@ -86,98 +63,37 @@ where the superscript-$c$ represents charge conjugation.  (This is the reason th
 
 \begin{figure}
 \begin{center}
-\begin{tikzpicture}
-
-\node[ParticleLabel] (u1) {u};
-\node[ParticleLabel] (e1) [below of=u1] {$e^{-}$};
-\node[ParticleInteraction] (Weak1) [left of=e1] {};
-\node[ParticleInteraction] (Strong1) [above left of=Weak1] {};
-\node[ParticleLabel] (d1) [left of=Strong1] {d};
-
-\node[ParticleLabel] (nu) [below of=Weak1] {$\times$};
-
-\node[ParticleInteraction] (Weak2) [below of=nu] {};
-\node[ParticleLabel] (e2) [right of=Weak2] {$e^{-}$};
-\node[ParticleLabel] (u2) [below of=e2] {u};
-\node[ParticleInteraction] (Strong2) [below left of=Weak2] {};
-\node[ParticleLabel] (d2) [left of=Strong2] {d};
-
-\draw (Strong1) -- (u1) node[midway,sloped] {$>$};
-\draw[snake=snake] (Strong1) -- (Weak1) node[midway,below left] {$W^{-}$};
-\draw (Weak1) -- (e1) node[midway,sloped] {$>$};
-\draw (d1) -- (Strong1) node[midway,sloped] {$>$};
-
-\draw[dashed] (Weak1) -- (nu) node[at end,right] {$\nu_M$};
-\draw[dashed] (Weak2) -- (nu);
-
-\draw (Strong2) -- (u2) node[midway,sloped] {$>$};
-\draw[snake=snake] (Strong2) -- (Weak2) node[midway,above left] {$W^{-}$};
-\draw (Weak2) -- (e2) node[midway,sloped] {$>$};
-\draw (d2) -- (Strong2) node[midway,sloped] {$>$};
-
-\end{tikzpicture}
+\includegraphics[keepaspectratio=true,width=2in]{Avignone_fig02b.eps}
 \end{center}
-\caption{Feynman diagram for $\beta\beta 0 \nu$ decay.  A virtual neutrino mediates the exchange.  This is only possible if $\overline{\nu}_R$ can oscillate to $\nu_L$, and the interaction that induces this oscillation also generates neutrino mass.}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Feynman diagram for $\beta\beta 0 \nu$ decay.  A virtual neutrino mediates the exchange.  This is only possible if $\overline{\nu}_R$ can oscillate to $\nu_L$, and the interaction that induces this oscillation also generates neutrino mass.  Figure from~\cite{RMPbb0n}.}
 \label{fig:FeynmanBetaBeta0Nu}
+\end{quote}
 \end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
 
-If neutrinos do have Majorana mass interactions, then any isotope that undergoes $\beta\beta$ decay can also undergo the related process $2d \rightarrow 2u + 2e^-$, depicted in Figure~\ref{fig:FeynmanBetaBeta0Nu}, in which the two outgoing neutrinos in $\beta\beta$ decay are replaced by one virtual neutrino.  We can interpret this as a mixing interaction between a left-handed neutrino and a right-handed antineutrino; this is only possible if neutrinos are Majorana particles.  We refer to the standard process as two-neutrino double beta ($\beta\beta 2\nu$) decay and the novel process as neutrinoless double beta ($\beta\beta 0\nu$) decay.
+If neutrinos do have Majorana mass interactions, then any isotope that undergoes $\beta\beta 2\nu$ decay can also undergo the related process $2d \rightarrow 2u + 2e^-$, depicted in Figure~\ref{fig:FeynmanBetaBeta0Nu}, in which the two outgoing neutrinos in $\beta\beta 2\nu$ decay are replaced by one virtual neutrino.  We can interpret this as a mixing interaction between a left-handed neutrino and a right-handed antineutrino; this is only possible if neutrinos are Majorana particles.  We refer to the standard process as two-neutrino double beta ($\beta\beta 2\nu$) decay and the novel process as neutrinoless double beta ($\beta\beta 0\nu$) decay.
 
 The tree-level diagram for $\beta\beta 0\nu$ has one additional interaction vertex compared to $\beta\beta 2\nu$ decay, and as a result we would expect it to occur at an even slower rate.  However, the more immediate consequence of $\beta\beta 0\nu$ decay is that lepton number conservation is violated.  The lepton number changes by two units corresponding to the creation of two leptons with no balancing anti-leptons.  Numerous theories have suggested other plausible modes of lepton number non-conservation~\cite{ProtonDecay,MuonToPositron}, but none have yet reported a positive result.  In the conventional Standard Model with massless neutrinos, lepton number conservation is an accidental symmetry~\cite{LeptonConservation}, but in a model with massive neutrinos there may no longer be any reason \textit{a priori} to expect conservation or non-conservation of lepton number.
 
 \begin{figure}
 \begin{center}
-\begin{tikzpicture}
-
-\node[circle,fill=black,pattern=dots,minimum size=100] (BlackBox) {};
-\node (e1) at ([shift={(30:3)}]BlackBox) {$e^{-}$};
-\node (e2) at ([shift={(-30:3)}]BlackBox) {$e^{-}$};
-\node (u1) at ([shift={(60:3)}]BlackBox) {u};
-\node (u2) at ([shift={(-60:3)}]BlackBox) {u};
-\node (d1) at ([shift={(120:3)}]BlackBox) {d};
-\node (d2) at ([shift={(-120:3)}]BlackBox) {d};
-
-\draw (d1) -- (BlackBox) node[midway,sloped] {$>$};
-\draw (d2) -- (BlackBox) node[midway,sloped] {$>$};
-\draw (BlackBox) -- (u1) node[midway,sloped] {$>$};
-\draw (BlackBox) -- (u2) node[midway,sloped] {$>$};
-\draw (BlackBox) -- (e1) node[midway,sloped] {$>$};
-\draw (BlackBox) -- (e2) node[midway,sloped] {$>$};
-\end{tikzpicture}
+\includegraphics[keepaspectratio=true,width=\textwidth]{Avignone_fig03.eps}
 \end{center}
-\caption{A generic $\beta\beta 0\nu$ process, with no assumptions of the underlying mechanism.  If $\beta\beta 0\nu$ is observed, it requires that this reaction is possible even though it does not strictly imply that the oscillation in figure~\ref{fig:FeynmanBetaBeta0Nu} is the cause.}
-\label{fig:FeynmanBetaBeta0NuBlob}
-\end{figure}
-
-\begin{figure}
-\begin{center}
-\begin{tikzpicture}
-\node[circle,fill=black,pattern=dots,minimum size=30] (BlackBox) {};
-\node[coordinate] (Strong1) at ([shift={(180:2)}]BlackBox) {};
-\node[coordinate] (Strong2) at ([shift={(0:2)}]BlackBox) {};
-\node[coordinate] (Weak1) [left of=Strong1] {};
-\node[coordinate] (Weak2) [right of=Strong2] {};
-\node (Nu1) [left of=Weak1] {$\overline{\nu}$};
-\node (Nu2) [right of=Weak2] {$\nu$};
-
-\draw[-,out=120,in=90] (BlackBox) to node[midway,sloped]{$<$} node[above]{$\overline{u}$} (Strong1) ;
-\draw[-,out=-90,in=-120] (Strong1) to node[midway,sloped]{$>$} node[above]{d} (BlackBox);
-\draw[-,out=60,in=90] (BlackBox) to node[midway,sloped]{$<$} node[above]{$\overline{d}$} (Strong2) ;
-\draw[-,out=-90,in=-60] (Strong2) to node[midway,sloped]{$>$} node[above]{u} (BlackBox);
-\draw[snake=snake] (Strong1) to node[above]{$W^{-}$} (Weak1);
-\draw[snake=snake] (Strong2) to node[above]{$W^{+}$} (Weak2);
-\draw[-,out=-100,in=-90] (BlackBox) to node[midway,sloped]{$>$} node[below]{$e^{+}$} (Weak1);
-\draw[-,out=-80,in=-90] (BlackBox) to node[midway,sloped]{$>$} node[below]{$e^{-}$} (Weak2);
-\draw[-] (Weak1) to node[midway,sloped]{$<$} (Nu1);
-\draw[-] (Weak2) to node[midway,sloped]{$>$} (Nu2);
-
-\end{tikzpicture}
-\end{center}
-\caption{Since $\beta\beta 0\nu$ requires that the reaction in Figure~\ref{fig:FeynmanBetaBeta0NuBlob} occurs, we can insert that diagram into this larger one and assert that regardless of the underlying mechanism, $\beta\beta 0\nu$ implies an effective neutrino mass generated by $\overline{\nu}$-$\nu$ oscillation as a higher-order process.}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Even without any assumptions about the mechanism which leads to $\beta\beta 0\nu$ decay, we can use that process to generate an effective neutrino mass as a higher-order process.  Figure from~\cite{RMPbb0n}.}
 \label{fig:FeynmanBetaBeta0NuImplication}
+\end{quote}
 \end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
 
-It is worth noting that the interaction term above assumes no mediating particles in the mechanism, whereas it is possible that $\beta\beta 0\nu$ could be mediated by some higher-order interaction terms.  However, if $\beta\beta 0\nu$ decay is observed, it leads very generally to a conclusion that neutrinos have an \emph{effective} Majorana mass interaction~\cite{BlackBoxTheorem}.  We can see this by examining the generic diagram for $\beta\beta 0\nu$ decay in figure~\ref{fig:FeynmanBetaBeta0NuBlob}.  No matter what the mechanism of the decay is, we can insert this diagram into figure~\ref{fig:FeynmanBetaBeta0NuImplication} and see that an effective neutrino-antineutrino mass vertex is implied by the existence of $\beta\beta 0\nu$ decay.
+It is worth noting that the interaction term above assumes no mediating particles in the mechanism, whereas it is possible that $\beta\beta 0\nu$ could be mediated by some higher-order interaction terms.  However, if $\beta\beta 0\nu$ decay is observed, it leads very generally to a conclusion that neutrinos have an \emph{effective} Majorana mass interaction~\cite{BlackBoxTheorem}.  We can see this by embedding the $\beta\beta 0\nu$ process into a higher-order one, as shown in figure~\ref{fig:FeynmanBetaBeta0NuImplication}.  Regardless of the details of how $\beta\beta 0\nu$ occurs, its existence would necessarily generate an effective neutrino mass as a higher-order process.
 
 \begin{figure}
 \begin{center}
@@ -193,27 +109,27 @@ It is worth noting that the interaction term above assumes no mediating particle
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-It has long been clear that appealing extensions to the Standard Model can be built around neutrinos with Majorana mass; see eg. the introduction in 1980 of the see-saw mechanism in~\cite{PhysRevLett.44.912}, where the naturalness of the neutrino mass scale is addressed by hypothesizing $m_R$ is inversely related to $m_L$ and $m_L \ll m_R$.  The motivation to search for $\beta\beta 0\nu$ decay became stronger when neutrinos were proven to have mass, particularly by the definitive proof of the oscillation of atmospheric neutrinos in~\cite{SuperK}.  As a result, the number of experiments searching for $\beta\beta$ decays increased rapidly during this time period; figure~\ref{fig:Halflife_vs_year} shows a collection of $\beta\beta 0\nu$ half-life limits obtained versus year, colored by the isotope under study.  The search for $\beta\beta 0\nu$ has by now evolved into a highly competitive field, in which the isotopes $^{130}$Te, $^{76}$Ge, and $^{136}$Xe are particularly dominant but searches are also being actively pursued in many other isotopes.
+It has long been clear that appealing extensions to the Standard Model can be built around neutrinos with Majorana mass; see eg. the introduction in 1980 of the see-saw mechanism in~\cite{PhysRevLett.44.912}, where the naturalness of the neutrino mass scale is addressed by hypothesizing $m_R$ is inversely related to $m_L$ and $m_L \ll m_R$.  The motivation to search for $\beta\beta 0\nu$ decay became stronger when neutrinos were proven to have mass, particularly by the definitive proof of the oscillation of atmospheric neutrinos in~\cite{SuperK}.  As a result, the number of experiments searching for $\beta\beta 2\nu$ decays increased rapidly during this time period; figure~\ref{fig:Halflife_vs_year} shows a collection of $\beta\beta 0\nu$ half-life limits obtained versus year, colored by the isotope under study.  The search for $\beta\beta 0\nu$ has by now evolved into a highly competitive field, in which the isotopes $^{130}$Te, $^{76}$Ge, and $^{136}$Xe are particularly dominant but searches are also being actively pursued in many other isotopes.
 
 \section{Double-beta Decay Nuclear Matrix Calculations}\label{sec:NuclearMatrixCalculations}
 
 If the mechanism of $\beta\beta 0\nu$ decay is a tree level neutrino mass term as shown in figure~\ref{fig:FeynmanBetaBeta0Nu}, then the rate of $\beta\beta 0\nu$ decay will also reflect the magnitude of the neutrino mass parameters.  To specify this relation precisely we need an understanding of the nuclear physics of the decaying isotope.  This section will identify the relevant quantities which must be computed and provide a survey of the computational approaches to estimating them.
 
-For a tree-level Majorana interaction we can write the partial half-life of an isotope which undergoes $\beta\beta 0\nu$ decay as
+For a tree-level Majorana interaction we can write the partial half-life $T^{0\nu}_{1/2}$ of an isotope which undergoes $\beta\beta 0\nu$ decay can be described by
 \begin{equation}\label{eqn:HalfLifeMatrixElementEqn}
 \left[T^{0\nu}_{1/2}\right]^{-1} = G_{0\nu}(Q_{\beta\beta}, Z) \left| M_{0\nu}\right|^2 \left< m_{\beta\beta} \right>^2,
 \end{equation}
-where $G_{0\nu}(Q_{\beta\beta}, Z)$ is a phase-space factor coming from the range of possible output states, $M_{0\nu}$ is a nuclear matrix element, and the last factor is the effective $\beta\beta 0\nu$ neutrino mass which will be defined in section~\ref{sec:NucPhysConstraintsFromBB0N}.
+where $G_{0\nu}(Q_{\beta\beta}, Z)$ is a phase-space factor coming from the range of possible output states, $M_{0\nu}$ is a nuclear matrix element, and $\left< m_{\beta\beta} \right>$ is the effective $\beta\beta 0\nu$ neutrino mass which will be defined in section~\ref{sec:NucPhysConstraintsFromBB0N}.
 
-It is common to draw nuclear matrix elements and phase factors from different sources.  However, this must be done carefully: scaling factors can be absorbed from one into the other, and if nuclear matrix elements and phase factors are calculated using different conventions, the result of combining them will not be correct.
+The two factors $G_{0\nu}(Q_{\beta\beta}, Z)$ and $M_{0\nu}$ will be computed by quite different methods, and it is common to draw nuclear matrix elements and phase factors from different sources.  However, this must be done carefully: scaling factors can be absorbed from one into the other, and if nuclear matrix elements and phase factors are calculated using different conventions, the result of combining them will not be correct.
 
-For example, in early calculations, the nuclear matrix element and phase-space factor were generally computed in units of $\mathrm{fm}^{-1}$ and $\mathrm{yrs}^-1 \mathrm{fm}^2$, respectively.  Starting in the mid-1980s common practice shifted to multiply the nuclear matrix element by the nuclear radius $R_0 \propto A^3$, where $A$ is the number of nucleons, and divide the phase-space factor by $R_0^2$, making the nuclear matrix element unitless and the phase-space factor in units of $\mathrm{yrs}^-1$.  This new convention is fine itself, but care must be taken that the nuclear radius used in both calculations is the same, whereas for many years different authors might choose $R_0 = 1.1 A^3$ or $R_0 = 1.2 A^3$ without specifying that choice~\cite{PhysRevC.73.028501}.  Modern practice is now that $R_0$ is explicitly specified in any nuclear matrix or phase-space factor calculations.  Similar differences in convention can occur from the choice of whether the fourth power of the axial vector current $g_A^4$ should be included with the phase space factor, nuclear matrix element, or separately as its own factor of equation~\ref{eqn:HalfLifeMatrixElementEqn}, and one must be careful to understand the chosen conventions before combining results from different sources.~\cite{PhysRevC.87.014315}
+For example, in early calculations, the nuclear matrix element and phase-space factor were generally computed in units of $\mathrm{fm}^{-1}$ and $\mathrm{yrs}^{-1} \mathrm{fm}^2$, respectively.  Starting in the mid-1980s common practice shifted to multiply the nuclear matrix element by the nuclear radius $R_0 \propto A^3$, where $A$ is the number of nucleons, and divide the phase-space factor by $R_0^2$, making the nuclear matrix element unitless and the phase-space factor have units of $\mathrm{yrs}^{-1}$.  This new convention is fine itself, but care must be taken that the nuclear radius used in both calculations is the same, whereas for many years different authors might choose $R_0 = 1.1 A^3$ fm or $R_0 = 1.2 A^3$ fm without specifying that choice~\cite{PhysRevC.73.028501}.  Modern practice is now that $R_0$ is explicitly specified in any nuclear matrix or phase-space factor calculations.  Similar differences in convention can occur from the choice of whether the fourth power of the axial vector current $g_A^4$ should be included with the phase space factor, nuclear matrix element, or separately as its own factor of equation~\ref{eqn:HalfLifeMatrixElementEqn}, and one must be careful to understand the chosen conventions before combining results from different sources~\cite{PhysRevC.87.014315}.
 
-The phase-space factor $G_{0\nu}(Q_{\beta\beta}, Z)$ accounts for the phase space of the end-state of $\beta\beta 0\nu$ decay.  This includes two outgoing electrons and an outgoing nucleus.  The mass of the outgoing nucleus is always much larger than the masses of the neutrinos, so nearly all momentum will be carried by the two electrons.  Each contributes a phase space integral of the form $\int_0^{p_{max}} \mathrm{d}p pE$, which individually contribute a factor proportional to $p_{max}^3$.  Considering the system in the rest frame of the incoming nucleus, the sum of the two electron momenta are constrained to be equal to zero, so the combined phase space integral for both electrons is proportional to
+The phase-space factor $G_{0\nu}(Q_{\beta\beta}, Z)$ accounts for the phase space of the end-state of $\beta\beta 0\nu$ decay.  This includes two outgoing electrons and an outgoing nucleus.  The mass of the outgoing nucleus is always much larger than the masses of the neutrinos, so nearly all momentum will be carried by the two electrons.  Each contributes a phase space integral of the form $\int_0^{p_{max}} \mathrm{d}\cdot p pE$, which individually contribute a factor proportional to $p_{max}^3$.  Considering the system in the rest frame of the incoming nucleus, the sum of the two electron momenta are constrained to be equal to zero, so the combined phase space integral for both electrons is proportional to
 \begin{equation}
 \int_0^{p_{max}} \mathrm{d}p_1 p_1E_1 \int_0^{p_{max}} \mathrm{d}p_2 p_2E_2 \delta(p_2-p_1) \propto p_{max}^5.
 \end{equation}
-As a result, the phase space factor $G_{0\nu}(Q_\beta\beta, Z)$ of $\beta\beta 0\nu$ decay will be proportional to $Q^5$, where $Q$ is the total energy of the decay.~\cite{mohapatra1998massive}
+As a result, the phase space factor $G_{0\nu}(Q_\beta\beta, Z)$ of $\beta\beta 0\nu$ decay will be proportional to $Q^5$, where $Q$ is the total energy of the decay~\cite{mohapatra1998massive}.  The strong dependence of $G_{0\nu}(Q_\beta\beta, Z)$ on $Q$ means that isotopes which have high $Q$-values will be expected to have shorter $\beta\beta 0\nu$ half-lives than isotopes with low $Q$-values, so most $\beta\beta 0\nu$ searches will focus on high-$Q$ isotopes.
 
 Another important contribution to the phase space factor come from the electric potential of the escaping electrons in the presence of the atomic nucleus and its atomic electrons.  The potential $V(r)$ of the escaping electron as a function radius is approximated by:~\cite{PhysRevC.87.014315}
 \begin{equation}
@@ -253,9 +169,9 @@ where the intermediate state is a virtual state because it does not conserve ene
 %\end{itemize}
 %All three of these components can only be performed approximately, and the choice of approximations accounts for differences up to a factor of 2-3 between matrix element calculations~\cite{RMPbb0n}.  Some of the available choices are outlined here.
 
-To compute the nuclear matrix elements $M_{0\nu}$, two main approaches exist: the quasi-random phase approximation (QRPA) and the nuclear shell model.  In the simpler random phase approximation (RPA), the transition from initial to virtual intermediate state and from intermediate to final state are produced by operators of the form $p^+ n$, where $p^+$ represents the proton creation operator and $n$ represents the neutron annihilation operator.  The goal is to make these operators more bosonic (and hence more amenable to treatment in a statistical fashion), and so these operators are diagonalized in a new basis which acts on pairs of nuclei and obeys bosonic commutation rules.  QRPA is similar to RPA, but additionally takes into account the preference of like nuclei to pair together.  This is accomplished at the cost of breaking nucleon number conservation in the operator, but nucleon number is still preserved on average, and the modification can have a significant impact on the result.~\cite{RMPbb0n}
+To compute the nuclear matrix elements $M_{0\nu}$, two main approaches exist: the quasi-random phase approximation (QRPA) and the nuclear shell model.  In the simpler random phase approximation (RPA), the transition from initial to virtual intermediate state and from intermediate to final state are produced by operators of the form $p^+ n$, where $p^+$ represents the proton creation operator and $n$ represents the neutron annihilation operator.  The goal is to make these operators more bosonic (and hence more amenable to treatment in a statistical fashion), and so these operators are diagonalized in a new basis which acts on pairs of nuclei and obeys bosonic commutation rules.  QRPA is similar to RPA, but additionally takes into account the preference of like nuclei to pair together.  This is accomplished at the cost of breaking nucleon number conservation in the operator, but nucleon number is still preserved on average, and the modification can have a significant impact on the result~\cite{RMPbb0n}.
 
-The other common approach to nuclear matrix calculations, the nuclear shell model, attempts to capture more fully the dynamics of a nuclear system by including the full nucleon state space and using nucleon-pair (or higher-order) interactions which can be measured empirically from small nuclei.  The disadvantage compared to QRPA is its enormous computational demands which make a full shell model treatment of relevant $\beta\beta 0\nu$ nuclei impossible at this point.  However, it is possible to perform nuclear shell model calculations with a severely truncated state space, and for nuclei whose ground state is close to spherical the results can be reasonable.  As computational power increases it is likely that the shell model will overtake QRPA methods, but for now only a few large-scale shell model calculations of $\beta\beta 0\nu$ matrix elements have been undertaken~\cite{RMPbb0n}.
+The other common approach to nuclear matrix calculations, the nuclear shell model, attempts to capture more fully the dynamics of a nuclear system by including the full nucleon state space and using nucleon-pair (or higher-order) interactions which can be measured empirically from small nuclei.  The disadvantage compared to QRPA is its enormous computational demands which make a full shell model treatment of relevant $\beta\beta 0\nu$ nuclei impossible at this point.  However, it is possible to perform nuclear shell model calculations with a severely truncated state space, and for nuclei whose shape is close to spherical the results can be reasonable.  As computational power increases it is likely that the shell model will overtake QRPA methods, but for now only a few large-scale shell model calculations of $\beta\beta 0\nu$ matrix elements have been undertaken~\cite{RMPbb0n}.
 
 One important component of both the shell model and QRPA techniques is feedback from experimental data.  This can serve two purposes.  The first is validation: because both approaches make significant approximations, the results of those approximations must generally be tested empirically to ensure they do not have adverse consequences for the accuracy of the result.  Observables such as nuclear energy levels and emission spectra are commonplace; only recently, however, have precision decay rates for $\beta\beta 2\nu$ decay begun to appear in the literature.  Although there are many differences between the calculations of $M_{2\nu}$ and $M_{0\nu}$, still it is currently the best source of validation for $M_{0\nu}$ calculations available, so this can help researchers to improve their understanding of the appropriate approximations for double-beta decay matrix elements.
 
@@ -323,9 +239,9 @@ To produce more detailed constraints on neutrino physics, it is generally useful
       \end{pmatrix}.
     \end{aligned}
 \end{align}
-Out of the six parameters used in defining this matrix, the only ones which have been measured are the three mixing angles $sin^2(2\theta_{12}) = 0.857^{+0.023}_{-0.025}$~\cite{PhysRevD.83.052002}, $sin^2(2\theta_{13}) = 0.089 \pm 0.010 \text{(stat)} \pm 0.005\text{(sys)}$~\cite{1674-1137-37-1-011001}, and $sin^2(2\theta_{23}) > 0.95$~\cite{PhysRevLett.107.241801}.  The Dirac phase $\delta$ is in principle observable from oscillation experiments, but no current experiments have achieved the sensitivity necessary to accomplish this.  The Majorana phases $\alpha_1$ and $\alpha_2$ cannot be extracted from neutrino oscillations.~\cite{RMPbb0n}
+Out of the six parameters used in defining this matrix, the only ones which have been measured are the three mixing angles $sin^2(2\theta_{12}) = 0.857^{+0.023}_{-0.025}$~\cite{PhysRevD.83.052002}, $sin^2(2\theta_{13}) = 0.089 \pm 0.010 \text{(stat)} \pm 0.005\text{(sys)}$~\cite{1674-1137-37-1-011001}, and $sin^2(2\theta_{23}) > 0.95$~\cite{PhysRevLett.107.241801}.  The Dirac phase $\delta$ is in principle observable from oscillation experiments, but no current experiments have achieved the sensitivity necessary to accomplish this.  The Majorana phases $\alpha_1$ and $\alpha_2$ cannot be extracted from neutrino oscillations~\cite{RMPbb0n}.
 
-The sum of the three mass eigenstates, $M = \sum m_i$, can be constrained by cosmological observations.  This constraint (like all cosmologically-based constraints) will be model-dependent; it relies on the expectation that low-mass, hot forms of dark matter similar to neutrinos promote the formation of large-scale structures in the early universe by allowing extremely remote regions of matter to remain in thermal equilibrium.  Recent results from Planck combined with WMAP and baryon acoustic oscillations have restricted $M < 0.230$ eV with $95\%$ confidence.~\cite{CosmologicalLimits}  Considering the assertion in section~\ref{sec:NeutrinoFlavorPhysics} that the heaviest neutrino must have a mass no less than $0.048$eV, we can see that this cosmological constraint pushes $M$ to within a factor of five of its lower limit; taken at face value, the Planck measurement is the strongest existing constraint on the absolute mass scale of neutrinos.
+The sum of the three mass eigenstates, $M = \sum m_i$, can be constrained by cosmological observations.  This constraint (like all cosmologically-based constraints) will be model-dependent; it relies on the expectation that low-mass, hot forms of dark matter similar to neutrinos promote the formation of large-scale structures in the early universe by allowing extremely remote regions of matter to remain in thermal equilibrium.  Recent results from Planck combined with WMAP and baryon acoustic oscillations have restricted $M < 0.230$ eV with $95\%$ confidence~\cite{CosmologicalLimits}.  Considering the assertion in section~\ref{sec:NeutrinoFlavorPhysics} that the heaviest neutrino must have a mass no less than $0.048$eV, we can see that this cosmological constraint pushes $M$ to within a factor of five of its lower limit; taken at face value, the Planck measurement is the strongest existing constraint on the absolute mass scale of neutrinos.
 
 Closer to home, the mass of neutrinos is also reflected in $\beta$ decay, $d -> u + e^- + \bar{\nu}_e$.  The total energy of the daughter products is known, and will be shared between the electron and antineutrino; the minimum energy of the antineutrino will be its rest mass, so by searching for the maximum energy of the electron we can simultaneously measure the rest mass of the neutrino.  The electron anti-neutrino emitted from beta decay has a mix of all three mass eigenstates; since no current or planned experiment has sufficiently good energy resolution to resolve the separate endpoints from the three neutrino masses, we can instead write an effective rest mass of an electron antineutrino as:~\cite{RMPbb0n}
 \begin{equation} \label{eqn:DefinitionOfMBeta}
@@ -346,22 +262,20 @@ Closer to home, the mass of neutrinos is also reflected in $\beta$ decay, $d -> 
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-Attempts to measure $\left< m_\beta \right>$ require experiments to measure the electron energy spectrum of beta decays at the endpoint, which is complicated by the fact that this portion of the electron spectrum contains only a small fraction of the total electron statistics.  Tritium ($^3H$) is commonly used for these experiments because it has a medium-length halflife of $12.3$ years and an extremely low $\beta$ decay endpoint energy of $18.6$ keV, which maximizes the relative shift in endpoint energy due to $\left< m_\beta \right>$.  Figure~\ref{fig:TritiumSpectrum} shows that for $\left< m_\beta \right> = 1\text{eV}$ in Tritium, experiments must observe a shift in the spectrum which affects only about one decay in $5 \cdot 10^{12}$, making this level of sensitivity extremely difficult to achieve.  The best existing limit from $\beta$ decay is $\left<m_\beta\right> < 2.05$ eV, with $95\%$ confidence, from the Troitsk experiment which ran from 1994 to 2004.~\cite{OldTritium}  The KATRIN experiment hopes to achieve a sensitivity of $0.2$ eV, and is expected to begin taking data in 2015.~\cite{NewTritium,NewTritiumTimeline}
+Attempts to measure $\left< m_\beta \right>$ require experiments to measure the electron energy spectrum of beta decays at the endpoint, which is complicated by the fact that this portion of the electron spectrum contains only a small fraction of the total electron statistics.  Tritium ($^3H$) is commonly used for these experiments because it has a medium-length halflife of $12.3$ years and an extremely low $\beta$ decay endpoint energy of $18.6$ keV, which maximizes the relative shift in endpoint energy due to $\left< m_\beta \right>$.  Figure~\ref{fig:TritiumSpectrum} shows that for $\left< m_\beta \right> = 1\text{eV}$ in Tritium, experiments must observe a shift in the spectrum which affects only about one decay in $5 \cdot 10^{12}$, making this level of sensitivity extremely difficult to achieve.  The best existing limit from $\beta$ decay is $\left<m_\beta\right> < 2.05$ eV, with $95\%$ confidence, from the Troitsk experiment which ran from 1994 to 2004~\cite{OldTritium}.  The KATRIN experiment hopes to achieve a sensitivity of $0.2$ eV, and is expected to begin taking data in 2015~\cite{NewTritium,NewTritiumTimeline}.
 
 \section{Nuclear Physics Constraints from \texorpdfstring{$\beta\beta 0\nu$}{Neutrinoless Double-Beta}}\label{sec:NucPhysConstraintsFromBB0N}
 
-If the mechanism of $\beta\beta 0\nu$ decay really is, at tree level, a neutrino mass term as shown in figure~\ref{fig:FeynmanBetaBeta0Nu}, then the rate of $\beta\beta 0\nu$ decay will also reflect the magnitude of the neutrino mass parameters.  We can write the partial half-life of an isotope which undergoes $\beta\beta 0\nu$ decay as
-\begin{equation}
+As stated in equation~\ref{eqn:HalfLifeMatrixElementEqn}, it is possible to relate the rate of $\beta\beta 0\nu$ decay to the effective Majorana neutrino mass $\left< m_{\beta\beta} \right>$ by:
+\begin{equation}\label{eqn:HalfLifeMatrixElementEqn_thelatter}
 \left[T^{0\nu}_{1/2}\right]^{-1} = G_{0\nu}(Q_{\beta\beta}, Z) \left| M_{0\nu}\right|^2 \left< m_{\beta\beta} \right>^2,
 \end{equation}
-where $G_{0\nu}(Q_{\beta\beta}, Z)$ is a phase-space factor coming from the range of possible output states, $M_{0\nu}$ is a nuclear matrix element, and the last factor is the effective $\beta\beta$ neutrino mass, defined as:
+where the phase-space factor $G_{0\nu}(Q_{\beta\beta}, Z)$ and nuclear matrix element $M_{0\nu}$ have been described in section~\ref{sec:NuclearMatrixCalculations}.  We can now proceed to relate the effective Majorana neutrino mass to the parametrization of section~\ref{sec:NeutrinoFlavorPhysics}.  We follow this relation with a discussion of the considerations which affect a $\beta\beta 0\nu$ decay search and a summary of the current state of the field.
+
+The effective Majorana neutrino mass $\left< m_{\beta\beta} \right>$ comes from a combination of the three mass eigenvalues described in section~\ref{sec:NeutrinoFlavorPhysics}.  It takes the form:
 \begin{equation} \label{eq:DestructiveMassInteraction}
 \left< m_{\beta\beta} \right> = \left|\sum_k m_k U_{ek}^2\right|.
 \end{equation}
-
-The phase-space factor $G_{0\nu}(Q_{\beta\beta}, Z)$ is difficult to compute exactly due to nuclear effects; for a recent computation, see~\cite{PhysRevC.85.034316} which estimates errors of $7\%$ dominated by uncertainty in the nuclear radius.  Its main feature is that it scales roughly like $Q_{\beta\beta}^5$, the fifth power of the decay energy.  As a result, using $\beta\beta$ isotopes with high $Q$-values confers a significant advantage in neutrino mass sensitivity.
-
-The dominant uncertainty in translating $\beta\beta 0\nu$ half-life limits into $\left< m_{\beta\beta} \right>$ constraints comes from our knowledge of the matrix elements $M_{0\nu}$, which can have uncertainties as large as a factor of $2-3$.~\cite{RMPbb0n}  Calculations which attempt to estimate these values rely on a variety of matrix models, but often rely on approximations of some sort to make the calculations tractable.  Efforts to improve the accuracy of these values include a combination of more precise computations and experimental feedback to improve the accuracy of these models.  See~\cite{ZuberWorkshop} for more discussion of attempts to improve this situation.
 
 Unlike $\left< m_\beta \right>$, which is an incoherent sum of strictly positive terms in equation~\ref{eqn:DefinitionOfMBeta}, we can see that $\left< m_{\beta\beta} \right>$ is a coherent sum of terms, each of which may have arbitrary complex phase which may increase or decrease the result of equation~\ref{eq:DestructiveMassInteraction}.  In other words it is possible, even if neutrinos do have Majorana mass, for $\left< m_{\beta\beta} \right>$ to be arbitrarily small if $\mathbf{U}$ is tuned to produce cancellations between terms.
 
@@ -369,7 +283,7 @@ Unlike $\left< m_\beta \right>$, which is an incoherent sum of strictly positive
 \begin{center}
 \includegraphics[keepaspectratio=true,width=\textwidth]{PDGNeutrinoMassBounds.eps}
 \end{center}
-\caption{The relationship between the effective Majorana mass $\left<m_{\beta\beta}\right>$ and other fundamental neutrino quantities: the lightest neutrino mass eigenstate $m_{min}$, the sum of mass eigenstates $M = \sum m_i$, and the effective single-beta-decay neutrino mass $\left<m_{\beta}\right>$.  Black (magenta) lines indicate the allowed region for the inverted (normal) hierarchy; red (blue) hatches indicate uncertainty for the inverted (normal) hierarchy due to the unknown CP-violating and Majorana phases $\delta$, $\alpha_1$, and $\alpha_2$.~\cite{PDG}}
+\caption{The relationship between the effective Majorana mass $\left<m_{\beta\beta}\right>$ and other fundamental neutrino quantities: the lightest neutrino mass eigenstate $m_{min}$, the sum of mass eigenstates $M = \sum m_i$, and the effective single-beta-decay neutrino mass $\left<m_{\beta}\right>$.  Black (magenta) lines indicate the allowed region for the inverted (normal) hierarchy; red (blue) hatches indicate uncertainty for the inverted (normal) hierarchy due to the unknown CP-violating and Majorana phases $\delta$, $\alpha_1$, and $\alpha_2$~\cite{PDG}.}
 \label{fig:NeutrinoMassBounds}
 \end{figure}
 
@@ -379,7 +293,7 @@ The sensitivity of an experiment for measuring $T_{1/2}^{0\nu}$ can be described
 \begin{equation}\label{eqn:ApproxHalflifeSensitivity}
 T_{1/2}^{0\nu}(n_\sigma) = \frac{4.16 \cdot 10^{26} yrs}{n_\sigma} \left( \frac{\epsilon a}{W}\right) \sqrt{\frac{Mt}{b \Delta E}},
 \end{equation}
-where $M$ is the mass of material, $a$ is the isotopic enrichment, $W$ is the molecular mass of the material in atomic units, and $t$ is the live-time of the experiment; $\epsilon$ is the signal efficiency, $b$ is the background rate (in counts per kg keV year, or some similar units), and $\Delta E$ is the energy resolution of the detector at the $Q$-value; and $n_\sigma$ is the desired confidence limit, in sigmas, where the standard $90\%$ confidence limit will require $n_\sigma = 1.64$.  The scaling of this equation is most accurate when the energy resolution is much smaller than the $Q$-value and the background is uniformly distributed in energy; however it roughly allows us to compare the sensitivity of different $\beta\beta$ experiments.
+where $M$ is the mass of material, $a$ is the isotopic enrichment, $W$ is the molecular mass of the material in atomic units, and $t$ is the live-time of the experiment; $\epsilon$ is the signal efficiency, $b$ is the background rate (in counts per kg keV year, or some similar units), and $\Delta E$ is the energy resolution of the detector at the $Q$-value; and $n_\sigma$ is the desired confidence limit, in sigmas, where the standard $90\%$ confidence limit will require $n_\sigma = 1.64$.  The scaling of this equation is most accurate when the energy resolution is much smaller than the $Q$-value and the background is uniformly distributed in energy; however it roughly allows us to compare the sensitivity of different $\beta\beta 0\nu$ experiments.
 
 What it tells us, broadly, is that we should prefer experiments for which:
 \begin{itemize}
@@ -389,7 +303,7 @@ What it tells us, broadly, is that we should prefer experiments for which:
 \item Good energy resolution can be achieved.
 \end{itemize}
 
-Currently the leading choices of materials for $\beta\beta$ searches are:~\cite{RMPbb0n}
+Currently the leading choices of materials for $\beta\beta 0\nu$ searches are:~\cite{RMPbb0n}
 \begin{description}
 \item[$^{76}$Ge] has by far the best energy resolution of any material, around $3$ keV.  It is also possible to grow Germanium crystals with fairly low background, with $0.06$ counts/(kg keV year) having been demonstrated.  However, it is expensive to grow large, clean crystals of Germanium, and as a result it may not be a scalable material.  It also has a $Q$-value of only $2039$ keV, giving it one of the lowest phase factors among the popular isotopes.  GERDA is currently the leading experiment, with data-taking underway.
 \item[$^{130}$Te] also has an excellent energy resolution around $7$ keV.  Its $Q$-value is also higher than $^{76}$Ge, at $2530$ keV.  TeO$_2$ crystals must be grown, though, so it may suffer from some of the same challenges of scalability as Germanium.  The CUORE experiment is expected to begin data-taking in 2014.
@@ -417,6 +331,6 @@ $^{150}$Nd & $1.8 \cdot 10^{22}$ & $3.4$ & NEMO-3 \cite{PhysRevC.80.032501}\\
 \label{tab:0nubb_limits}
 \end{table}
 
-Table~\ref{tab:0nubb_limits} tabulates the most current $T_{1/2}^{0\nu}$ limits in all $\beta\beta$ isotopes for which $\beta\beta 0\nu$ limits have been published.  Representative limits on $\left< m_{\beta\beta}\right>$ are also included; these come from one particular set of phase space factors and nuclear matrix element calculations chosen because they have been tabulated for a broad range of isotopes and permit comparisons across all available half-life limits.~\cite{PhysRevC.85.034316,PhysRevLett.109.042501}  However, it should be remembered that errors in the matrix elements may propagate to errors in $\left< m_{\beta\beta}\right>$ of as much as a factor of two for each isotope.  We can see that although there are a favored set of isotopes, active and successful programs exist in a wide range of isotopes, and no one isotope is ideal in all respects.
+Table~\ref{tab:0nubb_limits} tabulates the most current $T_{1/2}^{0\nu}$ limits in all $\beta\beta 0\nu$ isotopes for which $\beta\beta 0\nu$ limits have been published.  Representative limits on $\left< m_{\beta\beta}\right>$ are also included; these come from one particular set of phase space factors and nuclear matrix element calculations chosen because they have been tabulated for a broad range of isotopes and permit comparisons across all available half-life limits~\cite{PhysRevC.85.034316,PhysRevLett.109.042501}.  However, it should be remembered that errors in the matrix elements may propagate to errors in $\left< m_{\beta\beta}\right>$ of as much as a factor of two for each isotope.  We can see that although there are a favored set of isotopes, active and successful programs exist in a wide range of isotopes, and no one isotope is ideal in all respects.
 
 As the table indicates, $^{136}$Xe has provided some of the strongest constraints on $\left< m_{\beta\beta}\right>$ in spite of its relatively modest energy resolution.  The present work will demonstrate that it is possible, in the EXO-200 detector, to produce significant improvements to the energy resolution through offline denoising of the scintillation signals.  This denoising technique will be applied to data from the detector, and will result in a stronger limit on $T_{1/2}^{0\nu}$ from EXO-200 than could be obtained from the same data without denoising.  Recent results will be presented which benefit from this and other improvements, as well as increased livetime.

@@ -10,7 +10,7 @@ Here we will describe the simulation of radioactive sources in the EXO-200 detec
 
 \subsection{Simulation of Particles using GEANT}
 
-To simulate the deposition of energy from primary decay particles, version 4.9.3p02 of the GEANT software package is used.~\cite{Agostinelli2003250,1610988}  This package includes a database containing attenuation properties of many common materials as well as detailed decay modes for most radioactive isotopes.  Angular correlations between gammas are not modeled with this version of the software, but that is expected to be a minor detail and will be corrected by upgrading to a newer version of GEANT in the future.  Forbidden beta decays are generated with an incorrect beta spectrum in the default GEANT software; this is addressed by the EXO collaboration by using our own beta spectra where appropriate.
+To simulate the deposition of energy from primary decay particles, version 4.9.3p02 of the GEANT software package is used~\cite{Agostinelli2003250,1610988}.  This package includes a database containing attenuation properties of many common materials as well as detailed decay modes for most radioactive isotopes.  Angular correlations between gammas are not modeled with this version of the software, but that is expected to be a minor detail and will be corrected by upgrading to a newer version of GEANT in the future.  Forbidden beta decays are generated with an incorrect beta spectrum in the default GEANT software; this is addressed by the EXO collaboration by using our own beta spectra where appropriate.
 
 \begin{figure}
 \begin{center}
@@ -19,7 +19,7 @@ To simulate the deposition of energy from primary decay particles, version 4.9.3
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{The GEANT simulation includes large-scale features of the EXO-200 detector, including the outer and inner lead wall (black), outer and inner cryostat and TPC legs (red), and the TPC itself (brown).  Components are assembled from simple geometrical shapes, and distant objects are only described coarsely.~\cite{MCDocumentRun2a}}
+\caption{The GEANT simulation includes large-scale features of the EXO-200 detector, including the outer and inner lead wall (black), outer and inner cryostat and TPC legs (red), and the TPC itself (brown).  Components are assembled from simple geometrical shapes, and distant objects are only described coarsely~\cite{MCDocumentRun2a}.}
 \label{fig:OGL_wireframevis}
 \end{quote}
 \end{figure}
@@ -33,7 +33,7 @@ To simulate the deposition of energy from primary decay particles, version 4.9.3
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Detector components which are close to the liquid xenon are simulated in GEANT with far greater accuracy than distant objects, to reduce computational time.~\cite{MCDocumentRun2a}}
+\caption{Detector components which are close to the liquid xenon are simulated in GEANT with far greater accuracy than distant objects, to reduce computational time~\cite{MCDocumentRun2a}.}
 \label{fig:RayTracer_TPConly}
 \end{quote}
 \end{figure}
@@ -42,9 +42,9 @@ To simulate the deposition of energy from primary decay particles, version 4.9.3
 
 A model of the EXO-200 detector is simulated in GEANT with a collection of simple geometric volumes, which can be composed to form more complicated structures.  Simulation speed decreases as more volumes are generated, and we expect that it is unimportant to simulate details much smaller than the distance between the detail and the liquid xenon.  We attempt to find a balance between accurate modeling of detailed features and simplification of distant features.  In figure~\ref{fig:OGL_wireframevis} we see the full geometry described in GEANT, where distant objects are constructed from a small number of geometric pieces.  Figure~\ref{fig:RayTracer_TPConly} shows how the TPC is described in GEANT, and we can see the level of detail is much greater.
 
-To simulate particles, GEANT uses a Monte Carlo method.  It models particles as taking a sequence of steps, where each step is randomly generated; the probability distribution of each choice of step is determined by known properties of the particle, the energy of the particle, and the properties of the attenuating material.  The precise set of physical processes which determine the probability distribution is user-selected, and in EXO-200 has been chosen to include all processes which are significant within our energy range of 10 keV to 10 MeV.~\cite{MCDocumentRun2a}
+To simulate particles, GEANT uses a Monte Carlo method.  It models particles as taking a sequence of steps, where each step is randomly generated; the probability distribution of each choice of step is determined by known properties of the particle, the energy of the particle, and the properties of the attenuating material.  The precise set of physical processes which determine the probability distribution is user-selected, and in EXO-200 has been chosen to include all processes which are significant within our energy range of 10 keV to 10 MeV~\cite{MCDocumentRun2a}.
 
-Only energy which deposits in the liquid xenon is observable.  When primary decays are simulated far from the detector, it may be that most of those simulated events deposit no energy in the liquid xenon and are not observable; the simulation must continue running until a sufficient number of simulated events deposit energy in the liquid xenon.  This means that sources which are farther from the liquid xenon require significantly more computational time to accumulate a usable number of statistics.  We find that sources outside of the HFE are subject to $4.5$ attenuation lengths before reaching the liquid xenon, and events reaching the liquid xenon from the inner cryostat can only be simulated at $0.01$ Hz/core by this approach.~\cite{MCDocumentRun2a}
+Only energy which deposits in the liquid xenon is observable.  When primary decays are simulated far from the detector, it may be that most of those simulated events deposit no energy in the liquid xenon and are not observable; the simulation must continue running until a sufficient number of simulated events deposit energy in the liquid xenon.  This means that sources which are farther from the liquid xenon require significantly more computational time to accumulate a usable number of statistics.  We find that sources outside of the HFE are subject to $4.5$ attenuation lengths before reaching the liquid xenon, and events reaching the liquid xenon from the inner cryostat can only be simulated at $0.01$ Hz/core by this approach~\cite{MCDocumentRun2a}.
 
 To improve this rate, importance sampling is employed for distant sources.  This approach consists of the following techniques to magnify statistics from a fixed simulation time:
 \begin{itemize}
@@ -52,7 +52,7 @@ To improve this rate, importance sampling is employed for distant sources.  This
 \item The detector is surrounded by importance sampling ``boundaries'': when a particle passes into a boundary it may be cloned (with a user-selected probability), where the rate of cloning is tracked by a corresponding decrease in particle ``weight.''
 \item To avoid biasing the spectrum, it is also necessary to kill particles which pass out of a boundary with the same probability, and increase their weight accordingly.
 \end{itemize}
-This approach has the effect of using GEANT to simulate the properties of particles reaching the outermost boundary; then draw samples from that distribution and simulate the properties of particles reaching the next boundary; and so forth, amplifying the impact of statistics at each stage.  Further details on this approach can be found in~\cite{Dressel:642987}; it has the effect of increasing simulation speeds from the inner cryostat from $0.01$ Hz/core to a few Hz/core, and makes simulations of backgrounds from outside the lead wall feasible.~\cite{MCDocumentRun2a}
+This approach has the effect of using GEANT to simulate the properties of particles reaching the outermost boundary; then draw samples from that distribution and simulate the properties of particles reaching the next boundary; and so forth, amplifying the impact of statistics at each stage.  Further details on this approach can be found in~\cite{Dressel:642987}; it has the effect of increasing simulation speeds from the inner cryostat from $0.01$ Hz/core to a few Hz/core, and makes simulations of backgrounds from outside the lead wall feasible~\cite{MCDocumentRun2a}.
 
 \begin{figure}
 \begin{center}
@@ -61,7 +61,7 @@ This approach has the effect of using GEANT to simulate the properties of partic
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Energy spectra from $^{238}$U in the TPC vessel; single-site and multi-site energy spectra are shown separately.~\cite{MCDocumentRun2a}}
+\caption{Energy spectra from $^{238}$U in the TPC vessel; single-site and multi-site energy spectra are shown separately~\cite{MCDocumentRun2a}.}
 \label{fig:UGeantSpectra}
 \end{quote}
 \end{figure}
@@ -75,7 +75,7 @@ This approach has the effect of using GEANT to simulate the properties of partic
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Energy spectra from $^{232}$Th in the TPC vessel; single-site and multi-site energy spectra are shown separately.~\cite{MCDocumentRun2a}}
+\caption{Energy spectra from $^{232}$Th in the TPC vessel; single-site and multi-site energy spectra are shown separately~\cite{MCDocumentRun2a}.}
 \label{fig:ThGeantSpectra}
 \end{quote}
 \end{figure}
@@ -97,14 +97,14 @@ To generate a scintillation signal, a purely empirical model is used to estimate
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{The wire planes are modeled in only two dimensions; charge drifts along the field lines, which are arranged to terminate only on the u-wires.~\cite{MCDocumentRun2a}}
+\caption{The wire planes are modeled in only two dimensions; charge drifts along the field lines, which are arranged to terminate only on the u-wires~\cite{MCDocumentRun2a}.}
 \label{fig:TwoDimensionalWireModel}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-Simulation of charge signals is better-understood.  The detector is modeled by a two-dimensional geometry where, rather than one-dimensional wires arranged in two-dimensional planes, we have wire ``points'' at fixed voltage which are grouped in a one-dimensional pattern.  The v-wires are treated as stacked directly on top of the u-wires; it is impossible to model the true orientation of the v-wires which is rotated relative to the u-wires, but this has generally proven to be a negligible detail for us.  Only one TPC half is modeled because of the approximate mirror symmetry of the detector across the cathode.  Only a few wires are simulated in the second dimension because the electrostatic effect of any one wire will not extend beyond a few wire spacings.  This model is illustrated in figure~\ref{fig:TwoDimensionalWireModel}.~\cite{MCDocumentRun2a}
+Simulation of charge signals is better-understood.  The detector is modeled by a two-dimensional geometry where, rather than one-dimensional wires arranged in two-dimensional planes, we have wire ``points'' at fixed voltage which are grouped in a one-dimensional pattern.  The v-wires are treated as stacked directly on top of the u-wires; it is impossible to model the true orientation of the v-wires which is rotated relative to the u-wires, but this has generally proven to be a negligible detail for us.  Only one TPC half is modeled because of the approximate mirror symmetry of the detector across the cathode.  Only a few wires are simulated in the second dimension because the electrostatic effect of any one wire will not extend beyond a few wire spacings.  This model is illustrated in figure~\ref{fig:TwoDimensionalWireModel}~\cite{MCDocumentRun2a}.
 
 Electrostatic effects are simulated using the ANSYS Maxwell field simulator.  To simulate the electric fields in the detector, wires are treated as circles with a radius matching the approximate radii of the physical wires, with a constant voltage on their surfaces.  The APD plane and cathode plane are treated as constant-voltage boundaries, and a periodic boundary condition is established on the two remaining boundaries of the model geometry.
 
@@ -117,7 +117,7 @@ These electric fields can be used to trace the paths followed by charge deposits
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Weight potential of a u-wire channel consisting of three ganged wires.  Electric field lines are superimposed.~\cite{MCDocumentRun2a}}
+\caption{Weight potential of a u-wire channel consisting of three ganged wires.  Electric field lines are superimposed~\cite{MCDocumentRun2a}.}
 \label{fig:UWireWeightPotential}
 \end{quote}
 \end{figure}
@@ -131,7 +131,7 @@ These electric fields can be used to trace the paths followed by charge deposits
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Weight potential of a v-wire channel consisting of three ganged wires.  Electric field lines are superimposed.~\cite{MCDocumentRun2a}}
+\caption{Weight potential of a v-wire channel consisting of three ganged wires.  Electric field lines are superimposed~\cite{MCDocumentRun2a}.}
 \label{fig:VWireWeightPotential}
 \end{quote}
 \end{figure}
@@ -142,7 +142,7 @@ We have discussed in section~\ref{sec:DetectorReadout} that charge is induced on
 \begin{equation}
 \delta q_i = Q \delta W_i,
 \end{equation}
-where $Q$ is the total drifting charge and $W_i$ is the weighting potential of electrode $i$, defined as the potential which would be induced in our geometry if the potential on electrode $i$ were set to $1$ and the potential on all other boundaries were set to $0$.~\cite{ShockleyPaper,1686997}  Figures~\ref{fig:UWireWeightPotential} and~\ref{fig:VWireWeightPotential} illustrate the weighting potentials of a u-wire and v-wire channel, respectively.
+where $Q$ is the total drifting charge and $W_i$ is the weighting potential of electrode $i$, defined as the potential which would be induced in our geometry if the potential on electrode $i$ were set to $1$ and the potential on all other boundaries were set to $0$~\cite{ShockleyPaper,1686997}.  Figures~\ref{fig:UWireWeightPotential} and~\ref{fig:VWireWeightPotential} illustrate the weighting potentials of a u-wire and v-wire channel, respectively.
 
 Finally, the functions of integrated charge versus time must be converted to shaped digitized waveforms, and noise must be added.  The shaping and gain amplification is performed to match the electronics described in section~\ref{sec:DetectorReadout}.  To ensure accurate time shaping, the functions are all sampled at a bandwidth of $10$ MHz, and then downsampled after shaping to the nominal $1$ MHz.  Digitization is performed by converting voltages into units of ADC counts, then truncating to an integer value.  To model saturation effects, this number is pulled into the integer range $[0, 4096)$.
 
@@ -153,7 +153,7 @@ Finally, the functions of integrated charge versus time must be converted to sha
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Comparison between simulated and observed waveforms on a u-wire (left) and v-wire (right) from $^{228}$Th sources.  The events are chosen to have similar energies so that the magnitudes match.~\cite{MCDocumentRun2a}}
+\caption{Comparison between simulated and observed waveforms on a u-wire (left) and v-wire (right) from $^{228}$Th sources.  The events are chosen to have similar energies so that the magnitudes match~\cite{MCDocumentRun2a}.}
 \label{fig:MCPulseComparison}
 \end{quote}
 \end{figure}
@@ -162,7 +162,7 @@ Finally, the functions of integrated charge versus time must be converted to sha
 
 We have the ability to add electronic noise to the signals by extracting a set of representative noise waveforms from real data.  These are taken from a large number of solicited triggers which have been checked for the absence of a coincident event.  To increase the number of noise signals available, the noise waveforms sampled from the detector are spliced together, and simulated events may draw their noise from any subrange of the spliced-together noise waveform.  This method provides our most accurate noise model because it can include all noise frequency peaks and channel correlations without requiring a full understanding of those features.
 
-However, current analyses do not emply this method; instead, we simulate noise which is white (has a flat Fourier spectrum) before shaping, and then shaped to have a spectrum which roughly resembles the one observed in the detector.  Figure~\ref{fig:MCPulseComparison} compares waveforms observed from a sample event in data and simulation, and demonstrates that at high energies excellent agreement is achieved.~\cite{MCDocumentRun2a}
+However, current analyses do not emply this method; instead, we simulate noise which is white (has a flat Fourier spectrum) before shaping, and then shaped to have a spectrum which roughly resembles the one observed in the detector.  Figure~\ref{fig:MCPulseComparison} compares waveforms observed from a sample event in data and simulation, and demonstrates that at high energies excellent agreement is achieved~\cite{MCDocumentRun2a}.
 
 \begin{figure}
 \begin{center}
@@ -171,7 +171,7 @@ However, current analyses do not emply this method; instead, we simulate noise w
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Comparison between simulated and observed energy spectra (a) and standoff distance (b) in single-site $^{226}$Ra events from a source located at position S5.~\cite{NewEXObb0nPaper_2014}}
+\caption{Comparison between simulated and observed energy spectra (a) and standoff distance (b) in single-site $^{226}$Ra events from a source located at position S5~\cite{NewEXObb0nPaper_2014}.}
 \label{fig:RaSourceMCComparison}
 \end{quote}
 \end{figure}
@@ -188,7 +188,7 @@ The first stage of data processing involves locating candidate pulses in its wav
 
 Pulse-finding proceeds in two steps.  First, on all waveforms a matched filter is applied to do a preliminary search on all channels.  Then, a secondary search is performed on the u-wire signals to improve sensitivity to multiple signals near in time.
 
-The matched filter algorithm was first described by D.O. North in 1943.~\cite{MatchedFilterPaper}  It attempts to decide between the null hypothesis that a waveform $X[\tau]$ consists of only noise and an alternative hypotheses that the waveform contains both signal and noise:
+The matched filter algorithm was first described by D.O. North in 1943~\cite{MatchedFilterPaper}.  It attempts to decide between the null hypothesis that a waveform $X[\tau]$ consists of only noise and an alternative hypotheses that the waveform contains both signal and noise:
 \begin{equation}\begin{cases}
 H_0: & X[\tau] = n[\tau]\\
 H_1: & X[\tau] = s[\tau] + n[\tau].
@@ -221,7 +221,7 @@ This expression can be computed efficiently using the fast Fourier transform.  T
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{A u-wire waveform (left) and the output from operation of the matched filter (right).  The red line on the right indicates our signal threshold; the matched filter output exceeds the threshold, so this waveform is determined to contain a signal.~\cite{ReconstructionDocument}}
+\caption{A u-wire waveform (left) and the output from operation of the matched filter (right).  The red line on the right indicates our signal threshold; the matched filter output exceeds the threshold, so this waveform is determined to contain a signal~\cite{ReconstructionDocument}.}
 \label{fig:MatchedFilterApplication}
 \end{quote}
 \end{figure}
@@ -247,7 +247,7 @@ An example application of the matched filter to a u-wire waveform is shown in fi
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{A u-wire waveform composed of two signals near in time is shown (top left); the matched filter (top right) correctly detects the presence of signal, but does not detect the presence of two distinct signals.  At bottom left, the waveform is unshaped; at bottom right the waveform is reshaped with shorter differentiation times, leading to easier detection.~\cite{ReconstructionDocument}}
+\caption{A u-wire waveform composed of two signals near in time is shown (top left); the matched filter (top right) correctly detects the presence of signal, but does not detect the presence of two distinct signals.  At bottom left, the waveform is unshaped; at bottom right the waveform is reshaped with shorter differentiation times, leading to easier detection~\cite{ReconstructionDocument}.}
 \label{fig:MultipleSignalFinderApplication}
 \end{quote}
 \end{figure}
@@ -256,7 +256,7 @@ An example application of the matched filter to a u-wire waveform is shown in fi
 
 The matched filter has proven to be an excellent metric for deciding whether a waveform has a signal on it or not.  However, it is not as effective at distinguishing between the cases where one or multiple signals occur on a waveform.  We would particularly like to be able to classify u-wire waveforms by the number of distinct signals they contain because these generally provide the best sensitivity for single-site/multi-site discrimination.  The matched filter output function is designed to have a tall peak in the presence of a signal, but it may also be a broad peak which is difficult to resolve as the sum of two distinct signal contributions.
 
-To improve sensitivity to multiple signals in u-wire waveforms, a second pass is performed on u-wire channels using a multiple-signal finder.  This scheme consists of first, unshaping the waveform offline to remove the effect of the shapers; and second, reshaping the waveform using shorter differentiation times than employed by hardware.  In a multiple-signal waveform, this has the effect of damping signals faster to reduce their overlap in time.  It is then possible to search for signals using a simple threshold which is not as sensitive to small signals as the matched filter, but is capable of detecting additional signals to complement the matched filter.  This process is illustrated in figure~\ref{fig:MultipleSignalFinderApplication}, and is the last procedure for finding signals.~\cite{ReconstructionDocument}
+To improve sensitivity to multiple signals in u-wire waveforms, a second pass is performed on u-wire channels using a multiple-signal finder.  This scheme consists of first, unshaping the waveform offline to remove the effect of the shapers; and second, reshaping the waveform using shorter differentiation times than employed by hardware.  In a multiple-signal waveform, this has the effect of damping signals faster to reduce their overlap in time.  It is then possible to search for signals using a simple threshold which is not as sensitive to small signals as the matched filter, but is capable of detecting additional signals to complement the matched filter.  This process is illustrated in figure~\ref{fig:MultipleSignalFinderApplication}, and is the last procedure for finding signals~\cite{ReconstructionDocument}.
 
 \subsection{Pulse Fitting}\label{sec:ReconPulseFitting}
 
@@ -271,7 +271,7 @@ After finding signals, it is necessary to perform a fit to the expected signal s
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Fits to data for a u-wire (top left), v-wire (top right), and summed-APD waveform (bottom).  The red model line indicates the time extent of the fit window.~\cite{ReconstructionDocument}}
+\caption{Fits to data for a u-wire (top left), v-wire (top right), and summed-APD waveform (bottom).  The red model line indicates the time extent of the fit window~\cite{ReconstructionDocument}.}
 \label{fig:ReconExampleFits}
 \end{quote}
 \end{figure}
@@ -300,7 +300,7 @@ To do this, every possible combination of u-wire/APD cluster and v-wire pulse bu
 \end{itemize}
 Further details of the clustering criteria may be found in~\cite{ReconstructionDocument}.
 
-This section has described the situation where the pulses of an event may be reconstructed as a set of three-dimensional clusters with well-defined position, time, and charge energy.  Although every effort has been made to accomplish this whenever possible, in practice there are events for which some clusters may not be fully reconstructible.  Primarily this occurs because charge deposited on a u-wire near the edge of the detector where no v-wires exist; because a cluster fell below the threshold for v-wire signal-finding, or the event fell below the scintillation threshold; because the signal finder reported a false positive, yielding a non-physical pulse; or because an event has extremely high multiplicity and it is not possible to select a preferred clustering.  Such events are difficult to use in higher-level analyses and will generally be removed, with an associated energy-dependent efficiency loss of $9.1\%$.~\cite{NewEXObb0nPaper_2014}
+This section has described the situation where the pulses of an event may be reconstructed as a set of three-dimensional clusters with well-defined position, time, and charge energy.  Although every effort has been made to accomplish this whenever possible, in practice there are events for which some clusters may not be fully reconstructible.  Primarily this occurs because charge deposited on a u-wire near the edge of the detector where no v-wires exist; because a cluster fell below the threshold for v-wire signal-finding, or the event fell below the scintillation threshold; because the signal finder reported a false positive, yielding a non-physical pulse; or because an event has extremely high multiplicity and it is not possible to select a preferred clustering.  Such events are difficult to use in higher-level analyses and will generally be removed, with an associated energy-dependent efficiency loss of $9.1\%$~\cite{NewEXObb0nPaper_2014}.
 
 \section{Energy Corrections}\label{sec:ResultEnergy}
 
@@ -310,7 +310,7 @@ Each cluster which is found can be assigned a preliminary energy estimate based 
 
 The preliminary charge cluster energy measurements come from the sum of the u-wire signal magnitudes described in section~\ref{sec:ReconPulseFitting}.  These magnitudes reflect the quantity of charge which was collected by the u-wire.
 
-However, each u-wire channel has its own set of electronics, so pulse magnitudes must be adjusted by a gain correction which depends on the channel.  These gains are extracted from source data by selecting pair production events from the thorium source, in which a $2615$-keV gamma pair-produces an electron and positron, and the positron subsequently annihilates with another electron to emit two $511$-keV gammas.  The high multiplicity of these events makes it possible to select them accurately, and the process guarantees that a single $1593$-keV cluster at the site of the pair pruduction must be truly single-site because it originates from a single energetic electron.  These properties make it ideal for producing an accurate u-wire gain measurement.  Using the resulting gain corrections, individual u-wire pulse magnitudes are corrected based on their gain, and the charge cluster energy measurements are corrected according to the corrections on their bundled u-wire pulses.~\cite{EnergyDocumentRun2a}
+However, each u-wire channel has its own set of electronics, so pulse magnitudes must be adjusted by a gain correction which depends on the channel.  These gains are extracted from source data by selecting pair production events from the thorium source, in which a $2615$-keV gamma pair-produces an electron and positron, and the positron subsequently annihilates with another electron to emit two $511$-keV gammas.  The high multiplicity of these events makes it possible to select them accurately, and the process guarantees that a single $1593$-keV cluster at the site of the pair pruduction must be truly single-site because it originates from a single energetic electron.  These properties make it ideal for producing an accurate u-wire gain measurement.  Using the resulting gain corrections, individual u-wire pulse magnitudes are corrected based on their gain, and the charge cluster energy measurements are corrected according to the corrections on their bundled u-wire pulses~\cite{EnergyDocumentRun2a}.
 
 There are also two Z-dependent energy corrections which must be applied to clusters.  The first accounts for charge attenuation due to the imperfect purity of the xenon.  As electrons drift, they may attach to electronegative impurities such as water, oxygen, and methane; the exact nature of the electronegative impurities in EXO-200 are not known.  The level of impurities in the xenon are time-dependent due to the strong effects which the xenon pump speed and periodic xenon feeds may have.
 
@@ -321,14 +321,14 @@ There are also two Z-dependent energy corrections which must be applied to clust
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{The purity charge correction is measured by fitting the $2615$-keV $^{208}$Tl gamma line as a function of Z-position.~\cite{EnergyDocumentRun2ab}}
+\caption{The purity charge correction is measured by fitting the $2615$-keV $^{208}$Tl gamma line as a function of Z-position~\cite{EnergyDocumentRun2ab}.}
 \label{fig:ThPurityMeasurement}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-To extract the purity correction, the dataset is divided into time windows when the pump speed was constant and no feeds occurred; the purity is assumed to be constant during these time intervals.  It is then possible to combine all thorium source data during these time windows and fit for the $2615$-keV single-site $^{208}$Tl gamma line in Z-bins ranging from the North to the South anode.  An illustration of the ionization peak position versus Z is shown in figure~\ref{fig:ThPurityMeasurement}.  Charge attenuation is exponential with a typical $e$-fold attenuation occurring in $4-5$ ms drift time; the purity correction to charge energy is typically $2-3\%$ for charge deposits at the cathode.~\cite{EnergyDocumentRun2ab}
+To extract the purity correction, the dataset is divided into time windows when the pump speed was constant and no feeds occurred; the purity is assumed to be constant during these time intervals.  It is then possible to combine all thorium source data during these time windows and fit for the $2615$-keV single-site $^{208}$Tl gamma line in Z-bins ranging from the North to the South anode.  An illustration of the ionization peak position versus Z is shown in figure~\ref{fig:ThPurityMeasurement}.  Charge attenuation is exponential with a typical $e$-fold attenuation occurring in $4-5$ ms drift time; the purity correction to charge energy is typically $2-3\%$ for charge deposits at the cathode~\cite{EnergyDocumentRun2ab}.
 
 \begin{figure}
 \begin{center}
@@ -337,14 +337,14 @@ To extract the purity correction, the dataset is divided into time windows when 
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{The expected grid correction of a u-wire as a function of $Z$-position.  In this plot, $Z = 6$ mm represents the position of the u-wire plane and $Z = 12$ mm is the position of the v-wire plane.~\cite{EnergyDocumentRun2a}}
+\caption{The expected grid correction of a u-wire as a function of $Z$-position.  In this plot, $Z = 6$ mm represents the position of the u-wire plane and $Z = 12$ mm is the position of the v-wire plane~\cite{EnergyDocumentRun2a}.}
 \label{fig:GridCorrectionVsZ}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-The other Z-dependent charge correction is from the shielding grid.  Section~\ref{sec:DetectorReadout} described the process by which both electron clouds and ionized xenon will induce signals on the wires.  The electron cloud drifts rapidly, and its pulse is observable; the ionized xenon will drift quite slowly, and will not produce an observable pulse in our electronics.  However, the ionized xenon will counteract the induced current pulse from the drifting electrons by holding some electrons on the wire; the degree to which they are able to influence the observed current signal depends on the weight potential of the wire evaluated at the position of the xenon ions.  The weight potential of a u-wire is shown as a function of Z in figure~\ref{fig:GridCorrectionVsZ}, and we can see that inside the v-wire plane this correction is expected to remain below $1\%$.~\cite{EnergyDocumentRun2a}
+The other Z-dependent charge correction is from the shielding grid.  Section~\ref{sec:DetectorReadout} described the process by which both electron clouds and ionized xenon will induce signals on the wires.  The electron cloud drifts rapidly, and its pulse is observable; the ionized xenon will drift quite slowly, and will not produce an observable pulse in our electronics.  However, the ionized xenon will counteract the induced current pulse from the drifting electrons by holding some electrons on the wire; the degree to which they are able to influence the observed current signal depends on the weight potential of the wire evaluated at the position of the xenon ions.  The weight potential of a u-wire is shown as a function of Z in figure~\ref{fig:GridCorrectionVsZ}, and we can see that inside the v-wire plane this correction is expected to remain below $1\%$~\cite{EnergyDocumentRun2a}.
 
 \begin{figure}
 \begin{center}
@@ -353,14 +353,14 @@ The other Z-dependent charge correction is from the shielding grid.  Section~\re
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{After applying all charge corrections, we find that the $2615$-keV $^{208}$Tl ionization peak is observed at the expected location for single-wire events; however, for two-wire events a residual bias is observed which also exhibits Z-dependence.~\cite{EnergyDocumentRun2ab}}
+\caption{After applying all charge corrections, we find that the $2615$-keV $^{208}$Tl ionization peak is observed at the expected location for single-wire events; however, for two-wire events a residual bias is observed which also exhibits Z-dependence~\cite{EnergyDocumentRun2ab}.}
 \label{fig:ResidualChargeZBias}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-These are all of the known corrections to the charge energy.  However, we find that after applying them, there remains a residual z-dependence in the charge calibration.  Figure~\ref{fig:ResidualChargeZBias} shows that although the $2615$-keV $^{208}$Tl ionization peak has been properly corrected for clusters which deposit on only one u-wire, for clusters which are split between two u-wires there is a residual offset in peak position of roughly $1\%$ and an additional z-dependent effect of up to roughly $0.3\%$.  These effects are not presently understood; however, they are believed to induce a Z-dependent bias effect in the lightmap which is used for scintillation denoising, which is believed to cause the scintillation z-bias described in section~\ref{sec:ResultEnergyLight}.~\cite{EnergyDocumentRun2ab}
+These are all of the known corrections to the charge energy.  However, we find that after applying them, there remains a residual z-dependence in the charge calibration.  Figure~\ref{fig:ResidualChargeZBias} shows that although the $2615$-keV $^{208}$Tl ionization peak has been properly corrected for clusters which deposit on only one u-wire, for clusters which are split between two u-wires there is a residual offset in peak position of roughly $1\%$ and an additional z-dependent effect of up to roughly $0.3\%$.  These effects are not presently understood; however, they are believed to induce a Z-dependent bias effect in the lightmap which is used for scintillation denoising, which is believed to cause the scintillation z-bias described in section~\ref{sec:ResultEnergyLight}~\cite{EnergyDocumentRun2ab}.
 
 \subsection{Light Corrections}\label{sec:ResultEnergyLight}
 
@@ -374,14 +374,14 @@ Although scintillation measurements are made from fitting the magnitudes of the 
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{A residual calibration offset and Z-dependent behavior is observed in the denoised scintillation measurements.  The top plots show the relative peak position of the scintillation-only $2615$-keV $^{208}$Tl peak (one-wire and two-wire) and average alpha energy from $^{222}$Rn versus Z (top left) and R (top right).  The bottom plot shows the absolute denoised scintillation energy from the $2615$-keV $^{208}$Tl peak for one and two wires, with the measured correction function overlaid.~\cite{EnergyDocumentRun2ab}}
+\caption{A residual calibration offset and Z-dependent behavior is observed in the denoised scintillation measurements.  The top plots show the relative peak position of the scintillation-only $2615$-keV $^{208}$Tl peak (one-wire and two-wire) and average alpha energy from $^{222}$Rn versus Z (top left) and R (top right).  The bottom plot shows the absolute denoised scintillation energy from the $2615$-keV $^{208}$Tl peak for one and two wires, with the measured correction function overlaid~\cite{EnergyDocumentRun2ab}.}
 \label{fig:ResidualLightZBias}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-When the denoising algorithm operates properly, it should be constrained to produce scintillation energy measurements calibrated in keV.  This calibration is accomplished by the lightmap, which retains information about the magnitude of pulses produced by $2615$-keV energy deposits.  However, in practice it is seen that the denoised scintillation measurements are not properly calibrated; this can be seen in figure~\ref{fig:ResidualLightZBias}, where it is clear that events of all types (alpha decays in low-background data and both one-wire and two-wire single-site gamma decays from an external source) measure a scintillation energy which is systematically too low and displays significant Z-dependence.  The thorium data, which provides more the best measurement statistics, shows a mis-calibration which ranges from $2.5\%$ near the anodes to $6.5\%$ at the cathode.~\cite{EnergyDocumentRun2ab}
+When the denoising algorithm operates properly, it should be constrained to produce scintillation energy measurements calibrated in keV.  This calibration is accomplished by the lightmap, which retains information about the magnitude of pulses produced by $2615$-keV energy deposits.  However, in practice it is seen that the denoised scintillation measurements are not properly calibrated; this can be seen in figure~\ref{fig:ResidualLightZBias}, where it is clear that events of all types (alpha decays in low-background data and both one-wire and two-wire single-site gamma decays from an external source) measure a scintillation energy which is systematically too low and displays significant Z-dependence.  The thorium data, which provides more the best measurement statistics, shows a mis-calibration which ranges from $2.5\%$ near the anodes to $6.5\%$ at the cathode~\cite{EnergyDocumentRun2ab}.
 
 The cause for the discrepancy in scintillation energy measurements is not currently known.  One hypothesis is that the discrepancy in two-wire charge cluster measurements described in section~\ref{sec:ResultEnergyCharge} may lead to inaccurate event selection in the generation of the lightmap described in section~\ref{sec:LightmapEventSelection}; poor event selection would lead to a systematic error in the lightmap which could depend on Z, and would be capable of creating the observed bias.  Attempts to address this Z-bias within the generation of the lightmap or investigate alternative explanations for its origin have so far been unsuccessful, but these investigations continue, and it is hoped that this issue can be fixed for the next analysis.
 
@@ -391,7 +391,7 @@ E_{corr} = E_{meas}\cdot \begin{cases}
 \left[ (c_{-}) + (a_{-})\cdot |Z|^{b_{-}} \right]^{-1} & \text{if } Z < 0\\
 \left[ (c_{+}) + (a_{+})\cdot |Z|^{b_{+}} \right]^{-1} & \text{if } Z > 0,
 \end{cases}\end{equation}
-where we measure from data $c_{-} = 0.9380$, $c_{+} = 0.9355$, $b_{-} = 1.71$, $b_{+} = 2.00$, $a_{-} = 0.69$, $a_{+} = 1.3$, and $Z$ is in units of meters.  The bottom plot of figure~\ref{fig:ResidualLightZBias} shows this empirical correction overlaid on one-wire and two-wire thorium source data, demonstrating the function agrees well with the observed Z-dependent offset.~\cite{EnergyDocumentRun2ab}
+where we measure from data $c_{-} = 0.9380$, $c_{+} = 0.9355$, $b_{-} = 1.71$, $b_{+} = 2.00$, $a_{-} = 0.69$, $a_{+} = 1.3$, and $Z$ is in units of meters.  The bottom plot of figure~\ref{fig:ResidualLightZBias} shows this empirical correction overlaid on one-wire and two-wire thorium source data, demonstrating the function agrees well with the observed Z-dependent offset~\cite{EnergyDocumentRun2ab}.
 
 \subsection{Rotated Energy Calibration}\label{sec:RotatedEnergyCalibration}
 
@@ -441,7 +441,7 @@ Along with the energy calibration, we must also measure the energy resolution of
 \begin{equation}
 \sigma(E) = \sqrt{p_0^2 E + p_1^2 + p_2^2 E^2},
 \end{equation}
-where typically we interpret the parameters $p_1$ to come from electronic noise (which contributes a smearing independent of energy), $p_0$ to come from statistical fluctuations in the number of photons or electrons observed (which follows a Poisson distribution), and $p_2$ to come from mis-calibration of components of the detector (whose effect does not diminish with increased energy).~\cite{knoll2000radiation}  We also often find it useful to refer to the relative or fractional energy resolution, defined as:
+where typically we interpret the parameters $p_1$ to come from electronic noise (which contributes a smearing independent of energy), $p_0$ to come from statistical fluctuations in the number of photons or electrons observed (which follows a Poisson distribution), and $p_2$ to come from mis-calibration of components of the detector (whose effect does not diminish with increased energy)~\cite{knoll2000radiation}.  We also often find it useful to refer to the relative or fractional energy resolution, defined as:
 \begin{equation}
 \sigma(E)/E = \sqrt{p_0^2/E + p_1^2/E^2 + p_2^2}.
 \end{equation}
@@ -457,7 +457,7 @@ The resolutions of single-site and multi-site events differ, so there are separa
 \hline $p_2$ & 0.0107 & 0.0096 & 0.0011 & 0.0040 \\ \hline
 \end{tabular}
 \end{center}
-\caption{Time-averaged resolution parameters for denoised and undenoised data.  For undenoised data, measurements were consistent with $p_0 = 0$, so this parameter was not used in the analysis of undenoised data.~\cite{AverageEnergyResolutionDocument}}
+\caption{Time-averaged resolution parameters for denoised and undenoised data.  For undenoised data, measurements were consistent with $p_0 = 0$, so this parameter was not used in the analysis of undenoised data~\cite{AverageEnergyResolutionDocument}.}
 \label{tab:ResolutionFunctions}
 \end{table}
 
@@ -482,7 +482,7 @@ We note that $p_0$ shifts from negligible to measurable when denoising is applie
 
 The parameter $p_2$ seems to be significantly reduced by denoising.  This can be interpreted as demonstrating a better understanding of APD gain in denoised scintillation measurements.  In the undenoised scintillation measurements, all APD channels are summed together without regard to the different gains of each APD channel; we can expect this to lead to a significant variation in gain depending on which APD channel was nearest to an energy deposit, which would appear as a significant contribution to $p_2$.  On the other hand, the denoised scintillation measurement is build around a channel-by-channel APD lightmap which contains information about the gain of every APD channel, which could reduce the impact of local variations in gain and, consequently, the magnitude of $p_2$.
 
-It should be noted that, although these interpretations of $p_0$, $p_1$, and $p_2$ are highly suggestive, the naive interpretations of their meaning may not be fully applicable to the rotated energy measurements.  Other energy-dependent quantities may not be fully understood; for example, it has been suggested that the rotation angle may be energy-dependent, and our failure to include this dependence may be reflected by an energy dependence in the resolution function.~\cite{EnergyDocumentRun2a}  Also, the error bands in figure~\ref{fig:ResolutionFunctionComparison} are still somewhat broad, and more accurate resolution measurements or resolution measurements from a wider energy range would be useful to contrain the values of these parameters better.  Further investigation will be required to verify that the scintillation energy measurement accuracy is still the dominant contributor to energy resolution at all energy scales.
+It should be noted that, although these interpretations of $p_0$, $p_1$, and $p_2$ are highly suggestive, the naive interpretations of their meaning may not be fully applicable to the rotated energy measurements.  Other energy-dependent quantities may not be fully understood; for example, it has been suggested that the rotation angle may be energy-dependent, and our failure to include this dependence may be reflected by an energy dependence in the resolution function~\cite{EnergyDocumentRun2a}.  Also, the error bands in figure~\ref{fig:ResolutionFunctionComparison} are still somewhat broad, and more accurate resolution measurements or resolution measurements from a wider energy range would be useful to contrain the values of these parameters better.  Further investigation will be required to verify that the scintillation energy measurement accuracy is still the dominant contributor to energy resolution at all energy scales.
 
 \begin{figure}
 \begin{center}
@@ -491,14 +491,14 @@ It should be noted that, although these interpretations of $p_0$, $p_1$, and $p_
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Time dependence of the single-site energy resolution at $2615$ keV with denoised (blue) and undenoised (red) scintillation.  The denoised energy resolution at the $\beta\beta 0\nu$ $Q$-value is estimated (open square) from the time-dependent energy resolution measured with thorium data combined with the time-independent shape of the average resolution function.~\cite{NewEXObb0nPaper_2014}}
+\caption{Time dependence of the single-site energy resolution at $2615$ keV with denoised (blue) and undenoised (red) scintillation.  The denoised energy resolution at the $\beta\beta 0\nu$ $Q$-value is estimated (open square) from the time-dependent energy resolution measured with thorium data combined with the time-independent shape of the average resolution function~\cite{NewEXObb0nPaper_2014}.}
 \label{fig:ResolutionTimeDependenceComparison}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-Although we have identified the energy resolution functions averaged over our entire dataset, it is also instructive to study the time-dependence of the energy resolution.  We cannot produce a full resolution function which is time-dependent because the cesium and cobalt source calibrations were only occasionally taken, but it is possible to study the time dependence of the resolution at the $2615$-keV $^{208}$Tl line of the thorium source which was deployed much more frequently.  This resolution is shown as a function of time in figure~\ref{fig:ResolutionTimeDependenceComparison}.  We can see that the energy resolution is improved for all time periods.  We can also see that the variations in resolution are much smaller in denoised than undenoised energy; in particular, the period of worse resolution between October 2012 and June 2013 is brought closer to the resolution during the rest of the data run by the denoising process.  Time fluctuations in the undenoised energy resolution are attributed to fluctuations in the electronic noise on the APDs, and this flattening-out of the resolution's time dependence after denoising shows that denoising is capable of removing the impact of this time-varying noise.~\cite{NewEXObb0nPaper_2014}
+Although we have identified the energy resolution functions averaged over our entire dataset, it is also instructive to study the time-dependence of the energy resolution.  We cannot produce a full resolution function which is time-dependent because the cesium and cobalt source calibrations were only occasionally taken, but it is possible to study the time dependence of the resolution at the $2615$-keV $^{208}$Tl line of the thorium source which was deployed much more frequently.  This resolution is shown as a function of time in figure~\ref{fig:ResolutionTimeDependenceComparison}.  We can see that the energy resolution is improved for all time periods.  We can also see that the variations in resolution are much smaller in denoised than undenoised energy; in particular, the period of worse resolution between October 2012 and June 2013 is brought closer to the resolution during the rest of the data run by the denoising process.  Time fluctuations in the undenoised energy resolution are attributed to fluctuations in the electronic noise on the APDs, and this flattening-out of the resolution's time dependence after denoising shows that denoising is capable of removing the impact of this time-varying noise~\cite{NewEXObb0nPaper_2014}.
 
 Besides the energy resolution measurements from source data described above, it is possible to possible to identify gamma lines in the low-background data.  These are currently used as a cross-check on the source calibrations rather than additional input into the calibration procedure.  They can serve the additional purpose of verifying that calibrations from a wide range of times can be combined to produce coherent peaks; they can also verify that the average resolutions extracted from source data are accurate because low-background sources are inherently averaged over the duration of the data run.  Two energy lines from the low-background spectrum have been identified as particularly useful.
 
@@ -510,14 +510,14 @@ Besides the energy resolution measurements from source data described above, it 
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{The single-site (left) and multi-site (right) gamma line at $2.2$ MeV from neutron capture on hydrogen can be used as a low-background cross-check on the resolution calibration.~\cite{EnergyDocumentRun2ab}}
+\caption{The single-site (left) and multi-site (right) gamma line at $2.2$ MeV from neutron capture on hydrogen can be used as a low-background cross-check on the resolution calibration~\cite{EnergyDocumentRun2ab}.}
 \label{fig:neutronHydrogenCheck}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-One gamma line in the low-background data comes from neutron capture on hydrogen in the HFE refrigerant.  Such events are generally vetoed by the coincidence cuts, primarily the veto panels, so their impact on the low-background data is suppressed; conversely, it is possible to study only events which occur in coincidence with muon detection by the veto panels, thereby enriching our dataset in neutron capture spectra.  Neutron capture on hydrogen can emit a $2.2$ MeV gamma; figure~\ref{fig:neutronHydrogenCheck} shows the spectra from this source.~\cite{NeutronCaptureGammas,EnergyDocumentRun2ab}
+One gamma line in the low-background data comes from neutron capture on hydrogen in the HFE refrigerant.  Such events are generally vetoed by the coincidence cuts, primarily the veto panels, so their impact on the low-background data is suppressed; conversely, it is possible to study only events which occur in coincidence with muon detection by the veto panels, thereby enriching our dataset in neutron capture spectra.  Neutron capture on hydrogen can emit a $2.2$ MeV gamma; figure~\ref{fig:neutronHydrogenCheck} shows the spectra from this source~\cite{NeutronCaptureGammas,EnergyDocumentRun2ab}.
 
 \begin{figure}
 \begin{center}
@@ -527,7 +527,7 @@ One gamma line in the low-background data comes from neutron capture on hydrogen
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{The low-background potassium peak at $1461$ keV is used as a cross-check on the single-site (left) and multi-site (right) energy calibrations.  Fits also include the nearby $1332$-keV cobalt peak.~\cite{EnergyDocumentRun2ab}}
+\caption{The low-background potassium peak at $1461$ keV is used as a cross-check on the single-site (left) and multi-site (right) energy calibrations.  Fits also include the nearby $1332$-keV cobalt peak~\cite{EnergyDocumentRun2ab}.}
 \label{fig:PotassiumPeakCheck}
 \end{quote}
 \end{figure}
@@ -579,11 +579,11 @@ Fits are then performed using the profile-likelihood method, as described in~\ci
 \begin{equation}
 \text{NLL} = -\sum_i ln\left[\text{pdf}(x_i)\right] + \text{constraints}.
 \end{equation}
-Contraints for us will consist of gaussian penalty terms applied to parameters whose value is constrained by independent studies external to the fit.  The best fit will be the one which minimizes the NLL.  Fit errors on parameters can be extracted by observing how the NLL changes when those parameters are forced away from their best-fit values.  In cases where the best-fit value of a parameter is near its boundary, these errors may not provide a good estimate of the true confidence interval or limits, so when this situation occurs for a parameter of significant interest (specifically, the rate of $\beta\beta 0\nu$, which fits near to zero) we can verify that the confidence limit is not overstated using toy monte carlo studies.~\cite{FittingDocument}
+Contraints for us will consist of gaussian penalty terms applied to parameters whose value is constrained by independent studies external to the fit.  The best fit will be the one which minimizes the NLL.  Fit errors on parameters can be extracted by observing how the NLL changes when those parameters are forced away from their best-fit values.  In cases where the best-fit value of a parameter is near its boundary, these errors may not provide a good estimate of the true confidence interval or limits, so when this situation occurs for a parameter of significant interest (specifically, the rate of $\beta\beta 0\nu$, which fits near to zero) we can verify that the confidence limit is not overstated using toy monte carlo studies~\cite{FittingDocument}.
 
-The fits make use of three observables.  The first, event energy, has been discussed at length in section~\ref{sec:RotatedEnergyCalibration}.  The second is the event classification as single-site or multi-site; we define an event as single-site if reconstruction located only one cluster, and that cluster deposited charge on no more than two u-wire channels.~\cite{FittingDocument}
+The fits make use of three observables.  The first, event energy, has been discussed at length in section~\ref{sec:RotatedEnergyCalibration}.  The second is the event classification as single-site or multi-site; we define an event as single-site if reconstruction located only one cluster, and that cluster deposited charge on no more than two u-wire channels~\cite{FittingDocument}.
 
-The third observable is called standoff, and it attempts to capture the nearness of an event to the TPC walls.  Most backgrounds are external, and can be expected to deposit energy preferentially near the walls of the TPC; by contrast, $\beta\beta 0\nu$ and $\beta\beta 2\nu$ decay come from the xenon, and should be distributed uniformly through the detector.  We define the standoff distance to be the shortest distance between some deposit cluster and either the v-wire planes or the teflon walls.  Ideally, it would be possible to capture finer position information by using all three position coordinates as observables; however, in practice it is difficult to construct a pdf with sufficient statistics in so many dimensions, so the standoff observable has been constructed to capture the most interesting distances in a single observable.  The exact definition is not too important provided it is modeled properly by the simulation; figure~\ref{fig:RaSourceMCComparison} demonstrates that standoff distance is simulated well for all but the smallest values (closest to the TPC walls or anode), and this is accounted for as a shape systematic.~\cite{FittingDocument}
+The third observable is called standoff, and it attempts to capture the nearness of an event to the TPC walls.  Most backgrounds are external, and can be expected to deposit energy preferentially near the walls of the TPC; by contrast, $\beta\beta 0\nu$ and $\beta\beta 2\nu$ decay come from the xenon, and should be distributed uniformly through the detector.  We define the standoff distance to be the shortest distance between some deposit cluster and either the v-wire planes or the teflon walls.  Ideally, it would be possible to capture finer position information by using all three position coordinates as observables; however, in practice it is difficult to construct a pdf with sufficient statistics in so many dimensions, so the standoff observable has been constructed to capture the most interesting distances in a single observable.  The exact definition is not too important provided it is modeled properly by the simulation; figure~\ref{fig:RaSourceMCComparison} demonstrates that standoff distance is simulated well for all but the smallest values (closest to the TPC walls or anode), and this is accounted for as a shape systematic~\cite{FittingDocument}.
 
 Fit parameters include the number of counts observed from each pdf and the fraction of counts from each pdf which populate the single-site spectrum; the latter is constrained based on the agreement between simulated and observed single-site fraction from source runs, but is allowed to float within those uncertainties.  The pdfs which are included are:
 \begin{itemize}
@@ -604,7 +604,7 @@ Fit parameters include the number of counts observed from each pdf and the fract
 \item $^{135}$Xe from neutron capture on $^{134}$Xe.
 \item Various neutron captures on xenon, copper, and hydrogen.
 \end{itemize}
-Similar pdfs from different locations are included because the sharpness and relative intensity of peaks can be affected by intervening material.  The rate of $^{214}$Bi from the air gap is constrained by measurements of radon levels in air, and the rates of $^{214}$Bi from the TPC cathode, $^{214}$Pb dissolved in active xenon, and $^{222}$Rn dissolved in inactive xenon are jointly constrained by independent searches for $^{214}$Bi-$^{214}$Po rates.  The overall rate of neutron captures is allowed to float, but the relative intensities of the captures on xenon, copper, and hydrogen are constrained by simulation, and the single-site fraction is fixed because there are not expected to be sufficient statistics in the single-site spectrum to constrain it.~\cite{FittingDocument}
+Similar pdfs from different locations are included because the sharpness and relative intensity of peaks can be affected by intervening material.  The rate of $^{214}$Bi from the air gap is constrained by measurements of radon levels in air, and the rates of $^{214}$Bi from the TPC cathode, $^{214}$Pb dissolved in active xenon, and $^{222}$Rn dissolved in inactive xenon are jointly constrained by independent searches for $^{214}$Bi-$^{214}$Po rates.  The overall rate of neutron captures is allowed to float, but the relative intensities of the captures on xenon, copper, and hydrogen are constrained by simulation, and the single-site fraction is fixed because there are not expected to be sufficient statistics in the single-site spectrum to constrain it~\cite{FittingDocument}.
 
 In addition to the magnitude and single-site fraction parameters of the fit, there are a few global parameters which are also allowed to float.  There is a normalization constant which is allowed to float within constraints and accounts for uncertainty in the fiducial volume or detection efficiency.  Constraints on this term come from comparisons between the predicted and observed event rate from sources.  Denoising does not currently operate on events whose waveforms are shorter than the standard length of $2048 \mu$s; since these occur more in source data than low-background data, an additional correction to the simulated event rate must be generated, and denoising may in this way worsen the event rate agreement in source data even though it is not expected to show a significant effect in low-background data.  Additionally, the normalization constants for gamma and beta particles are allowed to float separately because their reconstruction efficiency may be different.
 
@@ -626,7 +626,7 @@ Furthermore, it is expected that betas and gammas may need to be calibrated sepa
 \begin{equation}
 E_\beta = \beta E_\gamma.
 \end{equation}
-The beta scale is permitted to float, and is constrained by the fit; figure~\ref{fig:BetaScaleNLL} shows the NLL profile with various choices of beta scale, and demonstrates that it is possible to constrain the beta scale to a value close to $1$ using only the spectral information in the fit.  Uncertainty on the beta scale is incorporated by permitting it to float freely.  We note that currently the beta scale is implemented by shifting beta-like pdf components ($\beta\beta 0\nu$, $\beta\beta 2\nu$, $^{135}$Xe, $^{137}$Xe) relative to the other components which are gamma-like; this ignores the detail that some events may contain clusters generated through both beta and gamma interactions, such as pair production from energetic gammas.  These issues will be addressed in a future analysis, but for now the beta scale is assigned only to decays whose primary particle is a beta.~\cite{FittingDocument}
+The beta scale is permitted to float, and is constrained by the fit; figure~\ref{fig:BetaScaleNLL} shows the NLL profile with various choices of beta scale, and demonstrates that it is possible to constrain the beta scale to a value close to $1$ using only the spectral information in the fit.  Uncertainty on the beta scale is incorporated by permitting it to float freely.  We note that currently the beta scale is implemented by shifting beta-like pdf components ($\beta\beta 0\nu$, $\beta\beta 2\nu$, $^{135}$Xe, $^{137}$Xe) relative to the other components which are gamma-like; this ignores the detail that some events may contain clusters generated through both beta and gamma interactions, such as pair production from energetic gammas.  These issues will be addressed in a future analysis, but for now the beta scale is assigned only to decays whose primary particle is a beta~\cite{FittingDocument}.
 
 \begin{figure}
 \begin{center}
@@ -635,14 +635,14 @@ The beta scale is permitted to float, and is constrained by the fit; figure~\ref
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Energy specra with best-fit pdfs for single-site (top) and multi-site (bottom).  Residuals between data and the combined pdfs are shown below the spectra.  The last bin of the spectra is an overflow bin.  The $2\sigma$ region of interest around the $Q$-value is shown on the single-site spectrum.  Insets for single-site and multi-site zoom around the $Q$-value.  The simultaneous standoff-distance fit is not shown.~\cite{NewEXObb0nPaper_2014}}
+\caption{Energy specra with best-fit pdfs for single-site (top) and multi-site (bottom).  Residuals between data and the combined pdfs are shown below the spectra.  The last bin of the spectra is an overflow bin.  The $2\sigma$ region of interest around the $Q$-value is shown on the single-site spectrum.  Insets for single-site and multi-site zoom around the $Q$-value.  The simultaneous standoff-distance fit is not shown~\cite{NewEXObb0nPaper_2014}.}
 \label{fig:BestFitEnergyFromPaper}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-When all of this is done, it is possible to obtain a fit to the low-background spectrum; the maximum-likelihood fit is shown in figure~\ref{fig:BestFitEnergyFromPaper}.  The best-fit expected background in the $2\sigma$ single-site energy window around our $Q$-value is $31.1 \pm 1.8\text{(stat)} \pm 3.3\text{(sys)}$ counts, corresponding to a background rate of $(1.7 \pm 0.2)\cdot 10^{-3} \text{keV}^{-1} \text{kg}^{−1} \text{yr}^{−1}$.  The backgrounds in this $2\sigma$ energy window come from the thorium decay chain ($51\%$), uranium decay chain ($26\%$), and $^{137}$Xe ($23\%$), with other contributions negligible.  The observed event count in the $2\sigma$ single-site energy window is $39$ counts.~\cite{NewEXObb0nPaper_2014}
+When all of this is done, it is possible to obtain a fit to the low-background spectrum; the maximum-likelihood fit is shown in figure~\ref{fig:BestFitEnergyFromPaper}.  The best-fit expected background in the $2\sigma$ single-site energy window around our $Q$-value is $31.1 \pm 1.8\text{(stat)} \pm 3.3\text{(sys)}$ counts, corresponding to a background rate of $(1.7 \pm 0.2)\cdot 10^{-3} \text{keV}^{-1} \text{kg}^{−1} \text{yr}^{−1}$.  The backgrounds in this $2\sigma$ energy window come from the thorium decay chain ($51\%$), uranium decay chain ($26\%$), and $^{137}$Xe ($23\%$), with other contributions negligible.  The observed event count in the $2\sigma$ single-site energy window is $39$ counts~\cite{NewEXObb0nPaper_2014}.
 
 \begin{figure}
 \begin{center}
@@ -668,14 +668,14 @@ When all of this is done, it is possible to obtain a fit to the low-background s
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Profile scan of negative log-likelihood as a function of the number of fit $\beta\beta 0\nu$ counts.~\cite{NewEXObb0nPaper_2014}}
+\caption{Profile scan of negative log-likelihood as a function of the number of fit $\beta\beta 0\nu$ counts~\cite{NewEXObb0nPaper_2014}.}
 \label{fig:bb0nProfileFromPaper}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-The likelihood profile for the total number of $\beta\beta 0\nu$ counts occurring in our detector during the lifetime of the experiment is shown in figure~\ref{fig:bb0nProfileFromPaper}.  Based on the profile, we can see that a $1\sigma$ confidence interval for this parameter would exclude the null hypothesis of zero $\beta\beta 0\nu$ counts; however, only $1\sigma$ exclusion of the null hypothesis is far too weak to make an inference of a non-zero signal.  Instead, we follow the conventions of the field and quote a $90\%$-confidence upper limit of $24$ total counts from $\beta\beta 0\nu$.  This corresponds to a $90\%$-confidence lower limit on the halflife of $^{136}$Xe decay by the $\beta\beta 0\nu$ mode of $1.1 \cdot 10^{25}$ years.~\cite{NewEXObb0nPaper_2014}
+The likelihood profile for the total number of $\beta\beta 0\nu$ counts occurring in our detector during the lifetime of the experiment is shown in figure~\ref{fig:bb0nProfileFromPaper}.  Based on the profile, we can see that a $1\sigma$ confidence interval for this parameter would exclude the null hypothesis of zero $\beta\beta 0\nu$ counts; however, only $1\sigma$ exclusion of the null hypothesis is far too weak to make an inference of a non-zero signal.  Instead, we follow the conventions of the field and quote a $90\%$-confidence upper limit of $24$ total counts from $\beta\beta 0\nu$.  This corresponds to a $90\%$-confidence lower limit on the halflife of $^{136}$Xe decay by the $\beta\beta 0\nu$ mode of $1.1 \cdot 10^{25}$ years~\cite{NewEXObb0nPaper_2014}.
 
 \section{Results and Physics Reach}\label{sec:ResultResults}
 
@@ -709,7 +709,7 @@ We saw in the NLL profile on the total number of $\beta\beta 0\nu$ counts in fig
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{$\beta\beta 0\nu$ constraints are shown from $^{136}$Xe (horizontal) and $^{76}$Ge (vertical).  The four diagonal lines represent four recent matrix element computations \cite{PhysRevLett.105.252503,Menéndez2009139,PhysRevC.87.014315,PhysRevC.87.045501} and one recent phase-space factor~\cite{PhysRevC.85.034316} relating the two half-lives; tick marks along the diagonal represent the corresponding mass $\left<m_{\beta\beta}\right>$.  $90\%$ confidence limits and median $90\%$ sensitivities are shown for the KamLand-Zen~\cite{PhysRevLett.110.062502}, GERDA~\cite{PhysRevLett.111.122503}, and EXO-200 experiments~\cite{NewEXObb0nPaper_2014}; the claimed 2006 discovery by Klapdor-Kleingrothaus and Krivosheina is shown as a $1\sigma$ confidence interval.~\cite{Klapdor}}
+\caption{$\beta\beta 0\nu$ constraints are shown from $^{136}$Xe (horizontal) and $^{76}$Ge (vertical).  The four diagonal lines represent four recent matrix element computations \cite{PhysRevLett.105.252503,Menéndez2009139,PhysRevC.87.014315,PhysRevC.87.045501} and one recent phase-space factor~\cite{PhysRevC.85.034316} relating the two half-lives; tick marks along the diagonal represent the corresponding mass $\left<m_{\beta\beta}\right>$.  $90\%$ confidence limits and median $90\%$ sensitivities are shown for the KamLand-Zen~\cite{PhysRevLett.110.062502}, GERDA~\cite{PhysRevLett.111.122503}, and EXO-200 experiments~\cite{NewEXObb0nPaper_2014}; the claimed 2006 discovery by Klapdor-Kleingrothaus and Krivosheina is shown as a $1\sigma$ confidence interval~\cite{Klapdor}.}
 \label{fig:MatplotlibSensitivity}
 \end{quote}
 \end{figure}
@@ -720,7 +720,7 @@ The wide spread of limits produced in toy monte carlo studies illustrates the si
 
 Nuclear matrix elements are difficult to compute, as described in \textcolor{red}{the section I need to expand}.  However, figure~\ref{fig:MatplotlibSensitivity} illustrated four diagonal lines corresponding to four different modern nuclear matrix calculations, and uses these values to relate the half-lives of $^{136}$Xe and $^{76}$Ge.  The current median sensitivity and limit on the $\beta\beta 0\nu$ half-life of $^{76}$Ge from GERDA are shown as a horizontal line and vertical arrow, respectively.  This is contrasted with the 2006 claimed discovery by Klapdor-Kleingrothaus and Krivosheina of $\beta\beta 0\nu$ decay, which is not excluded by the more recent GERDA limit.
 
-Furthermore, the nuclear matrix elements permit us to translate half-life lower limits into upper limits on the effective Majorana neutrino mass $\left<m_{\beta\beta}\right>$.  The relation is indicated, for each choice of nuclear matrix elements, by tick marks on the corresponding diagonal line.  We can see that the GERDA and EXO-200 experiments are of similar strengths, depending most on the choice nuclear matrix elements; KamLAND-Zen is comparable in strength to GERDA for the RQRPA nuclear matrix elements, and stronger for all other choices in this plot.  The $90\%$-confidence mass limit quoted by EXO-200 is $\left<m_{\beta\beta}\right> < 190-450$ meV, depending on the choice of matrix elements.  Recalling figure~\ref{fig:NeutrinoMassBounds}, this corresponds to a $90\%$-confidence limit on the mass of the lightest neutrino eigenstate of $m_{min} < 0.69–1.63$ eV under the most conservative choice of Majorana phases.~\cite{NewEXObb0nPaper_2014}
+Furthermore, the nuclear matrix elements permit us to translate half-life lower limits into upper limits on the effective Majorana neutrino mass $\left<m_{\beta\beta}\right>$.  The relation is indicated, for each choice of nuclear matrix elements, by tick marks on the corresponding diagonal line.  We can see that the GERDA and EXO-200 experiments are of similar strengths, depending most on the choice nuclear matrix elements; KamLAND-Zen is comparable in strength to GERDA for the RQRPA nuclear matrix elements, and stronger for all other choices in this plot.  The $90\%$-confidence mass limit quoted by EXO-200 is $\left<m_{\beta\beta}\right> < 190-450$ meV, depending on the choice of matrix elements.  Recalling figure~\ref{fig:NeutrinoMassBounds}, this corresponds to a $90\%$-confidence limit on the mass of the lightest neutrino eigenstate of $m_{min} < 0.69–1.63$ eV under the most conservative choice of Majorana phases~\cite{NewEXObb0nPaper_2014}.
 
 \section{Comparison to Results without Denoising}\label{sec:ResultComparison}
 
