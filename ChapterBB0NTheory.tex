@@ -195,6 +195,74 @@ It is worth noting that the interaction term above assumes no mediating particle
 
 It has long been clear that appealing extensions to the Standard Model can be built around neutrinos with Majorana mass; see eg. the introduction in 1980 of the see-saw mechanism in~\cite{PhysRevLett.44.912}, where the naturalness of the neutrino mass scale is addressed by hypothesizing $m_R$ is inversely related to $m_L$ and $m_L \ll m_R$.  The motivation to search for $\beta\beta 0\nu$ decay became stronger when neutrinos were proven to have mass, particularly by the definitive proof of the oscillation of atmospheric neutrinos in~\cite{SuperK}.  As a result, the number of experiments searching for $\beta\beta$ decays exploded during this time period; figure~\ref{fig:Halflife_vs_year} shows a collection of $\beta\beta 0\nu$ half-life limits obtained versus year, colored by the isotope under study.  The search for $\beta\beta 0\nu$ has by now evolved into a highly competitive field, in which the isotopes $^{130}$Te, $^{76}$Ge, and $^{136}$Xe are particularly dominant but searches are also being actively pursued in many other isotopes.
 
+\section{Double-beta Decay Nuclear Matrix Calculations}\label{sec:NuclearMatrixCalculations}
+
+If the mechanism of $\beta\beta 0\nu$ decay is a tree level neutrino mass term as shown in figure~\ref{fig:FeynmanBetaBeta0Nu}, then the rate of $\beta\beta 0\nu$ decay will also reflect the magnitude of the neutrino mass parameters.  To specify this relation precisely we need an understanding of the nuclear physics of the decaying isotope.  This section will identify the relevant quantities which must be computed and provide a survey of the computational approaches to estimating them.
+
+For a tree-level Majorana interaction we can write the partial half-life of an isotope which undergoes $\beta\beta 0\nu$ decay as
+\begin{equation}\label{eqn:HalfLifeMatrixElementEqn}
+\left[T^{0\nu}_{1/2}\right]^{-1} = G_{0\nu}(Q_{\beta\beta}, Z) \left| M_{0\nu}\right|^2 \left< m_{\beta\beta} \right>^2,
+\end{equation}
+where $G_{0\nu}(Q_{\beta\beta}, Z)$ is a phase-space factor coming from the range of possible output states, $M_{0\nu}$ is a nuclear matrix element, and the last factor is the effective $\beta\beta 0\nu$ neutrino mass which will be defined in section~\ref{sec:NucPhysConstraintsFromBB0N}.
+
+It is common to draw nuclear matrix elements and phase factors from different sources.  However, this must be done carefully: scaling factors can be absorbed from one into the other, and if nuclear matrix elements and phase factors are calculated using different conventions, the result of combining them will not be correct.
+
+For example, in early calculations, the nuclear matrix element and phase-space factor were generally computed in units of $\mathrm{fm}^{-1}$ and $\mathrm{yrs}^-1 \mathrm{fm}^2$, respectively.  Starting in the mid-1980s common practice shifted to multiply the nuclear matrix element by the nuclear radius $R_0 \propto A^3$, where $A$ is the number of nucleons, and divide the phase-space factor by $R_0^2$, making the nuclear matrix element unitless and the phase-space factor in units of $\mathrm{yrs}^-1$.  This new convention is fine itself, but care must be taken that the nuclear radius used in both calculations is the same, whereas for many years different authors might choose $R_0 = 1.1 A^3$ or $R_0 = 1.2 A^3$ without specifying that choice~\cite{PhysRevC.73.028501}.  Modern practice is now that $R_0$ is explicitly specified in any nuclear matrix or phase-space factor calculations.  Similar differences in convention can occur from the choice of whether the fourth power of the axial vector current $g_A^4$ should be included with the phase space factor, nuclear matrix element, or separately as its own factor of equation~\ref{eqn:HalfLifeMatrixElementEqn}, and one must be careful to understand the chosen conventions before combining results from different sources.~\cite{PhysRevC.87.014315}
+
+The phase-space factor $G_{0\nu}(Q_{\beta\beta}, Z)$ accounts for the phase space of the end-state of $\beta\beta 0\nu$ decay.  This includes two outgoing electrons and an outgoing nucleus.  The mass of the outgoing nucleus is always much larger than the masses of the neutrinos, so nearly all momentum will be carried by the two electrons.  Each contributes a phase space integral of the form $\int_0^{p_{max}} \mathrm{d}p pE$, which individually contribute a factor proportional to $p_{max}^3$.  Considering the system in the rest frame of the incoming nucleus, the sum of the two electron momenta are constrained to be equal to zero, so the combined phase space integral for both electrons is proportional to
+\begin{equation}
+\int_0^{p_{max}} \mathrm{d}p_1 p_1E_1 \int_0^{p_{max}} \mathrm{d}p_2 p_2E_2 \delta(p_2-p_1) \propto p_{max}^5.
+\end{equation}
+As a result, the phase space factor $G_{0\nu}(Q_\beta\beta, Z)$ of $\beta\beta 0\nu$ decay will be proportional to $Q^5$, where $Q$ is the total energy of the decay.~\cite{mohapatra1998massive}
+
+Another important contribution to the phase space factor come from the electric potential of the escaping electrons in the presence of the atomic nucleus and its atomic electrons.  The potential $V(r)$ of the escaping electron as a function radius is approximated by:~\cite{PhysRevC.87.014315}
+\begin{equation}
+V(r) = -Z \alpha \hbar c \cdot \begin{cases}
+1/r & r \ge R_0 \\
+\left(3-(r/R_0)^2\right)/2R_0 & r < R_0,
+\end{cases}
+\end{equation}
+where $Z$ is the nuclear charge, $\alpha$ is the fine structure constant, $\hbar$ is Planck's constant, $c$ is the speed of light, and $R_0$ is the radius of the nucleus.  Higher-order corrections include the change in nuclear charge due to the decay and the density of the electron cloud (which includes angular asymmetries).  A modern treatment can be found in~\cite{PhysRevC.87.014315}.
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{MatrixElementComparisonByElement.jpg}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{From Petr Vogel's talk.  \textcolor{red}{Get a better picture of this when the power comes back.}}
+\label{fig:MatrixElementComparisonVsAtom}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+The nuclear matrix element $M_{0\nu}$ describes the transition rate from the initial to the final nuclear state of the decay process.  The transition is generally treated as a two-step process:
+\begin{align}
+(Z,A) &\rightarrow (Z+1,A) + e^{-} + \bar{\nu}_e \notag \\
+\bar{\nu}_e + (Z+1,A) &\rightarrow (Z+2,A) + e^{-},
+\end{align}
+where the intermediate state is a virtual state because it does not conserve energy.  Because the two converted protons must be near each other within the nucleus for the neutrino interaction to occur, the $M_{0\nu}$ is not very sensitive to the variations in nuclear structure between elements; this is in contrast to the transition probability for $\beta\beta 2\nu$, $M_{2\nu}$, for which the neutrons may be well-separated within the nucleus~\cite{PetrVogel0nuAnd2nuMatrixElements}.  This similarity can be observed in figure~\ref{fig:MatrixElementComparisonVsAtom}.
+
+%The three components to a nuclear matrix calculation are:
+%\begin{itemize}
+%\item Computation of the ground-state nuclear structure of the initial nucleus.
+%\item Computation of the ground-state nuclear structure of the final nucleus.
+%\item Evaluation of the $\beta\beta 0\nu$ transition operator.
+%\end{itemize}
+%All three of these components can only be performed approximately, and the choice of approximations accounts for differences up to a factor of 2-3 between matrix element calculations~\cite{RMPbb0n}.  Some of the available choices are outlined here.
+
+To compute the nuclear matrix elements $M_{0\nu}$, two main approaches exist: the quasi-random phase approximation (QRPA) and the nuclear shell model.  In the simpler random phase approximation (RPA), the transition from initial to virtual intermediate state and from intermediate to final state are produced by operators of the form $p^+ n$, where $p^+$ represents the proton creation operator and $n$ represents the neutron annihilation operator.  The goal is to make these operators more bosonic (and hence more amenable to treatment in a statistical fashion), and so these operators are diagonalized in a new basis which acts on pairs of nuclei and obeys bosonic commutation rules.  QRPA is similar to RPA, but additionally takes into account the preference of like nuclei to pair together.  This is accomplished at the cost of breaking nucleon number conservation in the operator, but nucleon number is still preserved on average, and the modification can have a significant impact on the result.~\cite{RMPbb0n}
+
+The other common approach to nuclear matrix calculations, the nuclear shell model, attempts to capture more fully the dynamics of a nuclear system by including the full nucleon state space and using nucleon-pair (or higher-order) interactions which can be measured empirically from small nuclei.  The disadvantage compared to QRPA is its enormous computational demands which make a full shell model treatment of relevant $\beta\beta 0\nu$ nuclei impossible at this point.  However, it is possible to perform nuclear shell model calculations with a severely truncated state space, and for nuclei whose ground state is close to spherical the results can be reasonable.  As computational power increases it is likely that the shell model will overtake QRPA methods, but for now only a few large-scale shell model calculations of $\beta\beta 0\nu$ matrix elements have been undertaken~\cite{RMPbb0n}.
+
+One important component of both the shell model and QRPA techniques is feedback from experimental data.  This can serve two purposes.  The first is validation: because both approaches make significant approximations, the results of those approximations must generally be tested empirically to ensure they do not have adverse consequences for the accuracy of the result.  Observables such as nuclear energy levels and emission spectra are commonplace; only recently, however, have precision decay rates for $\beta\beta 2\nu$ decay begun to appear in the literature.  Although there are many differences between the calculations of $M_{2\nu}$ and $M_{0\nu}$, still it is currently the best source of validation for $M_{0\nu}$ calculations available, so this can help researchers to improve their understanding of the appropriate approximations for double-beta decay matrix elements.
+
+The other benefit of experimental data is that it can help to constrain input parameters to the calculations.  In QRPA, a parameter called $g_{pp}$ controls the strength of phonon-phonon interactions and needs to be fixed from experimental data; the double-beta matrix elements depend strongly on the value of this parameter, and precision observations of $\beta\beta 2\nu$ can be used to constrain its value~\cite{RMPbb0n,PetrVogel0nuAnd2nuMatrixElements}.  In the shell model, the extreme truncation of the single-particle state space results in a need to renormalize the axial vector current $g_A$, which requires a related observable to control that renormalization; precision observations of $\beta\beta 2\nu$ can be an appropriate method to constrain that value as well.  One disadvantage to the use of $\beta\beta 2\nu$ decay rates to constrain parameters which are input to calculations is that the same observations can no longer be used to validate the approximations for double-beta decays~\cite{PetrVogel0nuAnd2nuMatrixElements}.  A description of efforts to obtain new experimental data useful for nuclear theory can be found in \cite{ZuberWorkshop}.
+
+When the results from modern shell model and QRPA calculations are compared, it is found that the results can differ by as much as a factor of 2-3~\cite{RMPbb0n}.  Provided that there is no systematic effect which impacts both methods similarly, this permits us to understand in a rough way the level of accuracy provided by these calculations.  Progress in reducing these differences continues primarily by increasing the number of single-particle states that can be included, but it is clear that for the near term the search for $\beta\beta 0\nu$ will only be able to set rough limits on Majorana neutrino mass.
+
 \section{Neutrino Flavor Physics}\label{sec:NeutrinoFlavorPhysics}
 
 Neutrinos are known to come in three flavors, or eigenstates which are diagonal with respect to the lepton interaction terms of the Standard Model.  These flavors are $\nu_e$, $\nu_\mu$, and $\nu_\tau$; they interact, respectively, with $e$, $\mu$, and $\tau$ leptons.  We can hypothesize that neutrinos may also have a basis diagonalized with respect to rest mass which may not be identical to the flavor basis, and call the mass eigenstates $\nu_1$, $\nu_2$, and $\nu_3$ with respective masses $m_1$, $m_2$, and $m_3$.  The unitary operator which translates between the two bases is specified by:
