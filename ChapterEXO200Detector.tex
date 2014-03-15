@@ -84,11 +84,7 @@ More interesting are the associated by-products from the nearby passage of such 
 
 Some sources of background are intrinsic to the $\beta\beta 0\nu$ search.  Any isotope which can undergo $\beta\beta 0\nu$ decay can also undergo $\beta\beta 2\nu$ decay, and the endpoint of the $^{136}$Xe $\beta\beta 2\nu$ spectrum is necessarily at our $Q$-value.  The only means of reducing background from $\beta\beta 2\nu$ is to improve the energy resolution of the detector so that fewer such decays can mimic $\beta\beta 0\nu$ decay.  Fortunately with the energy resolution exhibited by the EXO-200 detector, $\beta\beta 2\nu$ is subdominant to other backgrounds by many orders of magnitude~\cite{NewEXObb0nPaper_2014}.
 
-Similarly, it is hypothetically possible for neutrino absorption to stimulate a $\beta\beta 2\nu$ decay by the reaction
-\begin{equation}
-2d + \nu_e \rightarrow 2u + 2e^- + \bar{\nu}_e
-\end{equation}
-which is obtained from the $\beta\beta 2\nu$ reaction by taking one neutrino from product to reactant in equation~\ref{eqn:bb2n_decay_reaction}.  The observable spectrum is similar to the standard $\beta\beta 2\nu$ spectrum, but with the endpoint shifted upward by the energy of the absorbed neutrino.  The cross-section for this reaction is expected to be well below the cross-section for standard $\beta\beta 2\nu$, so this will be a negligible background well beyond the current generation of $\beta\beta$ detectors.
+Similarly, it is hypothetically possible for neutrino absorption to stimulate a single-$\beta$ decay which would otherwise have been energetically forbidden; that isotope may then undergo a single-$\beta$ decay with a $Q$-value greater than the $Q$-value of the $\beta\beta 0\nu$ decay, acting as a background for $\beta\beta$ decay.  For example, in $^{136}$Xe the reaction $^{136}\mathrm{Xe} + \nu_e \rightarrow ^{136}\mathrm{Cs} + \mathrm{gammas}$ can occur; $^{136}$Cs can undergo single-$\beta$ decay with an endpoint energy of 2548 keV and halflife of 13.6 days.  This energy is above the $Q$-value for $^{136}$Xe $\beta\beta 0\nu$ decay.  However, this process is expected to occur at quite a low rate, and estimates indicate that it will be a negligible background until $^{136}$Xe sensitivities reach $T_{1/2}^{0\nu} = 10^{27}$ years~\cite{0954-3899-30-9-R01,1309.7957}.
 
 A gamma background which is particularly detrimental to EXO-200 comes from $^{214}$Bi, a member of the radium decay chain.  $^{214}$Bi emits a gamma particle at $2448$ keV, which with our energy resolution is indistinguishable from our $Q$-value.   $^{226}$Ra has a half-life of $1600$ years and generally will be supported by $^{230}$Th ($75,000$ years), $^{234}$U ($250,000$ years), and ultimately by $^{238}$U ($4.5 \cdot 10^9$ years) which has a primordial abundance in the Earth's crust and most natural materials~\cite{ENSDF}.
 
@@ -100,7 +96,21 @@ E_{dep} = \frac{2E_{inc}^2}{m_e c^2 + 2E_{inc}}.
 \end{equation}
 When the incident gamma has an energy of $2615$ keV, the compton edge will lie at $2382$ keV, or only $74.5$ keV below our $Q$-value.  If our energy resolution is around $1.5-2\sigma$ at these energies, this separation is $1.5-2\sigma$.  It is clear that improving our energy resolution may have a strong impact on background contamination by improving separation from the compton edge of the $^{208}$Tl as well as its full deposit line.
 
-We have here identified some of the primary backgrounds which can be expected in the EXO-200 detector, noting particularly those which can be significantly reduced through improvements to the energy resolution.  The following sections will identify some of the mechanisms used to further minimize these backgrounds.
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{scripts/BackgroundsVsRes.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Change in background rates expected in our $2\sigma$ region of interest as a function of the resolution.  Rates are normalized to one at a $Q$-value energy resolution of $1.6\%$ $\sigma/E$.  The three backgrounds shown, from $^{232}$Th, $^{238}$U, and $^{137}$Xe, are currently our dominant backgrounds.  We can see that backgrounds from $^{232}$Th increase sharply with resolutions worse than $2.8\%$ due to its $^{214}$Bi peak at 2615 keV and that it also shows a slight increase in backgrounds above $1.4\%$ due to inclusion of the compton edge at 2382 keV.  Rates from $^{238}$U are nearly constant until resolutions improve below $0.2\%$ due to the $^{214}$Bi line at 2448 keV.  $^{137}$Xe has a smooth spectrum near our $Q$-value, so its rates decrease quite smoothly as the resolution improves due to the shrinking region of interest.}
+\label{fig:BackgroundVsResolution}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+Figure~\ref{fig:BackgroundVsResolution} summarizes the background rates from our three dominant backgrounds, $^{232}$Th, $^{238}$U, and $^{137}$Xe, as they depend on the energy resolution of the detector.  We can see some of the features described above: the $^{238}$U contribution does not decrease substantially until extremely good resolutions below $0.2\%$ $\sigma/E$ are reached at our Q-value, due to the gamma line from $^{214}$Bi which is less than 10 keV from our $Q$-value.  By contrast, the backgrounds from $^{232}$Th decrease rapidly around $3\%$ due to separation from the $^{214}$Bi line at 2615 keV and, to a lesser degree, around $1.4\%$ due to separation from the compton edge of that gamma line.  Other backgrounds such as $^{137}$Xe are smooth in the region of interest and decrease linearly with resolution.  Thus, at the resolutions which are achieved for EXO-200 we can hope to reduce backgrounds from $^{232}$Th and $^{137}$Xe by improving the resolution; backgrounds from $^{238}$U can only be reduced by other means.  The following sections will identify some of the mechanisms used to further minimize these backgrounds.
 
 \section{Passive Background Rejection}\label{sec:DetectorPassiveBackgroundRejection}
 
