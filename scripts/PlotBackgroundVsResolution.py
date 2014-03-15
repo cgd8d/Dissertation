@@ -27,7 +27,9 @@ if len(sys.argv) > 1:
     res = float(sys.argv[2])
     ROI = (2456.7*(1. - 2*res), 2456.7*(1. + 2*res))
 
-    entries = mctree.GetEntries("(nsc == 1 && @pcd_energy.size() > 0 && abs(multiplicity-1.) < 0.001 && !isMissingPosition && " + event.isFiducialStr() + ")*0.5*(TMath::Erf((%f - energy_mc)/1.414)-TMath::Erf((%f - energy_mc)/1.414))" % ROI)
+    #entries = mctree.GetEntries("(nsc == 1 && @pcd_energy.size() > 0 && abs(multiplicity-1.) < 0.001 && !isMissingPosition && " + event.isFiducialStr() + ")*0.5*(TMath::Erf((%f - energy_mc)/(1.414*%f))-TMath::Erf((%f - energy_mc)/(1.414*%f)))" % (ROI[1], 2456.7*res, ROI[0], 2456.7*res))
+
+    entries = mctree.GetEntries("nsc == 1 && @pcd_energy.size() > 0 && abs(multiplicity-1.) < 0.001 && !isMissingPosition && " + event.isFiducialStr() + " && abs(energy_mc*(1. + %f*EXOMiscUtil::GetGaussVar()) - 2456.7) < 2*%f*2456.7" % (res, res))
 
     ofile = open(sys.argv[1] + '_' + sys.argv[2] + '.log', 'w')
     ofile.write(str(entries))

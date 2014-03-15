@@ -26,14 +26,15 @@ for isotope in ['Th', 'Xe', 'U']:
 
     matplotlib.pyplot.plot(values[isotope]['res'], values[isotope]['bkgd'], label = label_dict[isotope])
 
-legend = matplotlib.pyplot.legend(loc = 'lower right')
+legend = matplotlib.pyplot.legend(loc = 'upper left')
 matplotlib.pyplot.grid()
-matplotlib.pyplot.gca().set_xlim(0,3)
+matplotlib.pyplot.gca().set_xlim(0,2.5)
+matplotlib.pyplot.gca().set_ylim(0,4)
 matplotlib.pyplot.gca().set_xlabel('Resolution ($\sigma/E$, %) at 2457 keV')
 matplotlib.pyplot.gca().set_ylabel('Background Rates in $2\sigma$ Region of Interest (arbitrary units)')
 matplotlib.pyplot.gcf().tight_layout()
 for label in legend.get_lines():
     label.set_linewidth(2)
-matplotlib.pyplot.gca().set_yscale('log')
+#matplotlib.pyplot.gca().set_yscale('log')
 matplotlib.pyplot.gcf().subplots_adjust(left=0.1)
 matplotlib.pyplot.savefig('BackgroundsVsRes.pdf')

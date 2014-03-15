@@ -27,3 +27,4 @@
 *.make
 *.fls
 *converted-to.pdf
+*.root
