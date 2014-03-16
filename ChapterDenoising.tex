@@ -20,6 +20,22 @@ As has been discussed, the performance of double-beta experiments like EXO-200 i
 
 When the noise in the APDs is studied, it is found that the individual APD channels meet targeted root-mean-square noise levels of 2000 electrons~\cite{ElectronicsUpgradeReport}.  However, rather than observing the noise on summed APD channels increase proportionally to the square root of the number of channels, the summed APD noise is roughly two to three times higher than projected.  This unfortunate scaling of the noise with channels indicates that noise across different channels is correlated, and further analysis confirms that the bulk of the noise on an unshaped APD waveform is correlated with other channels, as shown in Figure~\ref{fig:APDNoisePowerSpectrum}.  There are many possible sources of coherent noise in the hardware, and reducing the amount of coherent noise is a topic for further research~\cite{ElectronicsUpgradeReport}.
 
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{ResolutionAPDNoiseComparison.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Detector energy resolution (without denoising) is strongly correlated with noise observed on the APDs.  Noise data provided by Josiah Walton.}
+\label{fig:ResolutionAPDNoiseComparison}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+A strong correlation between noise on the APDs and the energy resolution achieved (without denoising) can be observed in figure~\ref{fig:ResolutionAPDNoiseComparison}.  \textcolor{red}{Revisit for text continuity later, just wanted to add figure.}
+
 However, since coherent noise is the dominant type of noise in the APDs, and thus also the limiting factor in EXO-200's energy resolution, it should be possible to exploit the correlations and reduce the level of noise in offline analysis.  This chapter describes a scheme to accomplish that goal and produce an optimal estimate of scintillation energy which takes noise correlations into account.
 
 It is worth noting that in fact there are a number of different qualitative approaches to reducing the noise levels in the scintillation channel.  We will refer to ``passive" approaches as those in which components of our signals are weighted based on their relative signal-to-noise content.  ``Active" approaches, by contrast, will be classified as those which attempt to improve the signal-to-noise content of the waveforms.  We identify the following three types of denoising:

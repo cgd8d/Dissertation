@@ -44,7 +44,7 @@ A model of the EXO-200 detector is simulated in GEANT with a collection of simpl
 
 To simulate particles, GEANT uses a Monte Carlo method.  It models particles as taking a sequence of steps, where each step is randomly generated; the probability distribution of each choice of step is determined by known properties of the particle, the energy of the particle, and the properties of the attenuating material.  The precise set of physical processes which determine the probability distribution is user-selected, and in EXO-200 has been chosen to include all processes which are significant within our energy range of 10 keV to 10 MeV~\cite{MCDocumentRun2a}.
 
-Only energy which deposits in the liquid xenon is observable.  When primary decays are simulated far from the detector, it may be that most of those simulated events deposit no energy in the liquid xenon and are not observable; the simulation must continue running until a sufficient number of simulated events deposit energy in the liquid xenon.  This means that sources which are farther from the liquid xenon require significantly more computational time to accumulate a usable number of statistics.  We find that sources outside of the HFE are subject to $4.5$ attenuation lengths before reaching the liquid xenon, and events reaching the liquid xenon from the inner cryostat can only be simulated at $0.01$ Hz/core by this approach~\cite{MCDocumentRun2a}.
+Only energy which deposits in the liquid xenon is observable.  When primary decays are simulated far from the detector, it may be that most of those simulated events deposit no energy in the liquid xenon and are not observable; the simulation must continue running until a sufficient number of simulated events deposit energy in the liquid xenon.  This means that sources which are farther from the liquid xenon require significantly more computational time to accumulate a usable number of statistics.  We find that sources outside of the HFE-7000 are subject to $4.5$ attenuation lengths before reaching the liquid xenon, and events reaching the liquid xenon from the inner cryostat can only be simulated at $0.01$ Hz/core by this approach~\cite{MCDocumentRun2a}.
 
 To improve this rate, importance sampling is employed for distant sources.  This approach consists of the following techniques to magnify statistics from a fixed simulation time:
 \begin{itemize}
@@ -162,7 +162,7 @@ Finally, the functions of integrated charge versus time must be converted to sha
 
 We have the ability to add electronic noise to the signals by extracting a set of representative noise waveforms from real data.  These are taken from a large number of solicited triggers which have been checked for the absence of a coincident event.  To increase the number of noise signals available, the noise waveforms sampled from the detector are spliced together, and simulated events may draw their noise from any subrange of the spliced-together noise waveform.  This method provides our most accurate noise model because it can include all noise frequency peaks and channel correlations without requiring a full understanding of those features.
 
-However, current analyses do not emply this method; instead, we simulate noise which is white (has a flat Fourier spectrum) before shaping, and then shaped to have a spectrum which roughly resembles the one observed in the detector.  Figure~\ref{fig:MCPulseComparison} compares waveforms observed from a sample event in data and simulation, and demonstrates that at high energies excellent agreement is achieved~\cite{MCDocumentRun2a}.
+However, current analyses do not employ this method; instead, we simulate noise which is white (has a flat Fourier spectrum) before shaping, and then shaped to have a spectrum which roughly resembles the one observed in the detector.  Figure~\ref{fig:MCPulseComparison} compares waveforms observed from a sample event in data and simulation, and demonstrates that at high energies excellent agreement is achieved~\cite{MCDocumentRun2a}.
 
 \begin{figure}
 \begin{center}
@@ -310,7 +310,7 @@ Each cluster which is found can be assigned a preliminary energy estimate based 
 
 The preliminary charge cluster energy measurements come from the sum of the u-wire signal magnitudes described in section~\ref{sec:ReconPulseFitting}.  These magnitudes reflect the quantity of charge which was collected by the u-wire.
 
-However, each u-wire channel has its own set of electronics, so pulse magnitudes must be adjusted by a gain correction which depends on the channel.  These gains are extracted from source data by selecting pair production events from the thorium source, in which a $2615$-keV gamma pair-produces an electron and positron, and the positron subsequently annihilates with another electron to emit two $511$-keV gammas.  The high multiplicity of these events makes it possible to select them accurately, and the process guarantees that a single $1593$-keV cluster at the site of the pair pruduction must be truly single-site because it originates from a single energetic electron.  These properties make it ideal for producing an accurate u-wire gain measurement.  Using the resulting gain corrections, individual u-wire pulse magnitudes are corrected based on their gain, and the charge cluster energy measurements are corrected according to the corrections on their bundled u-wire pulses~\cite{EnergyDocumentRun2a}.
+However, each u-wire channel has its own set of electronics, so pulse magnitudes must be adjusted by a gain correction which depends on the channel.  These gains are extracted from source data by selecting pair production events from the thorium source, in which a $2615$-keV gamma pair-produces an electron and positron, and the positron subsequently annihilates with another electron to emit two $511$-keV gammas.  The high multiplicity of these events makes it possible to select them accurately, and the process guarantees that a single $1593$-keV cluster at the site of the pair production must be truly single-site because it originates from a single energetic electron.  These properties make it ideal for producing an accurate u-wire gain measurement.  Using the resulting gain corrections, individual u-wire pulse magnitudes are corrected based on their gain, and the charge cluster energy measurements are corrected according to the corrections on their bundled u-wire pulses~\cite{EnergyDocumentRun2a}.
 
 There are also two Z-dependent energy corrections which must be applied to clusters.  The first accounts for charge attenuation due to the imperfect purity of the xenon.  As electrons drift, they may attach to electronegative impurities such as water, oxygen, and methane; the exact nature of the electronegative impurities in EXO-200 are not known.  The level of impurities in the xenon are time-dependent due to the strong effects which the xenon pump speed and periodic xenon feeds may have.
 
@@ -364,11 +364,11 @@ These are all of the known corrections to the charge energy.  However, we find t
 
 \subsection{Light Corrections}\label{sec:ResultEnergyLight}
 
-Although scintillation measurements are made from fitting the magnitudes of the scintillation pulses found in reconstruction, as described in section~\ref{sec:ReconPulseFitting}, these scintillation measurements are superceded by the denoised scintillation energies estimated using the denoising method of chapter~\ref{ch:DenoisingTheory}.  This subsection will describe evaluations of the success of that denoising effort and subsequent corrections made to the denoised scintillation energy.
+Although scintillation measurements are made from fitting the magnitudes of the scintillation pulses found in reconstruction, as described in section~\ref{sec:ReconPulseFitting}, these scintillation measurements are superseded by the denoised scintillation energies estimated using the denoising method of chapter~\ref{ch:DenoisingTheory}.  This subsection will describe evaluations of the success of that denoising effort and subsequent corrections made to the denoised scintillation energy.
 
 \begin{figure}
 \begin{center}
-\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedScintillatonRelativeRZBias.png}
+\includegraphics[keepaspectratio=true,width=\textwidth,clip=true,trim=0mm 0mm 20mm 0mm]{DenoisedScintillatonRelativeRZBias.png}
 \includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedScintillatonZBias.png}
 \end{center}
 \renewcommand{\baselinestretch}{1}
@@ -385,7 +385,7 @@ When the denoising algorithm operates properly, it should be constrained to prod
 
 The cause for the discrepancy in scintillation energy measurements is not currently known.  One hypothesis is that the discrepancy in two-wire charge cluster measurements described in section~\ref{sec:ResultEnergyCharge} may lead to inaccurate event selection in the generation of the lightmap described in section~\ref{sec:LightmapEventSelection}; poor event selection would lead to a systematic error in the lightmap which could depend on Z, and would be capable of creating the observed bias.  Attempts to address this Z-bias within the generation of the lightmap or investigate alternative explanations for its origin have so far been unsuccessful, but these investigations continue, and it is hoped that this issue can be fixed for the next analysis.
 
-In the meantime, for this analysis an empirical correction of the discrepancy is applied.  The scintillation correction function takes the form:
+For the present analysis an empirical correction of the discrepancy is applied.  The scintillation correction function takes the form:
 \begin{equation}
 E_{corr} = E_{meas}\cdot \begin{cases}
 \left[ (c_{-}) + (a_{-})\cdot |Z|^{b_{-}} \right]^{-1} & \text{if } Z < 0\\
@@ -395,14 +395,14 @@ where we measure from data $c_{-} = 0.9380$, $c_{+} = 0.9355$, $b_{-} = 1.71$, $
 
 \subsection{Rotated Energy Calibration}\label{sec:RotatedEnergyCalibration}
 
-From the corrected scintillation and charge energy measurements, it is necessary to form a calibrated rotated energy measurement which combines them.  This combination will take advantage of anticorrelation between charge and light to achieve an optimal energy resolution.  To accomplish these measurements, it is necessary to use multiple calibration points; we use the $2615$-keV gamma line from regularly-taken thorium source runs to measure time-dependent calibration parameters, and the $1173$-keV and $1332$-keV gamma lines from cobalt source runs and $661$-keV gamma line from cesium source runs to characterize the energy depence of calibrations.  The linear combination of scintillation and charge will be selected to optimize energy resolution; the precise measurement of energy resolution will be described in section~\ref{sec:RotatedEnergyResMeasurement}, but for this purpose we will simply seek to make energy peaks as narrow as possible.
+From the corrected scintillation and charge energy measurements, it is necessary to form a calibrated rotated energy measurement which combines them.  This combination will take advantage of anticorrelation between charge and light to achieve an optimal energy resolution.  To accomplish these measurements, it is necessary to use multiple calibration points; we use the $2615$-keV gamma line from regularly-taken thorium source runs to measure time-dependent calibration parameters and the $1173$-keV and $1332$-keV gamma lines from cobalt source runs to characterize the energy dependence of calibrations.  The linear combination of scintillation and charge will be selected to optimize energy resolution; the precise measurement of energy resolution will be described in section~\ref{sec:RotatedEnergyResMeasurement}, but for this purpose we will simply seek to make energy peaks as narrow as possible.
 
 The calibrated rotated energy $E$ is computed by a calibration function of the form:
-\begin{align}
+\begin{subequations}\label{eqn:EnergyCalibrationParametrization}\begin{align}
 E_{rot} &= E_S \cdot sin(\theta(t)) + E_C \cdot cos(\theta(t))\\
 E_{ratio} &= \frac{E_{rot}}{E^{th}_{rot}(t)}\\
 E &= \left( E_{thorium} - E_{bias} \right) \cdot \left( p_0 + p_1 E_{ratio} + p_2 E_{ratio}^2\right),
-\end{align}
+\end{align}\end{subequations}
 where $E_C$ and $E_S$ are the measured charge and scintillation energies (with corrections applied as described in sections~\ref{sec:ResultEnergyCharge} and \ref{sec:ResultEnergyLight}), $\theta(t)$ is a time-dependent rotation angle measured to optimize the fractional energy resolution of the thorium gamma line, $E^{th}_{rot}(t)$ is the time-dependent location of the thorium peak in the spectrum of $E_{rot}$, $E_{thorium}$ is the true thorium peak position equal to $2615$ keV, and $E_{bias}$, $p_0$, $p_1$, and $p_2$ are time-independent calibration parameters.  Entirely separate calibration parameters are obtained for single-site and multi-site events.
 
 \begin{figure}
@@ -412,7 +412,7 @@ where $E_C$ and $E_S$ are the measured charge and scintillation energies (with c
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Corrected scintillation versus charge energy are shown for a thorium run.  The projection angle for the rotated energy measurement is illustrated at the $2615$-keV peak; the projection onto a calibrated axis is shown.  Figure provided by Liangjian Wen.}
+\caption{Corrected scintillation versus charge energy are shown for a thorium run.  The projection angle for the rotated energy measurement is illustrated at the $2615$-keV peak; the projection onto a calibrated axis is shown.  The dotted red line indicates the diagonal cut described in section~\ref{sec:ResultFitting}.  Figure provided by Liangjian Wen.}
 \label{fig:LiangjianAnticorrelatedEnergy}
 \end{quote}
 \end{figure}
@@ -426,7 +426,7 @@ where $E_C$ and $E_S$ are the measured charge and scintillation energies (with c
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Charge-only, scintillation-only, and rotated energy spectra are shown from a thorium source run; the significant improvement in energy resolution with the rotated energy measurement is apparent, as are low-energy features which are washed out in the lower-resolution spectra.  The dotted red line indicates the diagonal cut described in section~\ref{sec:ResultFitting}.  Figure provided by Liangjian Wen.}
+\caption{Charge-only, scintillation-only, and rotated energy spectra are shown from a thorium source run; the significant improvement in energy resolution with the rotated energy measurement is apparent, as are low-energy features which are washed out in the lower-resolution spectra.  Figure provided by Liangjian Wen.}
 \label{fig:LiangjianRotatedSpectrumImprovement}
 \end{quote}
 \end{figure}
@@ -437,11 +437,13 @@ The result of this calibration is shown in figure~\ref{fig:LiangjianAnticorrelat
 
 \subsection{Measurement of Rotated Energy Resolution}\label{sec:RotatedEnergyResMeasurement}
 
-Along with the energy calibration, we must also measure the energy resolution of the rotated spectrum.  The resolution is assumed to be energy-dependent; if a monoenergetic deposit is made in the liquid xenon, we hypothesize that the observed spectrum should be gaussian and define the energy resolution at that energy to be the value of $\sigma$.  We can parametrize the dependence of $\sigma$ on energy as:
-\begin{equation}
+The previous section has described the calibration of the rotated energy spectrum.  In this section, we describe the measurement of energy resolution in this rotated energy measurement.
+
+The resolution is assumed to be energy-dependent; if a monoenergetic deposit is made in the liquid xenon, we hypothesize that the observed spectrum should be Gaussian and define the energy resolution at that energy to be the value of $\sigma$.  We can parametrize the dependence of $\sigma$ on energy as:
+\begin{equation}\label{eqn:ResolutionAbsoluteFunctionForm}
 \sigma(E) = \sqrt{p_0^2 E + p_1^2 + p_2^2 E^2},
 \end{equation}
-where typically we interpret the parameters $p_1$ to come from electronic noise (which contributes a smearing independent of energy), $p_0$ to come from statistical fluctuations in the number of photons or electrons observed (which follows a Poisson distribution), and $p_2$ to come from mis-calibration of components of the detector (whose effect does not diminish with increased energy)~\cite{knoll2000radiation}.  We also often find it useful to refer to the relative or fractional energy resolution, defined as:
+where typically we interpret the parameters $p_1$ to come from electronic noise (which contributes a smearing independent of energy), $p_0$ to come from statistical fluctuations in the number of photons or electrons observed (which follows a Poisson distribution in the number of photons), and $p_2$ to come from mis-calibration of components of the detector (whose effect increases linearly with the size of the pulse)~\cite{knoll2000radiation}.  We also often find it useful to refer to the relative or fractional energy resolution, defined as:
 \begin{equation}
 \sigma(E)/E = \sqrt{p_0^2/E + p_1^2/E^2 + p_2^2}.
 \end{equation}
@@ -449,58 +451,38 @@ The resolutions of single-site and multi-site events differ, so there are separa
 
 \begin{table}
 \begin{center}
-\begin{tabular}{|c|c|c|c|c|}
-\hline \multirow{2}{*}{Parameter} & \multicolumn{2}{|c|}{Undenoised} & \multicolumn{2}{|c|}{Denoised}\\
-\cline{2-5}& SS & MS & SS & MS \\
-\hline $p_0$ & 0 & 0 & 0.628 & 0.602 \\
-\hline $p_1$ & 39.8 & 43.0 & 20.8 & 25.8 \\
-\hline $p_2$ & 0.0107 & 0.0096 & 0.0011 & 0.0040 \\ \hline
+\begin{tabular}{|c|c|c|}
+\hline Parameter & SS & MS \\
+\hline $p_0$ & 0.628 & 0.602 \\
+\hline $p_1$ & 20.8 & 25.8 \\
+\hline $p_2$ & 0.0011 & 0.0040 \\ \hline
 \end{tabular}
 \end{center}
-\caption{Time-averaged resolution parameters for denoised and undenoised data.  For undenoised data, measurements were consistent with $p_0 = 0$, so this parameter was not used in the analysis of undenoised data~\cite{AverageEnergyResolutionDocument}.}
-\label{tab:ResolutionFunctions}
+\caption{Time-averaged resolution parameters for the single-site and multi-site denoised dataset~\cite{AverageEnergyResolutionDocument}.}
+\label{tab:ResolutionFunctions_DenoisedOnly}
 \end{table}
 
 \begin{figure}
 \begin{center}
-\includegraphics[keepaspectratio=true,width=.95\textwidth]{ResolutionFunctionComparison_absolute.pdf}
-\includegraphics[keepaspectratio=true,width=.95\textwidth]{ResolutionFunctionComparison_relative.pdf}
+\includegraphics[keepaspectratio=true,width=\textwidth]{ResolutionDenoisedOnly.pdf}
 \end{center}
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{The resolution functions (top) and relative resolution functions (bottom) are compared for denoised and undenoised data.}
-\label{fig:ResolutionFunctionComparison}
+\caption{The time-averaged resolution functions (left) and relative resolution functions (right) for single-site (red) and multi-site (purple) denoised data.  Shaded bands indicate uncertainties.  Data provided by Caio Licciardi.}
+\label{fig:ResolutionFunctionComparison_DenoisedOnly}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-The resolution functions are measured from the same set of calibration gamma lines (at $661$, $1173$, $1332$, and $2615$ keV) that are used for the energy calibration.  The resolution parameters are time-dependent; average resolution parameters are computed by weighting the resolutions observed in different time windows by the fraction of EXO-200 low-background data taken within that window.  The resulting resolution parameters are listed in table~\ref{tab:ResolutionFunctions}.  Figure~\ref{fig:ResolutionFunctionComparison} compares the denoised and undenoised resolution functions.  The strongest effect is the reduction of $p_1$ by roughly a factor of two in the denoised data, consistent with the interpretation that denoising improves the energy resolution primarily by reducing the impact of electronic noise.
+The resolution functions are measured from the same set of calibration gamma lines (at $1173$, $1332$, and $2615$ keV) that are used for the energy calibration.  The resolution parameters are time-dependent; average resolution parameters are computed by weighting the resolutions observed in different time windows by the fraction of EXO-200 low-background data taken within that window.  The resulting resolution parameters are listed in table~\ref{tab:ResolutionFunctions_DenoisedOnly}.  Figure~\ref{fig:ResolutionFunctionComparison_DenoisedOnly} shows the resulting resolution functions.  We can see that at our typical energies of $\approx 2500$ keV the $p_0$ and $p_1$ terms dominate the resolution function of equation~\ref{eqn:ResolutionAbsoluteFunctionForm}, and this manifests itself as a concave-downward shape in the absolute resolution function.  This can be interpretted as meaning that the electronic noise and Poisson fluctuations dominate our resolution; this may not be surprising, since we recall from section~\ref{sec:DenoisingInPractice} that Poisson fluctuations were underweighted in the version of denoising implemented for this analysis.  Our interpretation is only suggestive because the curvature is slight and the energy-dependent calibration effects cannot be ruled out, but it will be interesting to see how these terms change when future work addresses the underweighting of Poisson fluctuations.
 
-We note that $p_0$ shifts from negligible to measurable when denoising is applied.  It is suggestive to interpret this as meaning denoising increases noise due to statistical fluctuations in the number of collected photons.  The undenoised scintillation measurements are made from summed waveforms, so it uses the full photon statistics of all channels; as a result, we can expect that $p_0$ is as small as possible in the undenoised data.  By contrast, denoising may choose to concentrate its scintillation measurement on a smaller number of channels, reducing electronic noise at a cost in greater statistical fluctuations.  Furthermore, we recall in section~\ref{sec:DenoisingInPractice} that the current analysis mistakenly underestimates Poissonian noise produced inside the APDs, and this would manifest itself by subjecting the scintillation estimate to even more statistical fluctuations than would be ideal.  It is therefore possible that the increase in $p_0$ may demonstrate denoising has sacrificed photon collection efficiency for the purpose of reducing electronic noise.
+\subsection{Cross-Checks on the Energy Calibration}
 
-The parameter $p_2$ seems to be significantly reduced by denoising.  This can be interpreted as demonstrating a better understanding of APD gain in denoised scintillation measurements.  In the undenoised scintillation measurements, all APD channels are summed together without regard to the different gains of each APD channel; we can expect this to lead to a significant variation in gain depending on which APD channel was nearest to an energy deposit, which would appear as a significant contribution to $p_2$.  On the other hand, the denoised scintillation measurement is build around a channel-by-channel APD lightmap which contains information about the gain of every APD channel, which could reduce the impact of local variations in gain and, consequently, the magnitude of $p_2$.
+The energy calibration is extracted from source data; the large quantity of source data leads to small statistical errors on the calibration constants.  However, the calibration constants are time-dependent and it is valuable to have cross-checks verifying that the time-dependent nature of the calibration is accounted for properly.
 
-It should be noted that, although these interpretations of $p_0$, $p_1$, and $p_2$ are highly suggestive, the naive interpretations of their meaning may not be fully applicable to the rotated energy measurements.  Other energy-dependent quantities may not be fully understood; for example, it has been suggested that the rotation angle may be energy-dependent, and our failure to include this dependence may be reflected by an energy dependence in the resolution function~\cite{EnergyDocumentRun2a}.  Also, the error bands in figure~\ref{fig:ResolutionFunctionComparison} are still somewhat broad, and more accurate resolution measurements or resolution measurements from a wider energy range would be useful to contrain the values of these parameters better.  Further investigation will be required to verify that the scintillation energy measurement accuracy is still the dominant contributor to energy resolution at all energy scales.
-
-\begin{figure}
-\begin{center}
-\includegraphics[keepaspectratio=true,width=\textwidth]{RotatedReso_denoised_compVsTime.pdf}
-\end{center}
-\renewcommand{\baselinestretch}{1}
-\small\normalsize
-\begin{quote}
-\caption{Time dependence of the single-site energy resolution at $2615$ keV with denoised (blue) and undenoised (red) scintillation.  The denoised energy resolution at the $\beta\beta 0\nu$ $Q$-value is estimated (open square) from the time-dependent energy resolution measured with thorium data combined with the time-independent shape of the average resolution function~\cite{NewEXObb0nPaper_2014}.}
-\label{fig:ResolutionTimeDependenceComparison}
-\end{quote}
-\end{figure}
-\renewcommand{\baselinestretch}{2}
-\small\normalsize
-
-Although we have identified the energy resolution functions averaged over our entire dataset, it is also instructive to study the time-dependence of the energy resolution.  We cannot produce a full resolution function which is time-dependent because the cesium and cobalt source calibrations were only occasionally taken, but it is possible to study the time dependence of the resolution at the $2615$-keV $^{208}$Tl line of the thorium source which was deployed much more frequently.  This resolution is shown as a function of time in figure~\ref{fig:ResolutionTimeDependenceComparison}.  We can see that the energy resolution is improved for all time periods.  We can also see that the variations in resolution are much smaller in denoised than undenoised energy; in particular, the period of worse resolution between October 2012 and June 2013 is brought closer to the resolution during the rest of the data run by the denoising process.  Time fluctuations in the undenoised energy resolution are attributed to fluctuations in the electronic noise on the APDs, and this flattening-out of the resolution's time dependence after denoising shows that denoising is capable of removing the impact of this time-varying noise~\cite{NewEXObb0nPaper_2014}.
-
-Besides the energy resolution measurements from source data described above, it is possible to possible to identify gamma lines in the low-background data.  These are currently used as a cross-check on the source calibrations rather than additional input into the calibration procedure.  They can serve the additional purpose of verifying that calibrations from a wide range of times can be combined to produce coherent peaks; they can also verify that the average resolutions extracted from source data are accurate because low-background sources are inherently averaged over the duration of the data run.  Two energy lines from the low-background spectrum have been identified as particularly useful.
+To cross-check the time-dependence of the calibrations derived from sources, we use gamma lines in the low-background data.  These can verify that gamma lines from a wide range of times are combined to produce coherent peaks in our cumulative energy spectrum; they can also verify that the time-averaged resolutions extracted from source data are accurate because the resolution extracted from low-background peaks is inherently averaged over the duration of the data run.  Two energy lines from the low-background spectrum have been identified as particularly useful.
 
 \begin{figure}
 \begin{center}
@@ -510,14 +492,14 @@ Besides the energy resolution measurements from source data described above, it 
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{The single-site (left) and multi-site (right) gamma line at $2.2$ MeV from neutron capture on hydrogen can be used as a low-background cross-check on the resolution calibration~\cite{EnergyDocumentRun2ab}.}
+\caption{The single-site (left) and multi-site (right) gamma line at $2.2$ MeV from neutron capture on hydrogen can be used as a low-background cross-check on the resolution calibration.  Here, data which is coincident with a muon veto is shown to include the expected neutron capture peak~\cite{EnergyDocumentRun2ab}.}
 \label{fig:neutronHydrogenCheck}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-One gamma line in the low-background data comes from neutron capture on hydrogen in the HFE refrigerant.  Such events are generally vetoed by the coincidence cuts, primarily the veto panels, so their impact on the low-background data is suppressed; conversely, it is possible to study only events which occur in coincidence with muon detection by the veto panels, thereby enriching our dataset in neutron capture spectra.  Neutron capture on hydrogen can emit a $2.2$ MeV gamma; figure~\ref{fig:neutronHydrogenCheck} shows the spectra from this source~\cite{NeutronCaptureGammas,EnergyDocumentRun2ab}.
+One gamma line in the low-background data comes from neutron capture on hydrogen in the HFE-7000 refrigerant.  Such events are generally vetoed by the coincidence cuts, primarily the veto panels, so their impact on the low-background data is suppressed; conversely, it is possible to study only events which occur in coincidence with muon detection by the veto panels, thereby enriching our dataset in neutron capture spectra.  Neutron capture on hydrogen emits a $2.2$ MeV gamma; figure~\ref{fig:neutronHydrogenCheck} shows the data which is produced by this source with a fit to a Gaussian function and simple background model.~\cite{NeutronCaptureGammas,EnergyDocumentRun2ab}.
 
 \begin{figure}
 \begin{center}
@@ -535,6 +517,61 @@ One gamma line in the low-background data comes from neutron capture on hydrogen
 \small\normalsize
 
 The other gamma line which has been used as a cross-check is the $1461$-keV $^{40}$K gamma line.  $^{40}$K is expected to occur in the copper of the TPC at some low level, and this gamma line is readily visible in the multi-site spectrum of low-background data.  The improved energy resolution of denoised data allows us to also identify the $^{40}$K single-site peak over the $\beta\beta 2\nu$ background, which was not previously possible.  These peaks are shown in figure~\ref{fig:PotassiumPeakCheck}.
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{residual_bb0n_denoised.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{The residuals between calibrated and true peak positions for all sources is compared.  Calibrations were obtained from the $^{60}$Co and $^{232}$Th peaks at 1173, 1332, and 2615 keV.  Other calibration sources available were $^{137}$Cs and $^{226}$Ra at 662 and 2448 keV respectively.  Low-background calibration lines are neutron capture on hydrogen (2200 keV) and $^{40}$K (1461 keV).  Figure from~\cite{EnergyDocumentRun2ab}.}
+\label{fig:CalibResidualsForManySources}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+The result from combining all of these calibration points is shown in figure~\ref{fig:CalibResidualsForManySources}.  We can see that all sources agree well with the calibration, indicating that the calibration derived from thorium and cobalt extends well to the other calibration sources and captures time-dependent calibration information well.  (With 14 independent measurements under consideration, the $2\sigma$ discrepancy of the 662 keV cesium multi-site peak position should not be considered significant.)
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{Co1_ss.pdf}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{Co1_ms.pdf}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{Co2_ss.pdf}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{Co2_ms.pdf}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{Cs_ss.pdf}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{Cs_ms.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Time-dependence of the peak positions from all calibration campaigns.  Error bars, when not visible, are smaller than the circle.  Top row is the $^{60}$Co peak at 1173 keV; middle row is the $^{60}$Co peak at 1332 keV; bottom row is the $^{137}$Cs peak at 662 keV.  Thorium is not included because it is used to measure the time-dependence of the peak positions, so it is necessarily calibrated to a time-independent value.  Figure from~\cite{EnergyDocumentRun2ab}.}
+\label{fig:CalibPeakPosTimeDep}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+We also use the calibration source peak positions to check that the calibrated peak positions remains constant over time.  This is automatic for the thorium peak position at 2615 keV because that peak is used to measure the time-dependence of the calibration.  However, if we see that the cesium calibrated peak position changes over time, for example, then this would indicate that the time-dependent calibration parameters $\theta(t)$ and $E^{th}_{rot}(t)$ of equation~\ref{eqn:EnergyCalibrationParametrization} are inadequate to describe the time-dependent behavior of the detector.  The peak positions of cesium and cobalt are shown in figure~\ref{fig:CalibPeakPosTimeDep}.  There we can see that indeed the peak positions of these sources do vary by more than their statistical error bars.  In this analysis, the variations in peak position are treated as variations in the spectral shapes of sources and incorporated as a systematic effect~\cite{EnergyDocumentRun2ab,FittingDocument}.
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{ThDenoisedResVsTime.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Time-dependence of the energy resolution at the $^{208}$Tl 2615 keV gamma line.  Single-site (blue) and multi-site (red) energy resolutions are shown.  The time-averaged energy resolutions (1.47\% $\sigma/E$ for single-site, 1.59\% $\sigma/E$ for multi-site, both at 2615 keV) are shown in blue and red dashed lines, respectively.  Data provided by Liangjian Wen.}
+\label{fig:ThoriumDenoisedResVsTime}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+Lastly, it is necessary to study the energy resolution as a time-dependent quantity.  This is only done with the thorium source because of the regularity of thorium runs that have been taken.  The time-dependent resolution observed from thorium calibration runs is shown in figure~\ref{fig:ThoriumDenoisedResVsTime}.  We can see that there are statistically significant variations in resolution over time; these, combined with the time-varying peak positions shown in figure~\ref{fig:CalibPeakPosTimeDep}, lead to a weakened time-averaged energy resolution which accounts for the smearing of low-background peaks over the span of our dataset~\cite{AverageEnergyResolutionDocument}.
+
+The cross-checks described here identify features of the energy response which are not fully calibrated; these are treated as smearing effects over time and lead to a weakening of our time-averaged energy resolution.  Future work will be targeted toward understanding the peak position variations with event position shown in figure~\ref{fig:ResidualLightZBias} and with time shown in figures~\ref{fig:CalibPeakPosTimeDep} and \ref{fig:ThoriumDenoisedResVsTime}.  Resolving these issues should lead to further improvements in the time-averaged resolution of EXO-200 in later analyses.
 
 \section{Fitting}\label{sec:ResultFitting}
 
@@ -575,22 +612,22 @@ It is necessary to perform a number of cuts on the dataset before it is usable. 
 \item A coincidence cut to remove events occurring near in time to a passing muon.  Muons and their spallation products can produce a wide range of backgrounds which is difficult to model; most of these backgrounds are quite short-lived, so a coincidence cut can provide an effective means of reducing them.  Currently we cut all events occurring within one minute of a muon observed passing directly through the TPC and within $25$ ms after a muon observed passing through the veto panels.  Furthermore, events which occur within one second of each other are both cut based on the expectation that the events were probably correlated and therefore more likely to be some form of background.  Figure~\ref{fig:Spectrum_noVetoCuts} demonstrates the significant reduction in data rate which is achieved by applying this coincidence cut.
 \end{itemize}
 
-Fits are then performed using the profile-likelihood method, as described in~\cite{ProfileLikelihood}.  Each data point is assigned a likelihood $\text{pdf}(x)$ equal to the evaluation of the normalized pdf at that point; the test statistic of interest is the negative log-likelihood, defined by:
+Fits are then performed using the profile-likelihood method, as described in~\cite{ProfileLikelihood}.  Each data point is assigned a likelihood $\text{PDF}(x)$ equal to the evaluation of the normalized PDF at that point; the test statistic of interest is the negative log-likelihood, defined by:
 \begin{equation}
-\text{NLL} = -\sum_i ln\left[\text{pdf}(x_i)\right] + \text{constraints}.
+\text{NLL} = -\sum_i ln\left[\text{PDF}(x_i)\right] + \text{constraints}.
 \end{equation}
-Contraints for us will consist of gaussian penalty terms applied to parameters whose value is constrained by independent studies external to the fit.  The best fit will be the one which minimizes the NLL.  Fit errors on parameters can be extracted by observing how the NLL changes when those parameters are forced away from their best-fit values.  In cases where the best-fit value of a parameter is near its boundary, these errors may not provide a good estimate of the true confidence interval or limits, so when this situation occurs for a parameter of significant interest (specifically, the rate of $\beta\beta 0\nu$, which fits near to zero) we can verify that the confidence limit is not overstated using toy monte carlo studies~\cite{FittingDocument}.
+Contraints for us will consist of Gaussian penalty terms applied to parameters whose value is constrained by independent studies external to the fit.  The best fit will be the one which minimizes the NLL.  Fit errors on parameters can be extracted by observing how the NLL changes when those parameters are forced away from their best-fit values.  In cases where the best-fit value of a parameter is near its boundary, these errors may not provide a good estimate of the true confidence interval or limits, so when this situation occurs for a parameter of significant interest (specifically, the rate of $\beta\beta 0\nu$, which fits near to zero) we can verify that the confidence limit is not overstated using toy Monte Carlo studies~\cite{FittingDocument}.
 
 The fits make use of three observables.  The first, event energy, has been discussed at length in section~\ref{sec:RotatedEnergyCalibration}.  The second is the event classification as single-site or multi-site; we define an event as single-site if reconstruction located only one cluster, and that cluster deposited charge on no more than two u-wire channels~\cite{FittingDocument}.
 
-The third observable is called standoff, and it attempts to capture the nearness of an event to the TPC walls.  Most backgrounds are external, and can be expected to deposit energy preferentially near the walls of the TPC; by contrast, $\beta\beta 0\nu$ and $\beta\beta 2\nu$ decay come from the xenon, and should be distributed uniformly through the detector.  We define the standoff distance to be the shortest distance between some deposit cluster and either the v-wire planes or the teflon walls.  Ideally, it would be possible to capture finer position information by using all three position coordinates as observables; however, in practice it is difficult to construct a pdf with sufficient statistics in so many dimensions, so the standoff observable has been constructed to capture the most interesting distances in a single observable.  The exact definition is not too important provided it is modeled properly by the simulation; figure~\ref{fig:RaSourceMCComparison} demonstrates that standoff distance is simulated well for all but the smallest values (closest to the TPC walls or anode), and this is accounted for as a shape systematic~\cite{FittingDocument}.
+The third observable is called standoff, and it attempts to capture the nearness of an event to the TPC walls.  Most backgrounds are external, and can be expected to deposit energy preferentially near the walls of the TPC; by contrast, $\beta\beta 0\nu$ and $\beta\beta 2\nu$ decay come from the xenon, and should be distributed uniformly through the detector.  We define the standoff distance to be the shortest distance between some deposit cluster and either the v-wire planes or the teflon walls.  Ideally, it would be possible to capture finer position information by using all three position coordinates as observables; however, in practice it is difficult to construct a PDF with sufficient statistics in so many dimensions, so the standoff observable has been constructed to capture the most interesting distances in a single observable.  The exact definition is not too important provided it is modeled properly by the simulation; figure~\ref{fig:RaSourceMCComparison} demonstrates that standoff distance is simulated well for all but the smallest values (closest to the TPC walls or anode), and this is accounted for as a shape systematic~\cite{FittingDocument}.
 
-Fit parameters include the number of counts observed from each pdf and the fraction of counts from each pdf which populate the single-site spectrum; the latter is constrained based on the agreement between simulated and observed single-site fraction from source runs, but is allowed to float within those uncertainties.  The pdfs which are included are:
+Fit parameters include the number of counts observed from each PDF and the fraction of counts from each PDF which populate the single-site spectrum; the latter is constrained based on the agreement between simulated and observed single-site fraction from source runs, but is allowed to float within those uncertainties.  The PDFs which are included are:
 \begin{itemize}
 \item $^{136}$Xe $\beta\beta 2\nu$ decay.
 \item $^{136}$Xe $\beta\beta 0\nu$ decay.
 \item $^{232}$Th from the TPC vessel.
-\item $^{232}$Th from distant sources (HFE refrigerant or cryostat).
+\item $^{232}$Th from distant sources (HFE-7000 refrigerant or cryostat).
 \item $^{238}$U from the TPC vessel.
 \item $^{214}$Bi from the TPC cathode ($^{238}$U chain).
 \item $^{214}$Bi from the air gap inside the lead wall ($^{238}$U chain).
@@ -604,7 +641,7 @@ Fit parameters include the number of counts observed from each pdf and the fract
 \item $^{135}$Xe from neutron capture on $^{134}$Xe.
 \item Various neutron captures on xenon, copper, and hydrogen.
 \end{itemize}
-Similar pdfs from different locations are included because the sharpness and relative intensity of peaks can be affected by intervening material.  The rate of $^{214}$Bi from the air gap is constrained by measurements of radon levels in air, and the rates of $^{214}$Bi from the TPC cathode, $^{214}$Pb dissolved in active xenon, and $^{222}$Rn dissolved in inactive xenon are jointly constrained by independent searches for $^{214}$Bi-$^{214}$Po rates.  The overall rate of neutron captures is allowed to float, but the relative intensities of the captures on xenon, copper, and hydrogen are constrained by simulation, and the single-site fraction is fixed because there are not expected to be sufficient statistics in the single-site spectrum to constrain it~\cite{FittingDocument}.
+Similar PDFs from different locations are included because the sharpness and relative intensity of peaks can be affected by intervening material.  The rate of $^{214}$Bi from the air gap is constrained by measurements of radon levels in air, and the rates of $^{214}$Bi from the TPC cathode, $^{214}$Pb dissolved in active xenon, and $^{222}$Rn dissolved in inactive xenon are jointly constrained by independent searches for $^{214}$Bi-$^{214}$Po rates.  The overall rate of neutron captures is allowed to float, but the relative intensities of the captures on xenon, copper, and hydrogen are constrained by simulation, and the single-site fraction is fixed because there are not expected to be sufficient statistics in the single-site spectrum to constrain it~\cite{FittingDocument}.
 
 In addition to the magnitude and single-site fraction parameters of the fit, there are a few global parameters which are also allowed to float.  There is a normalization constant which is allowed to float within constraints and accounts for uncertainty in the fiducial volume or detection efficiency.  Constraints on this term come from comparisons between the predicted and observed event rate from sources.  Denoising does not currently operate on events whose waveforms are shorter than the standard length of $2048 \mu$s; since these occur more in source data than low-background data, an additional correction to the simulated event rate must be generated, and denoising may in this way worsen the event rate agreement in source data even though it is not expected to show a significant effect in low-background data.  Additionally, the normalization constants for gamma and beta particles are allowed to float separately because their reconstruction efficiency may be different.
 
@@ -626,7 +663,7 @@ Furthermore, it is expected that betas and gammas may need to be calibrated sepa
 \begin{equation}
 E_\beta = \beta E_\gamma.
 \end{equation}
-The beta scale is permitted to float, and is constrained by the fit; figure~\ref{fig:BetaScaleNLL} shows the NLL profile with various choices of beta scale, and demonstrates that it is possible to constrain the beta scale to a value close to $1$ using only the spectral information in the fit.  Uncertainty on the beta scale is incorporated by permitting it to float freely.  We note that currently the beta scale is implemented by shifting beta-like pdf components ($\beta\beta 0\nu$, $\beta\beta 2\nu$, $^{135}$Xe, $^{137}$Xe) relative to the other components which are gamma-like; this ignores the detail that some events may contain clusters generated through both beta and gamma interactions, such as pair production from energetic gammas.  These issues will be addressed in a future analysis, but for now the beta scale is assigned only to decays whose primary particle is a beta~\cite{FittingDocument}.
+The beta scale is permitted to float, and is constrained by the fit; figure~\ref{fig:BetaScaleNLL} shows the NLL profile with various choices of beta scale, and demonstrates that it is possible to constrain the beta scale to a value close to $1$ using only the spectral information in the fit.  Uncertainty on the beta scale is incorporated by permitting it to float freely.  We note that currently the beta scale is implemented by shifting beta-like PDF components ($\beta\beta 0\nu$, $\beta\beta 2\nu$, $^{135}$Xe, $^{137}$Xe) relative to the other components which are gamma-like; this ignores the detail that some events may contain clusters generated through both beta and gamma interactions, such as pair production from energetic gammas.  These issues will be addressed in a future analysis, but for now the beta scale is assigned only to decays whose primary particle is a beta~\cite{FittingDocument}.
 
 \begin{figure}
 \begin{center}
@@ -635,7 +672,7 @@ The beta scale is permitted to float, and is constrained by the fit; figure~\ref
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Energy specra with best-fit pdfs for single-site (top) and multi-site (bottom).  Residuals between data and the combined pdfs are shown below the spectra.  The last bin of the spectra is an overflow bin.  The $2\sigma$ region of interest around the $Q$-value is shown on the single-site spectrum.  Insets for single-site and multi-site zoom around the $Q$-value.  The simultaneous standoff-distance fit is not shown~\cite{NewEXObb0nPaper_2014}.}
+\caption{Energy specra with best-fit PDFs for single-site (top) and multi-site (bottom).  Residuals between data and the combined PDFs are shown below the spectra.  The last bin of the spectra is an overflow bin.  The $2\sigma$ region of interest around the $Q$-value is shown on the single-site spectrum.  Insets for single-site and multi-site zoom around the $Q$-value.  The simultaneous standoff-distance fit is not shown~\cite{NewEXObb0nPaper_2014}.}
 \label{fig:BestFitEnergyFromPaper}
 \end{quote}
 \end{figure}
@@ -652,7 +689,7 @@ When all of this is done, it is possible to obtain a fit to the low-background s
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{The positions of events in the $1\sigma$ region of interest (red) and wider energy range $2325-2550$ keV (black) are shown projected onto their X-Y (left) and $R^2$-Z (right) coordinates.  Lines indicate the fiducial volume, with the dotted lines indicating the fiducial cut away from the cathod that is not used as a component to the standoff distance observable. Figure provided by Dave Moore.}
+\caption{The positions of events in the $1\sigma$ region of interest (red) and wider energy range $2325-2550$ keV (black) are shown projected onto their X-Y (left) and $R^2$-Z (right) coordinates.  Lines indicate the fiducial volume, with the dotted lines indicating the fiducial cut away from the cathode that is not used as a component to the standoff distance observable. Figure provided by Dave Moore.}
 \label{fig:ROIEventPositionDistribution}
 \end{quote}
 \end{figure}
@@ -681,7 +718,7 @@ The likelihood profile for the total number of $\beta\beta 0\nu$ counts occurrin
 
 We have stated the half-life limit on $\beta\beta 0\nu$ decay of $^{136}$Xe, which is the main result of the present analysis.  We shall now continue to put this result in context with the expected sensitivity of the experiment and compare it to the limits and sensitivities achieved by other leading $\beta\beta 0\nu$ experiments.
 
-To place the limit derived with the current dataset in context with the overall strength of the experiment, we generate a number of toy monte carlo datasets.  We assume that our best-fit backgrounds are fully accurate and that the null hypothesis (no $\beta\beta 0\nu$) is true; we then use this best-fit background as our pdf and generate toy datasets.  These can be used to study the ``typical'' results our detector would have produced if the same experiment could be repeated many times.
+To place the limit derived with the current dataset in context with the overall strength of the experiment, we generate a number of toy Monte Carlo datasets.  We assume that our best-fit backgrounds are fully accurate and that the null hypothesis (no $\beta\beta 0\nu$) is true; we then use this best-fit background as our PDF and generate toy datasets.  These can be used to study the ``typical'' results our detector would have produced if the same experiment could be repeated many times.
 
 \begin{figure}
 \begin{center}
@@ -700,7 +737,7 @@ To place the limit derived with the current dataset in context with the overall 
 
 The resulting distributions are shown in figure~\ref{fig:ToyMCSensitivitySelectivity}.  The top plot shows the distribution of $90\%$-confidence upper limits on the number of $\beta\beta 0\nu$ counts; we can see that typical datasets from the EXO-200 experiment result in limits ranging from 8 to 22 counts.  The median limit, is 14 counts; this value is called the median sensitivity, and it illustrates the overall strength of an experiment.  We contrast this with the observed limit of 24 counts; as is apparent from the distribution, this limit is consistent with an unlucky upward fluctuation in the backgrounds observed by EXO-200.
 
-We saw in the NLL profile on the total number of $\beta\beta 0\nu$ counts in figure~\ref{fig:bb0nProfileFromPaper} that the NLL for the hypothesis of no $\beta\beta 0\nu$ counts is about 1.1 higher than for the best fit; this quantity reflects how well we can reject the null hypothesis in favor of the best fit.  To put this in context, we also observe the distribution of this value from toy monte carlo datasets in the bottom plot of figure~\ref{fig:ToyMCSensitivitySelectivity}.  Here, we see that $10.8\%$ of identical experiments will yield an NLL profile which is at least 1.1 worse for no $\beta\beta 0\nu$ than for the best fits even though no $\beta\beta 0\nu$ is simulated.  We can conclude that this difference in NLL is not strong enough to reject the null hypothesis with high confidence.
+We saw in the NLL profile on the total number of $\beta\beta 0\nu$ counts in figure~\ref{fig:bb0nProfileFromPaper} that the NLL for the hypothesis of no $\beta\beta 0\nu$ counts is about 1.1 higher than for the best fit; this quantity reflects how well we can reject the null hypothesis in favor of the best fit.  To put this in context, we also observe the distribution of this value from toy Monte Carlo datasets in the bottom plot of figure~\ref{fig:ToyMCSensitivitySelectivity}.  Here, we see that $10.8\%$ of identical experiments will yield an NLL profile which is at least 1.1 worse for no $\beta\beta 0\nu$ than for the best fits even though no $\beta\beta 0\nu$ is simulated.  We can conclude that this difference in NLL is not strong enough to reject the null hypothesis with high confidence.
 
 \begin{figure}
 \begin{center}
@@ -716,13 +753,93 @@ We saw in the NLL profile on the total number of $\beta\beta 0\nu$ counts in fig
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-The wide spread of limits produced in toy monte carlo studies illustrates the significant role that luck plays in the limits set by low-statistics experiments such as EXO-200.  To compare EXO-200 to other experiments, it is useful to compare both the limits and the median sensitivities (median $90\%$-confidence limits).  This is done in figure~\ref{fig:MatplotlibSensitivity}.  Vertical lines correspond to the reported median sensitivities of the two leading $^{136}$Xe experiments, KamLAND-Zen and EXO-200; right-pointing arrows indicate the actual limits set by each.  For both experiments we can see that statistical fluctuations in the background account for factor-of-two differences between median sensitivity and observed limits; EXO-200 claims to be the most sensitive $^{136}$Xe experiment, but KamLAND-Zen currently reports the strongest limit.  Both experiments intend to continue running, and EXO-200 hopes that their next dataset is atypical in the other way.
+The wide spread of limits produced in toy Monte Carlo studies illustrates the significant role that luck plays in the limits set by low-statistics experiments such as EXO-200.  To compare EXO-200 to other experiments, it is useful to compare both the limits and the median sensitivities (median $90\%$ confidence limits).  This is done in figure~\ref{fig:MatplotlibSensitivity}.  Vertical lines correspond to the reported median sensitivities of the two leading $^{136}$Xe experiments, KamLAND-Zen and EXO-200; right-pointing arrows indicate the actual limits set by each.  For both experiments we can see that statistical fluctuations in the background account for factor-of-two differences between median sensitivity and observed limits; EXO-200 claims to be the most sensitive $^{136}$Xe experiment, but KamLAND-Zen currently reports the strongest limit.  Both experiments intend to continue running, and EXO-200 hopes that their next dataset is atypical in the other way.
 
-Nuclear matrix elements are difficult to compute, as described in \textcolor{red}{the section I need to expand}.  However, figure~\ref{fig:MatplotlibSensitivity} illustrated four diagonal lines corresponding to four different modern nuclear matrix calculations, and uses these values to relate the half-lives of $^{136}$Xe and $^{76}$Ge.  The current median sensitivity and limit on the $\beta\beta 0\nu$ half-life of $^{76}$Ge from GERDA are shown as a horizontal line and vertical arrow, respectively.  This is contrasted with the 2006 claimed discovery by Klapdor-Kleingrothaus and Krivosheina of $\beta\beta 0\nu$ decay, which is not excluded by the more recent GERDA limit.
+Nuclear matrix elements have large uncertainties, as described in \ref{sec:NuclearMatrixCalculations}.  Figure~\ref{fig:MatplotlibSensitivity} illustrates four diagonal lines corresponding to four different modern nuclear matrix calculations, and uses these values to relate the half-lives of $^{136}$Xe and $^{76}$Ge.  The current median sensitivity and limit on the $\beta\beta 0\nu$ half-life of $^{76}$Ge from GERDA are shown as a horizontal line and vertical arrow, respectively.  This is contrasted with the 2006 claimed discovery by Klapdor-Kleingrothaus and Krivosheina of $\beta\beta 0\nu$ decay, which is not excluded by the more recent GERDA limit.
 
 Furthermore, the nuclear matrix elements permit us to translate half-life lower limits into upper limits on the effective Majorana neutrino mass $\left<m_{\beta\beta}\right>$.  The relation is indicated, for each choice of nuclear matrix elements, by tick marks on the corresponding diagonal line.  We can see that the GERDA and EXO-200 experiments are of similar strengths, depending most on the choice nuclear matrix elements; KamLAND-Zen is comparable in strength to GERDA for the RQRPA nuclear matrix elements, and stronger for all other choices in this plot.  The $90\%$-confidence mass limit quoted by EXO-200 is $\left<m_{\beta\beta}\right> < 190-450$ meV, depending on the choice of matrix elements.  Recalling figure~\ref{fig:NeutrinoMassBounds}, this corresponds to a $90\%$-confidence limit on the mass of the lightest neutrino eigenstate of $m_{min} < 0.69–1.63$ eV under the most conservative choice of Majorana phases~\cite{NewEXObb0nPaper_2014}.
 
 \section{Comparison to Results without Denoising}\label{sec:ResultComparison}
+
+The results presented in section~\ref{sec:ResultResults} are obtained using the most up-to-date analysis techniques adopted by the EXO-200 collaboration.  These include the denoising technique described in chapter~\ref{ch:DenoisingTheory}.  In this section we compare physics results with and without denoising and demonstrate the degree to which resolution gains from denoising strengthen the EXO-200 result.  We begin with a comparison of the energy measurements in section~\ref{sec:ResultComparisonEnergy}, and then proceed to a comparison of the physics results in section~\ref{sec:ResultComparisonPhysics}.
+
+\subsection{Comparison of Energy Resolution and Calibration}\label{sec:ResultComparisonEnergy}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline \multirow{2}{*}{Parameter} & \multicolumn{2}{|c|}{Undenoised} & \multicolumn{2}{|c|}{Denoised}\\
+\cline{2-5}& SS & MS & SS & MS \\
+\hline $p_0$ & 0 & 0 & 0.628 & 0.602 \\
+\hline $p_1$ & 39.8 & 43.0 & 20.8 & 25.8 \\
+\hline $p_2$ & 0.0107 & 0.0096 & 0.0011 & 0.0040 \\
+\hline \% $\sigma/E$ at $Q$-value & 1.94 & 2.00 & 1.53 & 1.65 \\ \hline
+\end{tabular}
+\end{center}
+\caption{Time-averaged resolution parameters for denoised and undenoised data.  For undenoised data, measurements were consistent with $p_0 = 0$, so this parameter was not used in the analysis of undenoised data.  The resulting time-averaged resolutions at our $Q$-value are also shown~\cite{AverageEnergyResolutionDocument}.}
+\label{tab:ResolutionFunctions_DenoisedUndenoisedComparison}
+\end{table}
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.95\textwidth]{ResolutionFunctionComparison_absolute.pdf}
+\includegraphics[keepaspectratio=true,width=.95\textwidth]{ResolutionFunctionComparison_relative.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{The time-averaged resolution functions (top) and relative resolution functions (bottom) are compared for denoised and undenoised data.  Bands indicate uncertainties.  Data provided by Caio Licciardi.}
+\label{fig:ResolutionFunctionComparison}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+The energy resolution parameters with and without denoising, using the parametrization defined in equation~\ref{eqn:ResolutionAbsoluteFunctionForm}, are listed in table~\ref{tab:ResolutionFunctions_DenoisedUndenoisedComparison}.  The undenoised resolution functions have fixed $p_0 = 0$ because fits with undenoised data led to resolution functions consistent with zero.  The resolution functions are compared in figure~\ref{fig:ResolutionFunctionComparison}.  The resolution at our $Q$-value is also indicated in table~\ref{tab:ResolutionFunctions_DenoisedUndenoisedComparison}; in single-site data we can see that implementing denoising improves our energy resolution at the $Q$-value from 1.94\% to 1.53\%.
+
+Recalling the interpretation of the resolution parameters which was described in section~\ref{sec:RotatedEnergyResMeasurement} leads to a number of suggestive observations.  First, $p_1$ has decreased by a factor of 1.9 in single-site data and 1.7 in multi-site data when we move from undenoised to denoised resolutions.  The parameter $p_1$ is associated with electronic noise, so we can interpret this to mean that we have indeed reduced the impact of electronic noise after denoising.
+
+Secondly, $p_2$ has decreased by a factor of 2.4 in the multi-site data and a factor of 9.7 for single-site data.  The parameter $p_2$ is associated with improper gain calibrations; the old method of APD reconstruction handled only a simple sum of APD waveforms with no APD channel gain corrections, whereas the lightmap used with denoising has detailed time-dependent gain information for every channel built into it.  Thus, the reduction in $p_2$ may be a reflection of the impact of improved APD gain information on our energy resolution.
+
+And finally, $p_0$ is observed to increase from a value consistent with zero to the dominant component of the denoised resolution at our $Q$-value.  The parameter $p_0$ is associated with Poisson fluctuations in the number of photons detected.  In the old method of APD reconstruction we always used a sum of all APD waveforms for scintillation measurements; implicitly, we were always using the full light collecting efficiency of the EXO-200 detector.  By contrast, denoising is designed with the flexibility to weight fewer APD channels more heavily, effectively sacrificing light collection for the benefit of a reduction in electronic noise.  It is likely that $p_0$ is zero with undenoised data because Poisson fluctuations in the total light collection of EXO-200 are small, whereas denoising uses a sufficiently small number of APD channels that Poisson fluctuations become important.  Moreover, we recall in section~\ref{sec:DenoisingInPractice} that the current analysis mistakenly underestimates Poissonian noise produced inside the APDs, and this would manifest itself by subjecting the scintillation estimate to even more statistical fluctuations than would be ideal.  We can imagine that when this error is corrected in future analyses the $p_0$ parameter may respond by decreasing, possibly at the expense of a larger $p_0$ value as more channels are used.
+
+It should be noted that although these interpretations of $p_0$, $p_1$, and $p_2$ are highly suggestive, they depend on the assumption that scintillation energy resolution continues to be the dominant factor in our rotated energy resolution at all energy scales.  As an alternative, it has been suggested that the rotation angle may have an energy dependence which is not described by our calibrations~\cite{EnergyDocumentRun2a}; failure to include this dependence may be reflected by an energy dependence in the resolution function which does not agree with the interpretation we provide here.  Also, the error bands in figure~\ref{fig:ResolutionFunctionComparison} are still somewhat broad, and more accurate resolution measurements from a wider range of energies would be useful to constrain the values of these parameters better.  Further investigation will be required to verify that the scintillation energy measurement accuracy is still the dominant contributor to energy resolution at all energy scales.
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{RotatedReso_denoised_compVsTime.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Time dependence of the single-site energy resolution at $2615$ keV with denoised (blue) and undenoised (red) scintillation.  Time-averaged energy resolutions at this energy (1.47\% denoised, 1.86\% undenoised) are overlaid as dashed lines.  Data provided by Mike Marino.}
+\label{fig:ResolutionTimeDependenceComparison}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+We also find that the time-dependence of the energy resolution has been dramatically affected by denoising.  Figure~\ref{fig:ResolutionTimeDependenceComparison} compares the single-site energy resolutions at the $^{208}$Tl 2615 keV gamma line with denoised and undenoised data, as measured from $^{232}$Th source calibration data.  The denoised energy resolution varies by as much as 0.3 percentage points, but the undenoised energy resolution varies by as much as 0.6 percentage points.  We saw in figure~\ref{fig:ResolutionAPDNoiseComparison} that the energy resolution of the detector was strongly correlated with APD noise, but after denoising this effect is significantly reduced.  In particular, the period of particularly poor energy resolution November 2012 and May 2013 is no longer exceptional, indicating that this poor energy resolution came from noise which denoising can reduce to negligible levels~\cite{NewEXObb0nPaper_2014}.
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{nonLinearity_ss.pdf}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{nonLinearity_ms.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{The non-linearity of the calibration is shown here for denoised (red) and undenoised (black) data in single-site (left) and multi-site (right).  $R_{rec}$ is defined as the ratio between the observed peak position and the observed peak position of the $2615$ keV $^{232}$Th peak, and $R_{real}$ is defined as the true ratio between the peak position and 2615 keV; the vertical axis shows the relative difference between $R_{rec}$ and $R_{real}$, which reflects how much non-linear correction the calibration must perform.  The cesium, cobalt, and thorium peaks (662, 1173, 1332, and 2615 keV) are used to obtain a calibration; the radium line at 2448 keV and the neutron capture line from hydrogen at 2200 keV are shown as cross-checks~\cite{EnergyDocumentRun2ab}.}
+\label{fig:NonLinearityOfCalibrationComparison}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+One concern with the denoised energy calibration comes from the observed non-linearity of the observation, shown in figure~\ref{fig:NonLinearityOfCalibrationComparison}.  The ratio of reconstructed peak positions become farther from what we expect with denoised energy, indicating more significant contributions from the $E_{bias}$, $p_0$, and $p_2$ parameters of the calibration defined in equation~\ref{eqn:EnergyCalibrationParametrization}.  This is not in itself a problem -- it is the job of calibration to correct for such things -- but as the calibration changes more rapidly with energy it becomes important for us to constrain it with more calibration points at a wide range of energies.  Starting in June 2013 we have a $^{226}$Ra source which contains many gamma lines, including its primary line at 2448 keV which serves as an excellent constraint for the energy of our $Q$-value.  For existing data, there is some hope of using the lower-energy gamma lines of the $^{228}$Th source, visible in figure~\ref{fig:LiangjianRotatedSpectrumImprovement}, as a new set of calibration points which is accessible due to the improved resolution of the denoised dataset.
+
+\subsection{Comparison of Physics Results}\label{sec:ResultComparisonPhysics}
+
 
 \textcolor{red}{I should do this -- but need to finalize plots, which still needs a little more processing.}
 
