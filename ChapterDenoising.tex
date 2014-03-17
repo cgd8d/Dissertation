@@ -796,7 +796,24 @@ In this section we outline the places where the denoising used for the current p
 \item We have described with equation~\ref{eqn:ValueOfGE} that the electronic gain is treated as having a constant value of $1.1 \cdot 10^{-3}$ ADC counts per electron emitted from the APDs.  The wires use a similar set of electronics; however, their gain is nominally set to a different value of roughly $6.3 \cdot 10^{-4}$ ADC counts per electron collected on the wires. In the EXO code the two numbers are mistakenly reversed.  As a result, $G^E_i(t)$ was underestimated by almost a factor of two; the effect of this is to overestimate by almost a factor of two the number of photons being deposited on APDs, which again causes us to underestimate the signal variance introduced within the APDs.
 \end{itemize}
 
-The effect of both of these issues is, loosely speaking, to fool denoising into believing its photon statistics are greater than they truly are; this, in turn, leads it to prefer a higher concentration of signal (more weight on fewer channels) than is ideal.  Thus, the resolution is negatively impacted by these mistakes; the impact has been measured in subsets of the the EXO dataset and this negative impact is apparent.
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{Denoising_ResVsAPDGain_ss_Run3516.pdf}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{Denoising_ResVsAPDGain_ss_Run4544.pdf}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{Denoising_ResVsAPDGain_ms_Run3516.pdf}
+\includegraphics[keepaspectratio=true,width=.49\textwidth]{Denoising_ResVsAPDGain_ms_Run4544.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{It is known that the parameters used for denoising in this analysis are not optimal.  Here we use a scaling factor to adjust the parameter controlling the importance of Poisson noise.  Data from run 3516 and 4544 are shown on the left and right, respectively; top plots show single-site resolution, bottom plots show multi-site resolution.  We can see that an improvement of roughly 0.05 percentage points at 2615 keV could be achieved by moving from the expected optimum.  It is not currently understood why scaling factors above the expected optimum yield further improvements to resolution.}
+\label{fig:Denoising_ResVsAPDGain_ScalingFactor}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+The effect of both of these issues is, loosely speaking, to fool denoising into believing its photon statistics are greater than they truly are; this, in turn, leads it to prefer a higher concentration of signal (more weight on fewer channels) than is ideal.  Thus, the resolution is negatively impacted by these mistakes; the effect of these two issues can be summarized in one scaling factor which controls the importance of Poisson noise.  In figure~\ref{fig:Denoising_ResVsAPDGain_ScalingFactor} sample runs are denoised with different values of this scaling factor, including the value of 0.6 which was used for the present analysis and 1.6 which we would expect to be the optimal choice.  It appears that an improvement in resolution of roughly 0.05 percentage points at 2615 keV will be gained when thes issues are addressed.
 
 However, neither of these mistakes have any impact on the correctness of the constraints.  As a result, the denoised energy measurements should still be unbiased, even if they have worse variance than necessary.  Results from the use of this data will be described in chapter~\ref{ch:DenoisingResults}.
 

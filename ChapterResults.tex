@@ -2,15 +2,15 @@
 \chapter{EXO-200 Analysis and Results from Denoising}
 \label{ch:DenoisingResults}
 
-Data analyzed for the present work extends from October 5, 2011 to September 1, 2013.  In this chapter, sections~\ref{sec:ResultSimulation}-\ref{sec:ResultFitting} describe the basic elements of the EXO-200 analysis.  Section~\ref{sec:ResultResults} will present the results from this set of data.  In section~\ref{sec:ResultComparison} we compare the results obtained using the denoising scheme of chapter~\ref{ch:DenoisingTheory} to the results which would have been obtained without that algorithm applied, and demonstrate that denoising has contributed to the strength of our physics reach.
+The dataset used for the present work extends from October 5, 2011 to September 1, 2013 with a cumulative livetime of $477.60 \pm 0.01$ days~\cite{NewEXObb0nPaper_2014}.  This chapter describes the analysis which has been applied to this livetime.  Sections~\ref{sec:ResultSimulation}-\ref{sec:ResultFitting} describe the basic elements of the EXO-200 analysis.  Section~\ref{sec:ResultResults} presents the results from this set of data.  In section~\ref{sec:ResultComparison} we compare the results obtained using the denoising scheme of chapter~\ref{ch:DenoisingTheory} to the results which would have been obtained without that algorithm applied, and demonstrate that denoising has contributed to the strength of our physics reach.
 
 \section{Simulation}\label{sec:ResultSimulation}
 
-Here we will describe the simulation of radioactive sources in the EXO-200 detector.  We begin by describing the framework for simulating the deposition of energy from primary decay particles into the liquid xenon and surrounding materials.  From there, we continue to describe the simplified electric field model which permits us to model the drift of ionization towards the anode wires.
+Here we describe the simulation of radioactive sources in the EXO-200 detector.  We begin by describing the framework for simulating the deposition of energy from primary decay particles into the liquid xenon and surrounding materials.  From there, we continue to describe the simplified electric field model which permits us to model the trajectory of ionization drifting towards the anode wires.
 
 \subsection{Simulation of Particles using GEANT}
 
-To simulate the deposition of energy from primary decay particles, version 4.9.3p02 of the GEANT software package is used~\cite{Agostinelli2003250,1610988}.  This package includes a database containing attenuation properties of many common materials as well as detailed decay modes for most radioactive isotopes.  Angular correlations between gammas are not modeled with this version of the software, but that is expected to be a minor detail and will be corrected by upgrading to a newer version of GEANT in the future.  Forbidden beta decays are generated with an incorrect beta spectrum in the default GEANT software; this is addressed by the EXO collaboration by using our own beta spectra where appropriate.
+To simulate the deposition of energy from primary decay particles, version 4.9.3p02 of the GEANT software package is used~\cite{Agostinelli2003250,1610988}.  This package includes a database containing attenuation properties of many common materials as well as detailed decay modes for most radioactive isotopes.  We will now proceed to describe how GEANT is used to simulate decays in or outside of EXO-200.
 
 \begin{figure}
 \begin{center}
@@ -33,26 +33,26 @@ To simulate the deposition of energy from primary decay particles, version 4.9.3
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Detector components which are close to the liquid xenon are simulated in GEANT with far greater accuracy than distant objects, to reduce computational time~\cite{MCDocumentRun2a}.}
+\caption{To ensure computational time is only spent on important details, detector components which are close to the liquid xenon are simulated in GEANT with greater accuracy than distant objects.  The TPC contains the xenon, so it is simulated in detail~\cite{MCDocumentRun2a}.}
 \label{fig:RayTracer_TPConly}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-A model of the EXO-200 detector is simulated in GEANT with a collection of simple geometric volumes, which can be composed to form more complicated structures.  Simulation speed decreases as more volumes are generated, and we expect that it is unimportant to simulate details much smaller than the distance between the detail and the liquid xenon.  We attempt to find a balance between accurate modeling of detailed features and simplification of distant features.  In figure~\ref{fig:OGL_wireframevis} we see the full geometry described in GEANT, where distant objects are constructed from a small number of geometric pieces.  Figure~\ref{fig:RayTracer_TPConly} shows how the TPC is described in GEANT, and we can see the level of detail is much greater.
+A model of the EXO-200 detector is simulated in GEANT with a collection of simple geometric volumes which can be composed to form more complicated structures.  Simulation speed decreases as more volumes are generated, and we expect that it is unimportant to simulate details much smaller than the distance between the detail and the liquid xenon.  We attempt to find a balance between accurate modeling of detailed features and simplification of distant features~\cite{MCDocumentRun2a}.  In figure~\ref{fig:OGL_wireframevis} we see the full geometry described in GEANT, where distant objects are constructed from a small number of geometric pieces.  Figure~\ref{fig:RayTracer_TPConly} shows how the TPC is described in GEANT, and we can see the level of detail is much greater.
 
-To simulate particles, GEANT uses a Monte Carlo method.  It models particles as taking a sequence of steps, where each step is randomly generated; the probability distribution of each choice of step is determined by known properties of the particle, the energy of the particle, and the properties of the attenuating material.  The precise set of physical processes which determine the probability distribution is user-selected, and in EXO-200 has been chosen to include all processes which are significant within our energy range of 10 keV to 10 MeV~\cite{MCDocumentRun2a}.
+To simulate particles, GEANT uses a Monte Carlo method.  This means that it models decay processes as a sequence of samples from a probability distribution which are chosen using a pseudorandom number generator.  The energy and direction of the emitted particle, its interaction locations  and quantity of deposited energy, and the formation of secondary particles are all generated randomly as choices from a set of options with known probablities.  It is possible to override these probability distributions when necessary; for example, EXO-200 uses its own double-beta and forbidden beta decay spectra rather than the defaults provided by GEANT.  Generally, though, the existing options in GEANT are suitable for simulating nuclear and electromagnetic processes~\cite{MCDocumentRun2a}.
 
-Only energy which deposits in the liquid xenon is observable.  When primary decays are simulated far from the detector, it may be that most of those simulated events deposit no energy in the liquid xenon and are not observable; the simulation must continue running until a sufficient number of simulated events deposit energy in the liquid xenon.  This means that sources which are farther from the liquid xenon require significantly more computational time to accumulate a usable number of statistics.  We find that sources outside of the HFE-7000 are subject to $4.5$ attenuation lengths before reaching the liquid xenon, and events reaching the liquid xenon from the inner cryostat can only be simulated at $0.01$ Hz/core by this approach~\cite{MCDocumentRun2a}.
+Only energy which deposits in the liquid xenon is observable.  When primary decays are simulated far from the detector, it may be that most of those simulated events deposit no energy in the liquid xenon and are not observable; the simulation continues running until a sufficient number of simulated events deposit energy in the liquid xenon.  This means that sources which are farther from the liquid xenon require significantly more computational time to accumulate a usable number of statistics.  We find that sources outside of the HFE-7000 are subject to $4.5$ attenuation lengths before reaching the liquid xenon, and events reaching the liquid xenon from the inner cryostat can only be simulated at $0.01$ Hz/core by this approach~\cite{MCDocumentRun2a}.
 
-To improve this rate, importance sampling is employed for distant sources.  This approach consists of the following techniques to magnify statistics from a fixed simulation time:
+To improve this rate, importance sampling is employed for distant sources.  This approach consists of the following techniques to magnify statistics from a fixed simulation time:~\cite{Dressel:642987,MCDocumentRun2a}
 \begin{itemize}
-\item Low-energy beta and alpha particles outside of the TPC may be ``killed'', or prematurely eliminated from the simulation based on an expectation that they will not deliver any energy to the liquid xenon.
+\item Low-energy beta and alpha particles outside of the TPC may be ``killed'', or prematurely eliminated from the simulation based on our knowledge that their attenuation length is quite short.
 \item The detector is surrounded by importance sampling ``boundaries'': when a particle passes into a boundary it may be cloned (with a user-selected probability), where the rate of cloning is tracked by a corresponding decrease in particle ``weight.''
 \item To avoid biasing the spectrum, it is also necessary to kill particles which pass out of a boundary with the same probability, and increase their weight accordingly.
 \end{itemize}
-This approach has the effect of using GEANT to simulate the properties of particles reaching the outermost boundary; then draw samples from that distribution and simulate the properties of particles reaching the next boundary; and so forth, amplifying the impact of statistics at each stage.  Further details on this approach can be found in~\cite{Dressel:642987}; it has the effect of increasing simulation speeds from the inner cryostat from $0.01$ Hz/core to a few Hz/core, and makes simulations of backgrounds from outside the lead wall feasible~\cite{MCDocumentRun2a}.
+This approach has the effect of using GEANT to simulate the properties of particles reaching the outermost boundary; then draw samples from that distribution and simulate the properties of particles reaching the next boundary; and so forth, amplifying the impact of statistics at each stage.  This has the effect of increasing simulation speeds from the inner cryostat from $0.01$ Hz/core to a few Hz/core, and makes simulations of backgrounds from outside the lead wall feasible~\cite{MCDocumentRun2a}.
 
 \begin{figure}
 \begin{center}
@@ -61,7 +61,7 @@ This approach has the effect of using GEANT to simulate the properties of partic
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Energy spectra from $^{238}$U in the TPC vessel; single-site and multi-site energy spectra are shown separately~\cite{MCDocumentRun2a}.}
+\caption{Energy spectra from $^{238}$U in the TPC vessel for single-site (red) and multi-site (black) events.  No energy smearing is performed; peak widths are due to energy loss outside of the liquid xenon~\cite{MCDocumentRun2a}.}
 \label{fig:UGeantSpectra}
 \end{quote}
 \end{figure}
@@ -75,20 +75,20 @@ This approach has the effect of using GEANT to simulate the properties of partic
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Energy spectra from $^{232}$Th in the TPC vessel; single-site and multi-site energy spectra are shown separately~\cite{MCDocumentRun2a}.}
+\caption{Energy spectra from $^{232}$Th in the TPC vessel for single-site (red) and multi-site (black) events.  No energy smearing is performed; peak widths are due to energy loss outside of the liquid xenon~\cite{MCDocumentRun2a}.}
 \label{fig:ThGeantSpectra}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-The result of these GEANT simulations is a measurement of the efficiency with which events from various sources reach the liquid xenon, and also an understanding of the energy and position distributions of energy deposits from these sources.  Representative spectra of our primary backgrounds, $^{238}$U and $^{232}$Th, are shown in figures~\ref{fig:UGeantSpectra} and \ref{fig:ThGeantSpectra} respectively.
+The result of these GEANT simulations is a measurement of the efficiency with which events from various sources reach the liquid xenon, and also of the energy and position spectra of energy deposits from these sources.  Representative spectra of our primary backgrounds, $^{238}$U and $^{232}$Th, are shown in figures~\ref{fig:UGeantSpectra} and \ref{fig:ThGeantSpectra} respectively.
 
 \subsection{Digitization of Waveforms}\label{sec:ResultsDigitization}
 
-After energy deposits are simulated using GEANT, it is necessary to model the conversion of those energy deposits into collection of scintillation and ionization, and then the generation of digitized waveforms resembling the waveforms which are collected in real data.
+After energy deposits are simulated using GEANT, it is necessary to model the conversion of those energy deposits into collected photons and electrons, and then the generation of digitized waveforms resembling the waveforms which are collected in real data.
 
-To generate a scintillation signal, a purely empirical model is used to estimate the relative signal magnitudes on the north and south APD planes.  This model only takes into account $Z$-dependence of the light collection, and does not incorporate the different light yields expected on each individual APD channel.  This model is therefore rather crude, and can only be used as a rough check on the signal-finding efficiency for scintillation as a function of energy.  Attempts to track optical photons in the TPC have met with only partial success which is insufficient to justify their significant computational cost.  Thus, the EXO simulations are unable to model most aspects of scintillation signals.  Section~\ref{sec:ResultFitting} will describe the methods used to cope with this aspect of simulation.
+To generate a scintillation signal, a purely empirical model is used to estimate the relative signal magnitudes on the north and south APD planes.  This model only takes into account Z-dependence of the light collection, and does not incorporate the different light yields expected on each individual APD channel.  This model is therefore rather crude, and can only be used as a rough check on the signal-finding efficiency for scintillation as a function of energy.  Attempts to track optical photons in the TPC have met with only partial success which is insufficient to justify their significant computational cost.  Thus, the EXO simulations are unable to model most aspects of scintillation signals.  Section~\ref{sec:ResultFitting} will describe the methods used to cope with this aspect of simulation.
 
 \begin{figure}
 \begin{center}
@@ -104,7 +104,7 @@ To generate a scintillation signal, a purely empirical model is used to estimate
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-Simulation of charge signals is better-understood.  The detector is modeled by a two-dimensional geometry where, rather than one-dimensional wires arranged in two-dimensional planes, we have wire ``points'' at fixed voltage which are grouped in a one-dimensional pattern.  The v-wires are treated as stacked directly on top of the u-wires; it is impossible to model the true orientation of the v-wires which is rotated relative to the u-wires, but this has generally proven to be a negligible detail for us.  Only one TPC half is modeled because of the approximate mirror symmetry of the detector across the cathode.  Only a few wires are simulated in the second dimension because the electrostatic effect of any one wire will not extend beyond a few wire spacings.  This model is illustrated in figure~\ref{fig:TwoDimensionalWireModel}~\cite{MCDocumentRun2a}.
+Simulation of charge signals is better-understood.  The detector's electric field is modeled in a two-dimensional geometry illustrated in figure~\ref{fig:TwoDimensionalWireModel} where, rather than one-dimensional wires arranged in two-dimensional planes, we have wire ``points'' at fixed voltage which are grouped in a one-dimensional pattern.  The v-wires are treated as stacked directly on top of the u-wires; it is impossible in two dimensions to model the true orientation of the v-wires which is rotated relative to the u-wires, but this has generally proven to be a minor detail for us.  Only one TPC half is modeled because of the approximate mirror symmetry of the detector across the cathode.  We assume that the two-dimensional geometry is periodic along the direction of the wire ``plane'', which permits us to always locate drifting charge above the central wire.  Only a few wires to either side of the center are simulated because each wire acts as a shield between wires to its left and right, so the electrostatic effect of any one wire will be not extend beyond a few wire spacings~\cite{MCDocumentRun2a}.
 
 Electrostatic effects are simulated using the ANSYS Maxwell field simulator.  To simulate the electric fields in the detector, wires are treated as circles with a radius matching the approximate radii of the physical wires, with a constant voltage on their surfaces.  The APD plane and cathode plane are treated as constant-voltage boundaries, and a periodic boundary condition is established on the two remaining boundaries of the model geometry.
 
@@ -304,7 +304,7 @@ This section has described the situation where the pulses of an event may be rec
 
 \section{Energy Corrections}\label{sec:ResultEnergy}
 
-Each cluster which is found can be assigned a preliminary energy estimate based on the fit magnitudes of its pulses.  However, to achieve the best possible energy resolution it is necessary to make an assortment of energy corrections.  These corrections will be identified in this section.  We will first describe the corrections which are made to charge energies on a cluster-by-cluster basis, and then the corrections made to the denoised scintillation energy.  Section~\ref{sec:RotatedEnergyCalibration} describes the calibration of a combined energy measurement using charge and light together.  Finally, in section~\ref{sec:RotatedEnergyResMeasurement} we describe the measurement of the energy resolution and compare the resolutions obtained with and without denoising.
+Each cluster which is found can be assigned a preliminary energy estimate based on the fit magnitudes of its pulses.  However, to achieve the best possible energy resolution it is necessary to make an assortment of energy corrections.  These corrections will be identified in this section.  We will first describe the corrections which are made to charge energies on a cluster-by-cluster basis, and then the corrections made to the denoised scintillation energy.  Section~\ref{sec:RotatedEnergyCalibration} describes the calibration of a rotated energy measurement using charge and light together, and section~\ref{sec:RotatedEnergyResMeasurement} describes the measurement of the energy resolution of this rotated energy measurement.
 
 \subsection{Charge Corrections}\label{sec:ResultEnergyCharge}
 
@@ -395,7 +395,7 @@ where we measure from data $c_{-} = 0.9380$, $c_{+} = 0.9355$, $b_{-} = 1.71$, $
 
 \subsection{Rotated Energy Calibration}\label{sec:RotatedEnergyCalibration}
 
-From the corrected scintillation and charge energy measurements, it is necessary to form a calibrated rotated energy measurement which combines them.  This combination will take advantage of anticorrelation between charge and light to achieve an optimal energy resolution.  To accomplish these measurements, it is necessary to use multiple calibration points; we use the $2615$-keV gamma line from regularly-taken thorium source runs to measure time-dependent calibration parameters and the $1173$-keV and $1332$-keV gamma lines from cobalt source runs to characterize the energy dependence of calibrations.  The linear combination of scintillation and charge will be selected to optimize energy resolution; the precise measurement of energy resolution will be described in section~\ref{sec:RotatedEnergyResMeasurement}, but for this purpose we will simply seek to make energy peaks as narrow as possible.
+From the corrected scintillation and charge energy measurements, it is necessary to form a calibrated rotated energy measurement which combines them.  This combination will take advantage of anticorrelation between charge and light to achieve an optimal energy resolution.  To accomplish these measurements, it is necessary to use multiple calibration points; we use the $2615$-keV gamma line from regularly-taken thorium source runs to measure time-dependent calibration parameters and the 662-keV cesium and $1173$-keV and $1332$-keV cobalt gamma lines from source runs to characterize the energy dependence of calibrations.  The linear combination of scintillation and charge will be selected to optimize energy resolution; the precise measurement of energy resolution will be described in section~\ref{sec:RotatedEnergyResMeasurement}, but for this purpose we will simply seek to make energy peaks as narrow as possible.
 
 The calibrated rotated energy $E$ is computed by a calibration function of the form:
 \begin{subequations}\label{eqn:EnergyCalibrationParametrization}\begin{align}
@@ -437,7 +437,7 @@ The result of this calibration is shown in figure~\ref{fig:LiangjianAnticorrelat
 
 \subsection{Measurement of Rotated Energy Resolution}\label{sec:RotatedEnergyResMeasurement}
 
-The previous section has described the calibration of the rotated energy spectrum.  In this section, we describe the measurement of energy resolution in this rotated energy measurement.
+The previous section has described the calibration of the rotated energy spectrum.  In this section, we describe the measurement of energy resolution with this rotated energy measurement.
 
 The resolution is assumed to be energy-dependent; if a monoenergetic deposit is made in the liquid xenon, we hypothesize that the observed spectrum should be Gaussian and define the energy resolution at that energy to be the value of $\sigma$.  We can parametrize the dependence of $\sigma$ on energy as:
 \begin{equation}\label{eqn:ResolutionAbsoluteFunctionForm}
@@ -476,7 +476,7 @@ The resolutions of single-site and multi-site events differ, so there are separa
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-The resolution functions are measured from the same set of calibration gamma lines (at $1173$, $1332$, and $2615$ keV) that are used for the energy calibration.  The resolution parameters are time-dependent; average resolution parameters are computed by weighting the resolutions observed in different time windows by the fraction of EXO-200 low-background data taken within that window.  The resulting resolution parameters are listed in table~\ref{tab:ResolutionFunctions_DenoisedOnly}.  Figure~\ref{fig:ResolutionFunctionComparison_DenoisedOnly} shows the resulting resolution functions.  We can see that at our typical energies of $\approx 2500$ keV the $p_0$ and $p_1$ terms dominate the resolution function of equation~\ref{eqn:ResolutionAbsoluteFunctionForm}, and this manifests itself as a concave-downward shape in the absolute resolution function.  This can be interpretted as meaning that the electronic noise and Poisson fluctuations dominate our resolution; this may not be surprising, since we recall from section~\ref{sec:DenoisingInPractice} that Poisson fluctuations were underweighted in the version of denoising implemented for this analysis.  Our interpretation is only suggestive because the curvature is slight and the energy-dependent calibration effects cannot be ruled out, but it will be interesting to see how these terms change when future work addresses the underweighting of Poisson fluctuations.
+The resolution functions are measured using only the cobalt and thorium calibration gamma lines (at $1173$, $1332$, and $2615$ keV).  The resolution parameters are time-dependent; average resolution parameters are computed by weighting the resolutions observed in different time windows by the fraction of EXO-200 low-background data taken within that window.  The resulting resolution parameters are listed in table~\ref{tab:ResolutionFunctions_DenoisedOnly}.  Figure~\ref{fig:ResolutionFunctionComparison_DenoisedOnly} shows the resulting resolution functions.  We can see that at our typical energies of $\approx 2500$ keV the $p_0$ and $p_1$ terms dominate the resolution function of equation~\ref{eqn:ResolutionAbsoluteFunctionForm}, and this manifests itself as a concave-downward shape in the absolute resolution function.  This can be interpretted as meaning that the electronic noise and Poisson fluctuations dominate our resolution; this may not be surprising, since we recall from section~\ref{sec:DenoisingInPractice} that Poisson fluctuations were underweighted in the version of denoising implemented for this analysis.  Our interpretation is only suggestive because the curvature is slight and the energy-dependent calibration effects cannot be ruled out, but it will be interesting to see how these terms change when future work addresses the underweighting of Poisson fluctuations.
 
 \subsection{Cross-Checks on the Energy Calibration}
 
@@ -525,7 +525,7 @@ The other gamma line which has been used as a cross-check is the $1461$-keV $^{4
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{The residuals between calibrated and true peak positions for all sources is compared.  Calibrations were obtained from the $^{60}$Co and $^{232}$Th peaks at 1173, 1332, and 2615 keV.  Other calibration sources available were $^{137}$Cs and $^{226}$Ra at 662 and 2448 keV respectively.  Low-background calibration lines are neutron capture on hydrogen (2200 keV) and $^{40}$K (1461 keV).  Figure from~\cite{EnergyDocumentRun2ab}.}
+\caption{The residuals between calibrated and true peak positions for all sources is compared.  Calibrations were obtained from the $^{137}$Cs, $^{60}$Co, and $^{232}$Th peaks at 662, 1173, 1332, and 2615 keV.  The peak from $^{226}$Ra at 2448 keV is also shown, but was not used for calibration.  Low-background calibration lines are neutron capture on hydrogen (2200 keV) and $^{40}$K (1461 keV).  Figure from~\cite{EnergyDocumentRun2ab}.}
 \label{fig:CalibResidualsForManySources}
 \end{quote}
 \end{figure}
@@ -840,7 +840,135 @@ One concern with the denoised energy calibration comes from the observed non-lin
 
 \subsection{Comparison of Physics Results}\label{sec:ResultComparisonPhysics}
 
+We now proceed to compare the physics results obtained with denoising to those which would have been obtained without denoising.  We recall from figure~\ref{fig:BackgroundVsResolution} that improvement of the energy resolution will have the strongest effect on our $^{232}$Th backgrounds, and will have a smaller (but not negligible) effect on our $^{137}$Xe backgrounds.  Here we will show changes as they impact our $2\sigma$ region of interest, and will conclude with a comparison of the profile likelihood scans obtained from full fits to the spectrum.
+
+To compare the denoised and undenoised pdf fits, we choose to present the best fits where $\beta\beta 0\nu$ is fixed at zero.  We do this because we are claiming in section~\ref{sec:ResultFitting} that the result is a limit on $\beta\beta 0\nu$ decay, not an observation; any differences in the best-fit number of $\beta\beta 0\nu$ counts should therefore be viewed as statistical fluctuations rather than meaningful results, and we do not wish to allow them to skew our comparison.  This choice should also give us a better sense of the significance of experiment: our potential to reject the null hypothesis, as described in section~\ref{sec:ResultResults}, with and without denoising.
+
+\begin{figure}
+\begin{center}
+%\includegraphics[keepaspectratio=true,width=\textwidth]{???}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Denoised (red) and undenoised (blue) data counts are shown in 30 keV bins.  The total best-fit pdf, where the $\beta\beta 0\nu$ contribution is fixed to zero, is overlaid for denoised and undenoised data.  Dashed lines indicate the $2\sigma$ region of interest.}
+\label{fig:DenoisedComparison_DataTotalPdf}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+Figure \textcolor{red}{NUMBER} shows the denoised and undenoised data and total best-fit pdfs with the $\beta\beta 0\nu$ contribution fixed to zero.  We can see that a significant portion of the expected background reduction in undenoised data comes from pulling the region of interest away from the $^{208}$Tl peak.  The total expected background in the $2\sigma$ region of interest is \textcolor{red}{NUMBER} counts in the denoised fit, as opposed to \textcolor{red}{NUMBER} counts in the undenoised fit.  The lower rate of background is the most significant reason that our denoised data will yield a stronger limit on $\beta\beta 0\nu$ decay.
+
+\begin{figure}
+\begin{center}
+%\includegraphics[keepaspectratio=true,width=\textwidth]{???}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Denoised (red) and undenoised (blue) pdf contributions form \textcolor{red}{VARIOUS BACKGROUNDS}.}
+\label{fig:DenoisedComparison_PdfComponents}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+In figure~\ref{fig:DenoisedComparison_PdfComponents}
+
+
+Pdfs of just thorium components (no bb0n), and integrated thorium contributiosn.
+
+Pdfs of just Xe137 components (no bb0n), and integrated contributions.
+
+Pdfs of just U238 components (no bb0n), and integrated contributions.
+
+Profile curves.
+
+\begin{center}
+\begin{longtable}{|c|c|c|c|c|c|c|}
+\caption{All single-site events which fall into the denoised energy window between 2325 and 2550 keV.  This fully includes the $2\sigma$ window around the $Q$-value; we indicate whether the event falls into that $2\sigma$ window.  The correponding undenoised energy  is also indicated, along with whether that undenoised energy falls into the undenoised $2\sigma$ region of interest.}\label{tab:EventTable_DenoisedWideRegion}\\
+
+\hline \multirow{2}{*}{Run\#} & \multirow{2}{*}{Event\#} & \multicolumn{2}{|c|}{Denoised} & \multicolumn{2}{|c|}{Undenoised} & \multirow{2}{*}{$\Delta$E (keV)} \\
+\cline{3-6} & & Energy (keV) & In ROI? & Energy (keV) & In ROI? &  \\ \hline
+\endfirsthead
+
+\multicolumn{7}{c}
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline \multirow{2}{*}{Run\#} & \multirow{2}{*}{Event\#} & \multicolumn{2}{|c|}{Denoised} & \multicolumn{2}{|c|}{Undenoised} & \multirow{2}{*}{$\Delta$E (keV)} \\
+\cline{3-6} & & Energy (keV) & In ROI? & Energy (keV) & In ROI? &  \\ \hline
+\endhead
+
+\hline \multicolumn{7}{|r|}{{Continued on next page}} \\ \hline
+\endfoot
+
+\hline
+\endlastfoot
+
+\hline 2669 & 3889 & 2327.4 & No & 2322.6 & No & 4.8 \\
+\hline 2782 & 2237 & 2464.2 & Yes & 2560.3 & No & -96.0 \\
+\hline 2831 & 4864 & 2488.5 & Yes & 2245.3 & No & 243.2 \\
+\hline 3155 & 2053 & 2524.6 & Yes & 2541.6 & Yes & -17.0 \\
+\hline 3155 & 6861 & 2448.5 & Yes & 2403.4 & Yes & 45.1 \\
+\hline 3255 & 8687 & 2360.4 & No & 2353.4 & No & 7.0 \\
+\hline 3321 & 8688 & 2332.4 & No & 2315.2 & No & 17.2 \\
+\hline 3461 & 845 & 2357.7 & No & 2336.6 & No & 21.1 \\
+\hline 3573 & 1958 & 2406.1 & Yes & 2421.4 & Yes & -15.2 \\
+\hline 3657 & 3515 & 2417.0 & Yes & 2399.1 & Yes & 17.8 \\
+\hline 3740 & 11325 & 2405.7 & Yes & 2324.8 & No & 80.9 \\
+\hline 3912 & 10712 & 2391.3 & Yes & 2399.8 & Yes & -8.5 \\
+\hline 3933 & 3459 & 2441.4 & Yes & 2507.3 & Yes & -65.9 \\
+\hline 3964 & 9703 & 2459.2 & Yes & 2464.8 & Yes & -5.6 \\
+\hline 3972 & 754 & 2509.6 & Yes & 2470.9 & Yes & 38.8 \\
+\hline 3994 & 12296 & 2412.7 & Yes & 2367.1 & Yes & 45.5 \\
+\hline 4030 & 5037 & 2502.1 & Yes & 2482.8 & Yes & 19.3 \\
+\hline 4032 & 2727 & 2426.4 & Yes & 2349.3 & No & 77.1 \\
+\hline 4065 & 2350 & 2428.8 & Yes & 2442.8 & Yes & -14.0 \\
+\hline 4068 & 8841 & 2543.4 & No & 2640.4 & No & -97.0 \\
+\hline 4068 & 9897 & 2423.9 & Yes & 2453.5 & Yes & -29.7 \\
+\hline 4078 & 2595 & 2370.3 & No & 2372.4 & Yes & -2.0 \\
+\hline 4229 & 9176 & 2541.3 & No & 2519.5 & Yes & 21.9 \\
+\hline 4258 & 13386 & 2340.7 & No & 2338.8 & No & 2.0 \\
+\hline 4288 & 1334 & 2333.9 & No & 2340.6 & No & -6.7 \\
+\hline 4288 & 11179 & 2466.0 & Yes & 2494.1 & Yes & -28.1 \\
+\hline 4288 & 13040 & 2418.6 & Yes & 2486.3 & Yes & -67.7 \\
+\hline 4306 & 10543 & 2544.3 & No & 2574.1 & No & -29.7 \\
+\hline 4373 & 3036 & 2349.4 & No & 2395.3 & Yes & -45.8 \\
+\hline 4378 & 11150 & 2492.3 & Yes & 2494.2 & Yes & -1.9 \\
+\hline 4402 & 10759 & 2393.0 & Yes & 2398.0 & Yes & -5.1 \\
+\hline 4433 & 16390 & 2529.9 & No & 2494.1 & Yes & 35.8 \\
+\hline 4459 & 29435 & 2529.3 & No & 2472.2 & Yes & 57.1 \\
+\hline 4475 & 11191 & 2454.5 & Yes & 2521.3 & Yes & -66.8 \\
+\hline 4490 & 4613 & 2441.5 & Yes & 2481.4 & Yes & -40.0 \\
+\hline 4507 & 6129 & 2435.6 & Yes & 2412.4 & Yes & 23.2 \\
+\hline 4672 & 1891 & 2383.5 & Yes & 2418.5 & Yes & -35.0 \\
+\hline 4705 & 5799 & 2404.6 & Yes & 2465.7 & Yes & -61.1 \\
+\hline 4712 & 5996 & 2466.0 & Yes & 2439.5 & Yes & 26.5 \\
+\hline 4733 & 3595 & 2364.9 & No & 2381.2 & Yes & -16.2 \\
+\hline 4809 & 3937 & 2427.7 & Yes & 2429.1 & Yes & -1.4 \\
+\hline 4860 & 5170 & 2513.8 & Yes & 2596.3 & No & -82.5 \\
+\hline 4882 & 310 & 2474.2 & Yes & 2450.2 & Yes & 24.1 \\
+\hline 4899 & 9833 & 2342.4 & No & 2323.7 & No & 18.7 \\
+\hline 4903 & 7366 & 2472.6 & Yes & 2456.7 & Yes & 15.9 \\
+\hline 4918 & 4313 & 2377.1 & No & 2458.2 & Yes & -81.1 \\
+\hline 4957 & 8387 & 2398.6 & Yes & 2384.9 & Yes & 13.7 \\
+\hline 4978 & 6796 & 2521.1 & Yes & 2518.8 & Yes & 2.3 \\
+\hline 5010 & 2201 & 2365.3 & No & 2349.5 & No & 15.7 \\
+\hline 5082 & 9766 & 2517.7 & Yes & 2477.1 & Yes & 40.6 \\
+\hline 5097 & 7670 & 2472.1 & Yes & 2441.0 & Yes & 31.1 \\
+\hline 5105 & 15012 & 2548.5 & No & 2559.8 & No & -11.3 \\
+\hline 5124 & 7626 & 2480.4 & Yes & 2411.8 & Yes & 68.6 \\
+\hline 5305 & 3256 & 2406.0 & Yes & 2393.2 & Yes & 12.8 \\
+\hline 5372 & 11466 & 2513.7 & Yes & 2557.9 & No & -44.2 \\
+\hline 5380 & 4415 & 2458.2 & Yes & 2478.9 & Yes & -20.7 \\
+\hline 5409 & 38 & 2405.1 & Yes & 2456.9 & Yes & -51.8 \\
+\end{longtable}
+\end{center}
+
+
 
 \textcolor{red}{I should do this -- but need to finalize plots, which still needs a little more processing.}
 
 \section{Summary}\label{sec:ResultSummary}
+
+We have seen that denoising now occupies a central place in the EXO-200 analysis, providing one of the two energy quantities (charge and light) which together determine the size of the region of interest we must use.  Denoising has been shown to produce a 21\% improvements in single-site energy resolution at our $Q$-value and a correpondingly significant reduction in the backgrounds observed and expected.  Even with denoising, the $\beta\beta 0\nu$ half-life limit we obtain is less than our mean sensitivity would lead us to hope; however, this fluctuation is not unreasonable and is a natural part of low-background physics research.  The upgrade of the present analysis using denoising has led to exciting new investigations, and we can already see that our improved resolution has exposed new avenues for improvements in our calibration techniques.  In chapter~\ref{ch:Conclusions} we conclude with a reminder of the accomplishments of the present work and a look ahead to more anticipated upgrades to the EXO-200 system.
