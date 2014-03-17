@@ -2,7 +2,7 @@
 \chapter{EXO-200 Analysis and Results from Denoising}
 \label{ch:DenoisingResults}
 
-The dataset used for the present work extends from October 5, 2011 to September 1, 2013 with a cumulative livetime of $477.60 \pm 0.01$ days~\cite{NewEXObb0nPaper_2014}.  This chapter describes the analysis which has been applied to this livetime.  Sections~\ref{sec:ResultSimulation}-\ref{sec:ResultFitting} describe the basic elements of the EXO-200 analysis.  Section~\ref{sec:ResultResults} presents the results from this set of data.  In section~\ref{sec:ResultComparison} we compare the results obtained using the denoising scheme of chapter~\ref{ch:DenoisingTheory} to the results which would have been obtained without that algorithm applied, and demonstrate that denoising has contributed to the strength of our physics reach.
+The dataset used for the present work extends from October 5, 2011 to September 1, 2013 with a cumulative livetime of $477.60 \pm 0.01$ days~\cite{NewEXObb0nPaper_2014}.  This chapter describes the analysis which has been applied to this livetime.  Sections~\ref{sec:ResultSimulation}-\ref{sec:ResultFitting} describe the basic elements of the EXO-200 analysis.  Section~\ref{sec:ResultResults} presents the results from this set of data.  In section~\ref{sec:ResultComparison} we compare the results obtained using the denoising scheme of chapter~\ref{ch:DenoisingTheory} to the results which would have been obtained without that algorithm applied and demonstrate that denoising has contributed to the strength of our physics reach.
 
 \section{Simulation}\label{sec:ResultSimulation}
 
@@ -486,7 +486,7 @@ The resolution functions are measured using only the cobalt and thorium calibrat
 
 \begin{figure}
 \begin{center}
-\includegraphics[keepaspectratio=true,width=.6\textwidth]{RotatedIsland.png}
+\includegraphics[keepaspectratio=true,width=.7\textwidth]{RotatedIsland.png}
 \end{center}
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
@@ -647,12 +647,13 @@ It is necessary to perform a number of cuts on the dataset before it is usable. 
 \item A ``diagonal'' cut to remove events with excessive scintillation relative to ionization.  Alpha decays produce a light-to-charge ratio much higher than beta and gamma decays, as described in section~\ref{sec:DetectorActiveBackgroundRejection}, so excluding events with excessive light permits us to neglect alpha-decay backgrounds dissolved in the xenon.  Events with excessive light can also be caused by decays outside of our active xenon, where charge is not collected efficiently; these events will be difficult to calibrate, and should not be included.  Both are excluded by a cut on the light-to-charge ratio, as shown in figure~\ref{fig:LiangjianAnticorrelatedEnergy}.
 \item A coincidence cut to remove events occurring near in time to a passing muon.  Muons and their spallation products can produce a wide range of backgrounds which is difficult to model; most of these backgrounds are quite short-lived, so a coincidence cut can provide an effective means of reducing them.  Currently we cut all events occurring within one minute of a muon observed passing directly through the TPC and within $25$ ms after a muon observed passing through the veto panels.  Furthermore, events which occur within one second of each other are both cut based on the expectation that the events were probably correlated and therefore more likely to be some form of background.  Figure~\ref{fig:Spectrum_noVetoCuts} demonstrates the significant reduction in data rate which is achieved by applying this coincidence cut.
 \end{itemize}
+The fiducial volume identified above corresponds to a fiducial $^{136}$Xe mass of 76.3 kg; for our livetime of $477.60 \pm 0.01$ days identified at the beginning of the chapter, the dataset has a combined $^{136}$Xe exposure of 99.8 kg-years~\cite{NewEXObb0nPaper_2014}.
 
 Probability distribution functions (PDFs) must also be formed from Monte Carlo data which reflects the spectrum expected from different sources.  We have discussed the simulation of these datasets in section~\ref{sec:ResultSimulation}, and noted that the simulations are sufficiently realistic that they are reconstructed in exactly the same way as data.  However, we cannot hope to measure energy in simulation and data the same way because the scintillation pulse amplitudes are not simulated realistically.
 
 Instead, energy is taken directly from simulation and smeared by the energy resolution function which has been measured from data.  Smearing is performed by first producing a binned perfect-resolution PDF which models perfect energy resolution, and then looping over the bins of the perfect-resolution PDF and smearing each bin by a Gaussian function with width equal to the absolute resolution at that energy~\cite{FittingDocument}.
 
-Fits are then performed using the profile-likelihood method, as described in~\cite{ProfileLikelihood}.  Each data point is assigned a likelihood $\text{PDF}(x)$ equal to the evaluation of the normalized PDF at that point; the test statistic of interest is the negative log-likelihood (NLL), defined by:
+Fits are then performed using the profile-likelihood method, as described in~\cite{ProfileLikelihood}.  An energy window of 980-9800 keV is used; this window is chosen to avoid lower-energy parts of the spectrum where pdf shape agreement is poor~\cite{NewEXObb0nPaper_2014}.  Each data point is assigned a likelihood $\text{PDF}(x)$ equal to the evaluation of the normalized PDF at that point; the test statistic of interest is the negative log-likelihood (NLL), defined by:
 \begin{equation}
 \text{NLL} = -\sum_i ln\left[\text{PDF}(x_i)\right] + \text{constraints}.
 \end{equation}
@@ -882,82 +883,7 @@ One concern with the denoised energy calibration comes from the observed non-lin
 
 We now proceed to compare the physics results obtained with denoising to those which would have been obtained without denoising.  We recall from figure~\ref{fig:BackgroundVsResolution} that improvement of the energy resolution will have the strongest effect on our $^{232}$Th backgrounds, and will have a smaller (but not negligible) effect on our $^{137}$Xe backgrounds.  Here we will show changes as they impact our $2\sigma$ region of interest, and will conclude with a comparison of the profile likelihood scans obtained from full fits to the spectrum.
 
-To compare the denoised and undenoised PDF fits, we choose to present the best fits where $\beta\beta 0\nu$ is fixed at zero.  We do this because we are claiming in section~\ref{sec:ResultFitting} that the result is a limit on $\beta\beta 0\nu$ decay, not an observation; any differences in the best-fit number of $\beta\beta 0\nu$ counts should therefore be viewed as statistical fluctuations rather than meaningful results, and we do not wish to allow them to skew our comparison.  This choice should also give us a better sense of the significance of experiment: our potential to reject the null hypothesis, as described in section~\ref{sec:ResultResults}, with and without denoising.
-
-\begin{figure}
-\begin{center}
-\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_TotalPdfsWithData.pdf}
-\end{center}
-\renewcommand{\baselinestretch}{1}
-\small\normalsize
-\begin{quote}
-\caption{Denoised (red) and undenoised (blue) data counts are shown in 30 keV bins.  The total best-fit PDF, where the $\beta\beta 0\nu$ contribution is fixed to zero, is overlaid for denoised and undenoised data.  Dashed lines indicate the $2\sigma$ region of interest.}
-\label{fig:DenoisedComparison_DataTotalPdf}
-\end{quote}
-\end{figure}
-\renewcommand{\baselinestretch}{2}
-\small\normalsize
-
-Figure~\ref{fig:DenoisedComparison_DataTotalPdf} shows the denoised and undenoised data and total best-fit PDFs with the $\beta\beta 0\nu$ contribution fixed to zero.  We can see that a significant portion of the expected background reduction in undenoised data comes from pulling the region of interest away from the $^{208}$Tl peak.  The total expected background in the $2\sigma$ region of interest is \textcolor{red}{NUMBER} counts in the denoised fit, as opposed to \textcolor{red}{NUMBER} counts in the undenoised fit.  The lower rate of background is the most significant reason that our denoised data will yield a stronger limit on $\beta\beta 0\nu$ decay.
-
-\begin{figure}
-\begin{center}
-\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_SSPdf_ThOnly.pdf}
-\end{center}
-\renewcommand{\baselinestretch}{1}
-\small\normalsize
-\begin{quote}
-\caption{Denoised (red) and undenoised (blue) single-site PDF contributions from $^{232}$Th and its daughter products, where we constrain $\beta\beta 0\nu$ to have no decays in both fits.}
-\label{fig:DenoisedComparison_PdfComponentsTh}
-\end{quote}
-\end{figure}
-\renewcommand{\baselinestretch}{2}
-\small\normalsize
-
-\begin{figure}
-\begin{center}
-\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_SSPdf_UOnly.pdf}
-\end{center}
-\renewcommand{\baselinestretch}{1}
-\small\normalsize
-\begin{quote}
-\caption{Denoised (red) and undenoised (blue) single-site PDF contributions from $^{238}$U and its daughter products, where we constrain $\beta\beta 0\nu$ to have no decays in both fits.}
-\label{fig:DenoisedComparison_PdfComponentsU}
-\end{quote}
-\end{figure}
-\renewcommand{\baselinestretch}{2}
-\small\normalsize
-
-\begin{figure}
-\begin{center}
-\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_SSPdf_Xe137Only.pdf}
-\end{center}
-\renewcommand{\baselinestretch}{1}
-\small\normalsize
-\begin{quote}
-\caption{Denoised (red) and undenoised (blue) single-site PDF contributions from $^{137}$Xe, where we constrain $\beta\beta 0\nu$ to have no decays in both fits.}
-\label{fig:DenoisedComparison_PdfComponentsXe137}
-\end{quote}
-\end{figure}
-\renewcommand{\baselinestretch}{2}
-\small\normalsize
-
-In figures~\ref{fig:DenoisedComparison_PdfComponentsTh}, \ref{fig:DenoisedComparison_PdfComponentsU}, and \ref{fig:DenoisedComparison_PdfComponentsXe137} we show the independent contributions from $^{232}$Th and its daughter products, $^{238}$U and its daughter products, and $^{137}$Xe, respectively; these three backgrounds account for most of the background counts in our $2\sigma$ region of interest for both denoised and undenoised data.  We can see, as expected, that denoising has the most significant impact on the expected number of $^{232}$Th backgrounds because the improvement in resolution moves our $2\sigma$ region of interest off of the $^{208}$Tl peak at 2615 keV.  We also see a moderate reduction in the expected contribution from $^{137}$Xe.  Regarding $^{238}$U, figure~\ref{fig:BackgroundVsResolution} leads us to expect no significant change in the $^{238}$U contribution to our $2\sigma$ region of interest; in reality, the denoised fit resulted in 864 expected $^{238}$U counts over the entire fit window, compared to only 724 expected counts from the undenoised fit, so the difference comes from the change in the best-fit background levels.
-
-\begin{figure}
-\begin{center}
-\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_bb0nProfiles.pdf}
-\end{center}
-\renewcommand{\baselinestretch}{1}
-\small\normalsize
-\begin{quote}
-\caption{Denoised (red) and undenoised (blue) profile likelihood curves for $\beta\beta 0\nu$.}
-\label{fig:DenoisedComparison_Profiles}
-\end{quote}
-\end{figure}
-\renewcommand{\baselinestretch}{2}
-\small\normalsize
-Profile curves~\ref{fig:DenoisedComparison_Profiles}
+We begin by listing the events which occur in the denoised single-site spectrum in the energy window from 2325 to 2550 keV.  These are provided in table~\ref{tab:EventTable_DenoisedWideRegion}, which also includes the corresponding undenoised energy and the change in energy due to denoising.  The table indicates whether the event would fall within the $2\sigma$ region of interest in both the denoised and undenoised analysis.
 
 \begin{center}
 \begin{longtable}{|c|c|c|c|c|c|c|}
@@ -1039,10 +965,86 @@ Profile curves~\ref{fig:DenoisedComparison_Profiles}
 \end{longtable}
 \end{center}
 
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_bb0nProfiles.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Denoised (red) and undenoised (blue) profile likelihood curves for $\beta\beta 0\nu$.}
+\label{fig:DenoisedComparison_Profiles}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
 
+To compare the limits set with denoised and undenoised data, figure~\ref{fig:DenoisedComparison_Profiles} includes the profile likelihood curves derived from both datasets.  The beta scale is included as a systematic here, broadening both curves.  The 90\% confidence limit is the value of $\beta\beta 0\nu$ at which the curve has a value of 1.35; for the denoised data we can set a 90\% confidence limit of 24 counts, whereas with the undenoised data we set a 90\% confidence limit of 27 counts.  This means denoising has given us an 11\% stronger halflife limit than the undenoised dataset could have provided; or, since the neutrino mass $\left<m_{\beta\beta}\right>$ is proportional to the square root of halflife, denoising gives us a 6\% stronger limit on the neutrino mass.
 
-\textcolor{red}{I should do this -- but need to finalize plots, which still needs a little more processing.}
+Another way to compare the denoised and undenoised datasets is by studying their expected number of background counts.  We choose to present the best fits where $\beta\beta 0\nu$ is fixed at zero, rather than the best fits overall.  We do this because we are claiming in section~\ref{sec:ResultFitting} that the result is a limit on $\beta\beta 0\nu$ decay, not an observation; any differences in the best-fit number of $\beta\beta 0\nu$ counts should therefore be viewed as statistical fluctuations rather than meaningful results, and we do not wish to allow them to skew our comparison.
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_TotalPdfsWithData.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Denoised (red) and undenoised (blue) data counts are shown in 30 keV bins.  The total best-fit PDF, where the $\beta\beta 0\nu$ contribution is fixed to zero, is overlaid for denoised and undenoised data.  Dashed lines indicate the $2\sigma$ region of interest.}
+\label{fig:DenoisedComparison_DataTotalPdf}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+Figure~\ref{fig:DenoisedComparison_DataTotalPdf} shows the denoised and undenoised data and total best-fit PDFs with the $\beta\beta 0\nu$ contribution fixed to zero.  We can see that a significant portion of the expected background reduction in undenoised data comes from pulling the region of interest away from the $^{208}$Tl peak.  The total expected background in the $2\sigma$ region of interest is 37.4 counts in the denoised fit, as opposed to 54.8 counts in the undenoised fit.
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_SSPdf_ThOnly.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Denoised (red) and undenoised (blue) single-site PDF contributions from $^{232}$Th and its daughter products, where we constrain $\beta\beta 0\nu$ to have no decays in both fits.}
+\label{fig:DenoisedComparison_PdfComponentsTh}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_SSPdf_UOnly.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Denoised (red) and undenoised (blue) single-site PDF contributions from $^{238}$U and its daughter products, where we constrain $\beta\beta 0\nu$ to have no decays in both fits.}
+\label{fig:DenoisedComparison_PdfComponentsU}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_SSPdf_Xe137Only.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Denoised (red) and undenoised (blue) single-site PDF contributions from $^{137}$Xe, where we constrain $\beta\beta 0\nu$ to have no decays in both fits.}
+\label{fig:DenoisedComparison_PdfComponentsXe137}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+In figures~\ref{fig:DenoisedComparison_PdfComponentsTh}, \ref{fig:DenoisedComparison_PdfComponentsU}, and \ref{fig:DenoisedComparison_PdfComponentsXe137} we show the independent contributions from $^{232}$Th and its daughter products, $^{238}$U and its daughter products, and $^{137}$Xe, respectively; these three backgrounds account for most of the background counts in our $2\sigma$ region of interest for both denoised and undenoised data.  We can see, as expected, that denoising has the most significant impact on the expected number of $^{232}$Th backgrounds because the improvement in resolution moves our $2\sigma$ region of interest off of the $^{208}$Tl peak at 2615 keV.  We also see a moderate reduction in the expected contribution from $^{137}$Xe.  Regarding $^{238}$U, figure~\ref{fig:BackgroundVsResolution} leads us to expect no significant change in the $^{238}$U contribution to our $2\sigma$ region of interest; in reality, the denoised fit resulted in 864 expected $^{238}$U counts over the entire fit window, compared to only 724 expected counts from the undenoised fit, so the difference comes from the change in the best-fit background levels.
+
+These fit results give some indication of how easily we could discover $\beta\beta 0\nu$ decay with the denoised and undenoised analysis because we expect background fluctuations to be similar to the square root of the number of expected counts, and to discover $\beta\beta 0\nu$ decay it must produce more counts than can be attributed to a typical background fluctuation.  The number of expected background counts in denoised data is 32\% lower than in undenoised data, so the number of $\beta\beta 0\nu$ counts required for a discovery of similar strength is $\sqrt(32\%) = 17\%$ lower for denoised data than undenoised data.  Since the neutrino mass $\left<m_{\beta\beta}\right>$ is proportional to the square root of the halflife $T_{1/2}^{0\nu}$, we can expect that denoising typically permits us to discover neutrino masses 9\% lower than without denoising.
 
 \section{Summary}\label{sec:ResultSummary}
 
-We have seen that denoising now occupies a central place in the EXO-200 analysis, providing one of the two energy quantities (charge and light) which together determine the size of the region of interest we must use.  Denoising has been shown to produce a 21\% improvements in single-site energy resolution at our $Q$-value and a correspondingly significant reduction in the backgrounds observed and expected.  Even with denoising, the $\beta\beta 0\nu$ half-life limit we obtain is less than our mean sensitivity would lead us to hope; however, this fluctuation is not unreasonable and is a natural part of low-background physics research.  The upgrade of the present analysis using denoising has led to exciting new investigations, and we can already see that our improved resolution has exposed new avenues for improvements in our calibration techniques.  In chapter~\ref{ch:Conclusions} we conclude with a reminder of the accomplishments of the present work and a look ahead to more anticipated upgrades to the EXO-200 system.
+We have seen that denoising now occupies a central place in the EXO-200 analysis, providing one of the two energy quantities (charge and light) which together determine the size of the region of interest we must use.  Denoising has been shown to produce a 21\% improvements in single-site energy resolution at our $Q$-value and a 32\% reduction in the mean expected backgrounds in our $2\sigma$ region of interest.  Even with denoising, the $\beta\beta 0\nu$ half-life limit we obtain is less than our mean sensitivity would lead us to hope; however, this fluctuation is not unreasonable and is a natural part of low-background physics research.  The upgrade of the present analysis using denoising has led to exciting new investigations, and we can already see that our improved resolution has exposed new avenues for improvements in our calibration techniques.  In chapter~\ref{ch:Conclusions} we conclude with a reminder of the accomplishments of the present work and a look ahead to more anticipated upgrades to the EXO-200 system.
