@@ -10,7 +10,7 @@ Here we describe the simulation of radioactive sources in the EXO-200 detector. 
 
 \subsection{Simulation of Particles using GEANT}
 
-To simulate the deposition of energy from primary decay particles, version 4.9.3p02 of the GEANT software package is used~\cite{Agostinelli2003250,1610988}.  This package includes a database containing attenuation properties of many common materials as well as detailed decay modes for most radioactive isotopes.  We will now proceed to describe how GEANT is used to simulate decays in or outside of EXO-200.
+To simulate the deposition of energy from primary decay particles, version 4.9.3p02 of the GEANT software package is used~\cite{Agostinelli2003250,1610988}.  This package includes a database containing attenuation properties of many common materials as well as detailed decay modes for most radioactive isotopes.
 
 \begin{figure}
 \begin{center}
@@ -42,17 +42,17 @@ To simulate the deposition of energy from primary decay particles, version 4.9.3
 
 A model of the EXO-200 detector is simulated in GEANT with a collection of simple geometric volumes which can be composed to form more complicated structures.  Simulation speed decreases as more volumes are generated, and we expect that it is unimportant to simulate details much smaller than the distance between the detail and the liquid xenon.  We attempt to find a balance between accurate modeling of detailed features and simplification of distant features~\cite{MCDocumentRun2a}.  In figure~\ref{fig:OGL_wireframevis} we see the full geometry described in GEANT, where distant objects are constructed from a small number of geometric pieces.  Figure~\ref{fig:RayTracer_TPConly} shows how the TPC is described in GEANT, and we can see the level of detail is much greater.
 
-To simulate particles, GEANT uses a Monte Carlo method.  This means that it models decay processes as a sequence of samples from a probability distribution which are chosen using a pseudorandom number generator.  The energy and direction of the emitted particle, its interaction locations  and quantity of deposited energy, and the formation of secondary particles are all generated randomly as choices from a set of options with known probablities.  It is possible to override these probability distributions when necessary; for example, EXO-200 uses its own double-beta and forbidden beta decay spectra rather than the defaults provided by GEANT.  Generally, though, the existing options in GEANT are suitable for simulating nuclear and electromagnetic processes~\cite{MCDocumentRun2a}.
+To simulate particles, GEANT uses a Monte Carlo method.  This means that it models decay processes as a sequence of samples from a probability distribution which are chosen using a pseudorandom number generator.  The energy and direction of the emitted particle, its interaction locations  and quantity of deposited energy, and the formation of secondary particles are all generated randomly as choices from a set of options with known probabilities.  It is possible to override these probability distributions when necessary; for example, EXO-200 uses its own double-beta and forbidden beta decay spectra rather than the defaults provided by GEANT.  Generally, though, the existing options in GEANT are suitable for simulating nuclear and electromagnetic processes~\cite{MCDocumentRun2a}.
 
-Only energy which deposits in the liquid xenon is observable.  When primary decays are simulated far from the detector, it may be that most of those simulated events deposit no energy in the liquid xenon and are not observable; the simulation continues running until a sufficient number of simulated events deposit energy in the liquid xenon.  This means that sources which are farther from the liquid xenon require significantly more computational time to accumulate a usable number of statistics.  We find that sources outside of the HFE-7000 are subject to $4.5$ attenuation lengths before reaching the liquid xenon, and events reaching the liquid xenon from the inner cryostat can only be simulated at $0.01$ Hz/core by this approach~\cite{MCDocumentRun2a}.
+Only energy which is deposited in the liquid xenon is observable.  When primary decays are simulated far from the detector, it may be that most of those simulated events deposit no energy in the liquid xenon and are not observable; the simulation continues running until a sufficient number of simulated events deposit energy in the liquid xenon.  This means that sources which are farther from the liquid xenon require significantly more computational time to accumulate a usable number of statistics.  We find that sources outside of the HFE-7000 are subject to $4.5$ attenuation lengths before reaching the liquid xenon, and events reaching the liquid xenon from the inner cryostat can only be simulated at $0.01$ Hz/core by this approach~\cite{MCDocumentRun2a}.
 
-To improve this rate, importance sampling is employed for distant sources.  This approach consists of the following techniques to magnify statistics from a fixed simulation time:~\cite{Dressel:642987,MCDocumentRun2a}
+To improve this rate, importance sampling is employed for distant sources.  This approach consists of the following techniques to maximize the impact of limited computational time:~\cite{Dressel:642987,MCDocumentRun2a}
 \begin{itemize}
 \item Low-energy beta and alpha particles outside of the TPC may be ``killed'', or prematurely eliminated from the simulation based on our knowledge that their attenuation length is quite short.
 \item The detector is surrounded by importance sampling ``boundaries'': when a particle passes into a boundary it may be cloned (with a user-selected probability), where the rate of cloning is tracked by a corresponding decrease in particle ``weight.''
 \item To avoid biasing the spectrum, it is also necessary to kill particles which pass out of a boundary with the same probability, and increase their weight accordingly.
 \end{itemize}
-This approach has the effect of using GEANT to simulate the properties of particles reaching the outermost boundary; then draw samples from that distribution and simulate the properties of particles reaching the next boundary; and so forth, amplifying the impact of statistics at each stage.  This has the effect of increasing simulation speeds from the inner cryostat from $0.01$ Hz/core to a few Hz/core, and makes simulations of backgrounds from outside the lead wall feasible~\cite{MCDocumentRun2a}.
+Implicitly, importance sampling simulates the properties of particles reaching the outermost boundary; then draws samples from that distribution and simulates the properties of particles reaching the next boundary; and so forth, amplifying the impact of statistics at each stage.  This also means that statistical errors in the simulated particle distributions at outer boundaries are magnified by this amplification process.  For far backgrounds, though, an approach such as this is essential:  simulation speeds from the inner cryostat are increased from $0.01$ Hz/core to a few Hz/core, and simulations from outside the lead wall which would be wholely infeasible are made possible~\cite{MCDocumentRun2a}.
 
 \begin{figure}
 \begin{center}
@@ -186,7 +186,7 @@ The first stage of data processing involves locating candidate pulses in its wav
 
 \subsection{Pulse Finding}\label{sec:ReconPulseFinding}
 
-Pulse-finding proceeds in two steps.  First, on u-wire, v-wire, and summed APD waveforms a matched filter is applied to do a preliminary search on all channels.  Then, a secondary search is performed on the u-wire waveformss to improve sensitivity to multiple pulses near in time.
+Pulse-finding proceeds in two steps.  First, on u-wire, v-wire, and summed APD waveforms a matched filter is applied to do a preliminary search on all channels.  Then, a secondary search is performed on the u-wire waveforms to improve sensitivity to multiple pulses near in time.
 
 The matched filter algorithm was first described by D.O. North in 1943~\cite{MatchedFilterPaper}.  It attempts to decide between the null hypothesis that a waveform $X[\tau]$ consists of only noise and an alternative hypotheses that the waveform contains a pulse and noise:
 \begin{equation}\begin{cases}
@@ -278,7 +278,7 @@ After finding pulses, it is necessary to perform a fit to the expected pulse sha
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-To minimize the impact of pulse templates whose shape may not perfectly relect the shaping times in hardware, and also to reduce the effect which waveform noise may have on our fit, we do not fit the entire waveform to our pulse model.  Instead, we use only an $80 \mu$s fit window in the case of v-wires and APDs, and a $180 \mu$s fit window in the case of u-wires.  The fit windows are illustrated with example events in figure~\ref{fig:ReconExampleFits}.
+To minimize the impact of pulse templates whose shape may not perfectly reflect the shaping times in hardware, and also to reduce the effect which waveform noise may have on our fit, we do not fit the entire waveform to our pulse model.  Instead, we use only an $80 \mu$s fit window in the case of v-wires and APDs, and a $180 \mu$s fit window in the case of u-wires.  The fit windows are illustrated with example events in figure~\ref{fig:ReconExampleFits}.
 
 As pulse times and magnitudes are extracted, it may be discovered at this phase of processing that two pulses on the same waveform which were separately reported by the finding phase are extremely close together in time.  In this case, we can generally conclude that the finding phase inadvertently reported the same pulse multiple times; the multiple candidate pulses should then be merged together, and the waveform refit.  The specific criteria for merging or removing candidate pulses are:~\cite{ReconstructionDocument}
 \begin{itemize}
@@ -292,7 +292,7 @@ Each time a single pulse is removed or a pair of pulses is merged, the fit is re
 
 The result of pulse finding and fitting is a list of pulse magnitudes and times for each channel.  It remains for reconstruction to combine this information into three-dimensional clusters, where each cluster should have a three-dimensional position, time, and estimates for charge and light pulse magnitudes.
 
-We begin by bundling groups of similar u-wire, v-wire, and APD pulses.  Multiple u-wire pulses may be bundled together when they occur on neighboring channels close together in time.  This may represent a cluster which occurred halfway between two u-wire channels and was split, with some charge being collected by each u-wire channel; it may also represent a combination of charge being collected on one channel and an induced charge pulse on a nearby u-wire channel due to the proximity of the charge drift path to that neighboring channel.  V-wire pulses are bundled together based on a combination of pulse magnitude and time to account for the observation that the passage of a single charge cloud will induce pulses on many nearby v-wires.  APD pulses are bundled based on time only, particularly to ensure that when a pulse is observed on both the North and South APD planes, the pulses are interpretted as originating from the same event in the detector.
+We begin by bundling groups of similar u-wire, v-wire, and APD pulses.  Multiple u-wire pulses may be bundled together when they occur on neighboring channels close together in time.  This may represent a cluster which occurred halfway between two u-wire channels and was split, with some charge being collected by each u-wire channel; it may also represent a combination of charge being collected on one channel and an induced charge pulse on a nearby u-wire channel due to the proximity of the charge drift path to that neighboring channel.  V-wire pulses are bundled together based on a combination of pulse magnitude and time to account for the observation that the passage of a single charge cloud will induce pulses on many nearby v-wires.  APD pulses are bundled based on time only, particularly to ensure that when a pulse is observed on both the North and South APD planes, the pulses are interpreted as originating from the same event in the detector.
 
 We then attempt to join u-wire pulse bundles and APD pulse bundles into two-dimensional charge clusters, identified by their U-Z positions and the time of the energy deposit.  The algorithm to do this is simple: for each u-wire pulse bundle, we join it with the most recent APD pulse bundle in the event.  The maximum difference in time is the maximum drift time of charge clusters in the detector, $116 \mu$s.  To allow for fit errors in the time parameters of the APD and u-wire pulses, an additional $3 \mu$s allowance is added on either end of the permitted time difference; thus, an APD and u-wire pulse bundle may be joined if the APD occurred between $119 \mu$s before and $3 \mu$s after the u-wire collection time, and from these candidates the latest APD pulse bundle is selected for each u-wire pulse bundle.  The cluster's charge energy is the sum of the energies attributed to all of the u-wire pulses in the u-wire pulse bundle; no attempt is made to measure the cluster's scintillation energy.
 
@@ -482,7 +482,7 @@ The resolutions of single-site and multi-site events differ, so there are separa
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-The resolution functions are measured using only the cobalt and thorium calibration gamma lines (at $1173$, $1332$, and $2615$ keV).  The resolution parameters are time-dependent; average resolution parameters are computed by weighting the resolutions observed in different time windows by the fraction of EXO-200 low-background data taken within that window.  The resulting resolution parameters are listed in table~\ref{tab:ResolutionFunctions_DenoisedOnly}.  Figure~\ref{fig:ResolutionFunctionComparison_DenoisedOnly} shows the resulting resolution functions.  We can see that at our typical energies of $\approx 2500$ keV the $p_0$ and $p_1$ terms dominate the resolution function of equation~\ref{eqn:ResolutionAbsoluteFunctionForm}, and this manifests itself as a concave-downward shape in the absolute resolution function.  The shape of these resolution curves can be interpretted as meaning that the electronic noise and Poisson fluctuations dominate our resolution; this may not be surprising, since we recall from section~\ref{sec:DenoisingInPractice} that Poisson fluctuations were underweighted in the version of denoising implemented for this analysis.  Our interpretation is only suggestive because the curvature is slight and the energy-dependent calibration effects cannot be ruled out, but it will be interesting to see how these terms change when future work addresses the underweighting of Poisson fluctuations.
+The resolution functions are measured using only the cobalt and thorium calibration gamma lines (at $1173$, $1332$, and $2615$ keV).  The resolution parameters are time-dependent; average resolution parameters are computed by weighting the resolutions observed in different time windows by the fraction of EXO-200 low-background data taken within that window.  The resulting resolution parameters are listed in table~\ref{tab:ResolutionFunctions_DenoisedOnly}.  Figure~\ref{fig:ResolutionFunctionComparison_DenoisedOnly} shows the resulting resolution functions.  We can see that at our typical energies of $\approx 2500$ keV the $p_0$ and $p_1$ terms dominate the resolution function of equation~\ref{eqn:ResolutionAbsoluteFunctionForm}, and this manifests itself as a concave-downward shape in the absolute resolution function.  The shape of these resolution curves can be interpreted as meaning that the electronic noise and Poisson fluctuations dominate our resolution; this may not be surprising, since we recall from section~\ref{sec:DenoisingInPractice} that Poisson fluctuations were underweighted in the version of denoising implemented for this analysis.  Our interpretation is only suggestive because the curvature is slight and the energy-dependent calibration effects cannot be ruled out, but it will be interesting to see how these terms change when future work addresses the underweighting of Poisson fluctuations.
 
 \begin{figure}
 \begin{center}
@@ -512,7 +512,7 @@ The resolution functions are measured using only the cobalt and thorium calibrat
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-It may be tempting, given that the topic of this work is a system for denoising scintillation waveforms, to prefer to focus on the scintillation-only resolution.  However, the scintillation-only resolution is in fact dominated not by the accuracy of the readout system but by fluctuations in the fraction of deposited energy which is released in the scintillation channel.  Figure~\ref{fig:RotatedIslandSchematic} shows a schematic of a typical monoenergetic gamma line; the length and angle of the island represents the anticorrelation between light and charge.  We can see that although the charge and light yield are highly correlated, individually they are also subject to significant fluctuations.  A scintillation-only energy measurement is fundamentally limited by these fluctuations in light yield, and only to second order is it affected by the accuracy of our event-by-event measurements of light yield.  A comparison between the denoised and undenoised scintillation-only resolution can be seen in figure~\ref{fig:ScintillationOnlyResolutionTrend}, and as expected the improvement from denoising is quite modest.  We will not consider the scintillation-only resolution further in this work.
+It may be tempting, given that the topic of this work is a system for denoising scintillation waveforms, to prefer to focus on the scintillation-only resolution.  However, the scintillation-only resolution is in fact dominated not by the accuracy of the readout system but by fluctuations in the fraction of deposited energy which is released in the scintillation channel.  Figure~\ref{fig:RotatedIslandSchematic} shows a schematic of a typical monoenergetic gamma line; the length and angle of the island represents the anticorrelation between light and charge.  We can see that although the charge and light yield are highly correlated, individually they are also subject to significant fluctuations.  A scintillation-only energy measurement is fundamentally limited by these fluctuations in light yield, and only to second order is it affected by the accuracy of our event-by-event measurements of light yield.  A comparison between the denoised and undenoised scintillation-only resolution can be seen in figure~\ref{fig:ScintillationOnlyResolutionTrend}, and as expected the improvement from denoising is quite modest.  Considering that the scintillation-only energy measurement is not used in the final analysis and does not provide a window onto the performance of denoising, we will not consider it further in this work.
 
 \subsection{Cross-Checks on the Energy Calibration}
 
@@ -643,16 +643,16 @@ After the energy calibrations have been performed, it is possible to produce a s
 
 It is necessary to perform a number of cuts on the dataset before it is usable.  These cuts are intended to reject events which may not agree with the model used to generate background PDFs.  These cuts are:~\cite{FittingDocument}
 \begin{itemize}
-\item A fiducial volume cut to remove events with any energy deposits outside of a pre-defined volume.  We choose to define a fiducial volume defined in Z by $10 \text{mm} < |Z| < 182 \text{mm}$ and in the X-Y plane as the area within a hexagon with an apothem of $162$ mm, as illustrated in figure~\ref{fig:FidVolDiagram}.  These cuts allow us to ignore regions near the detector walls or v-wire plane where the electic fields may not behave as expected.  They also ensure that beta or alpha backgrounds from the walls of the detector do not penetrate into our fiducial volume, allowing us to simplify the set of backgrounds modeled and included in fits.
+\item A fiducial volume cut to remove events with any energy deposits outside of a pre-defined volume.  We choose to define a fiducial volume defined in Z by $10 \text{mm} < |Z| < 182 \text{mm}$ and in the X-Y plane as the area within a hexagon with an apothem of $162$ mm, as illustrated in figure~\ref{fig:FidVolDiagram}.  These cuts allow us to ignore regions near the detector walls or v-wire plane where the electric fields may not behave as expected.  They also ensure that beta or alpha backgrounds from the walls of the detector do not penetrate into our fiducial volume, allowing us to simplify the set of backgrounds modeled and included in fits.
 \item A ``diagonal'' cut to remove events with excessive scintillation relative to ionization.  Alpha decays produce a light-to-charge ratio much higher than beta and gamma decays, as described in section~\ref{sec:DetectorActiveBackgroundRejection}, so excluding events with excessive light permits us to neglect alpha-decay backgrounds dissolved in the xenon.  Events with excessive light can also be caused by decays outside of our active xenon, where charge is not collected efficiently; these events will be difficult to calibrate, and should not be included.  Both are excluded by a cut on the light-to-charge ratio, as shown in figure~\ref{fig:LiangjianAnticorrelatedEnergy}.
 \item A coincidence cut to remove events occurring near in time to a passing muon.  Muons and their spallation products can produce a wide range of backgrounds which is difficult to model; most of these backgrounds are quite short-lived, so a coincidence cut can provide an effective means of reducing them.  Currently we cut all events occurring within one minute of a muon observed passing directly through the TPC and within $25$ ms after a muon observed passing through the veto panels.  Furthermore, events which occur within one second of each other are both cut based on the expectation that the events were probably correlated and therefore more likely to be some form of background.  Figure~\ref{fig:Spectrum_noVetoCuts} demonstrates the significant reduction in data rate which is achieved by applying this coincidence cut.
 \end{itemize}
 
-Probability distribution functions (pdfs) must also be formed from Monte Carlo data which reflects the spectrum expected from different sources.  We have discussed the simulation of these datasets in section~\ref{sec:ResultSimulation}, and noted that the simulations are sufficiently realistic that they are reconstructed in exactly the same way as data.  However, we cannot hope to measure energy in simulation and data the same way because the scintillation pulse amplitudes are not simulated realistically.
+Probability distribution functions (PDFs) must also be formed from Monte Carlo data which reflects the spectrum expected from different sources.  We have discussed the simulation of these datasets in section~\ref{sec:ResultSimulation}, and noted that the simulations are sufficiently realistic that they are reconstructed in exactly the same way as data.  However, we cannot hope to measure energy in simulation and data the same way because the scintillation pulse amplitudes are not simulated realistically.
 
-Instead, energy is taken directly from simulation and smeared by the energy resolution function which has been measured from data.  Smearing is performed by first producing a binned perfect-resolution pdf which models perfect energy resolution, and then looping over the bins of the perfect-resolution pdf and smearing each bin by a gaussian function with width equal to the absolute resolution at that energy~\cite{FittingDocument}.
+Instead, energy is taken directly from simulation and smeared by the energy resolution function which has been measured from data.  Smearing is performed by first producing a binned perfect-resolution PDF which models perfect energy resolution, and then looping over the bins of the perfect-resolution PDF and smearing each bin by a Gaussian function with width equal to the absolute resolution at that energy~\cite{FittingDocument}.
 
-Fits are then performed using the profile-likelihood method, as described in~\cite{ProfileLikelihood}.  Each data point is assigned a likelihood $\text{PDF}(x)$ equal to the evaluation of the normalized PDF at that point; the test statistic of interest is the negative log-likelihood, defined by:
+Fits are then performed using the profile-likelihood method, as described in~\cite{ProfileLikelihood}.  Each data point is assigned a likelihood $\text{PDF}(x)$ equal to the evaluation of the normalized PDF at that point; the test statistic of interest is the negative log-likelihood (NLL), defined by:
 \begin{equation}
 \text{NLL} = -\sum_i ln\left[\text{PDF}(x_i)\right] + \text{constraints}.
 \end{equation}
@@ -882,48 +882,82 @@ One concern with the denoised energy calibration comes from the observed non-lin
 
 We now proceed to compare the physics results obtained with denoising to those which would have been obtained without denoising.  We recall from figure~\ref{fig:BackgroundVsResolution} that improvement of the energy resolution will have the strongest effect on our $^{232}$Th backgrounds, and will have a smaller (but not negligible) effect on our $^{137}$Xe backgrounds.  Here we will show changes as they impact our $2\sigma$ region of interest, and will conclude with a comparison of the profile likelihood scans obtained from full fits to the spectrum.
 
-To compare the denoised and undenoised pdf fits, we choose to present the best fits where $\beta\beta 0\nu$ is fixed at zero.  We do this because we are claiming in section~\ref{sec:ResultFitting} that the result is a limit on $\beta\beta 0\nu$ decay, not an observation; any differences in the best-fit number of $\beta\beta 0\nu$ counts should therefore be viewed as statistical fluctuations rather than meaningful results, and we do not wish to allow them to skew our comparison.  This choice should also give us a better sense of the significance of experiment: our potential to reject the null hypothesis, as described in section~\ref{sec:ResultResults}, with and without denoising.
+To compare the denoised and undenoised PDF fits, we choose to present the best fits where $\beta\beta 0\nu$ is fixed at zero.  We do this because we are claiming in section~\ref{sec:ResultFitting} that the result is a limit on $\beta\beta 0\nu$ decay, not an observation; any differences in the best-fit number of $\beta\beta 0\nu$ counts should therefore be viewed as statistical fluctuations rather than meaningful results, and we do not wish to allow them to skew our comparison.  This choice should also give us a better sense of the significance of experiment: our potential to reject the null hypothesis, as described in section~\ref{sec:ResultResults}, with and without denoising.
 
 \begin{figure}
 \begin{center}
-%\includegraphics[keepaspectratio=true,width=\textwidth]{???}
+\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_TotalPdfsWithData.pdf}
 \end{center}
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Denoised (red) and undenoised (blue) data counts are shown in 30 keV bins.  The total best-fit pdf, where the $\beta\beta 0\nu$ contribution is fixed to zero, is overlaid for denoised and undenoised data.  Dashed lines indicate the $2\sigma$ region of interest.}
+\caption{Denoised (red) and undenoised (blue) data counts are shown in 30 keV bins.  The total best-fit PDF, where the $\beta\beta 0\nu$ contribution is fixed to zero, is overlaid for denoised and undenoised data.  Dashed lines indicate the $2\sigma$ region of interest.}
 \label{fig:DenoisedComparison_DataTotalPdf}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-Figure \textcolor{red}{NUMBER} shows the denoised and undenoised data and total best-fit pdfs with the $\beta\beta 0\nu$ contribution fixed to zero.  We can see that a significant portion of the expected background reduction in undenoised data comes from pulling the region of interest away from the $^{208}$Tl peak.  The total expected background in the $2\sigma$ region of interest is \textcolor{red}{NUMBER} counts in the denoised fit, as opposed to \textcolor{red}{NUMBER} counts in the undenoised fit.  The lower rate of background is the most significant reason that our denoised data will yield a stronger limit on $\beta\beta 0\nu$ decay.
+Figure~\ref{fig:DenoisedComparison_DataTotalPdf} shows the denoised and undenoised data and total best-fit PDFs with the $\beta\beta 0\nu$ contribution fixed to zero.  We can see that a significant portion of the expected background reduction in undenoised data comes from pulling the region of interest away from the $^{208}$Tl peak.  The total expected background in the $2\sigma$ region of interest is \textcolor{red}{NUMBER} counts in the denoised fit, as opposed to \textcolor{red}{NUMBER} counts in the undenoised fit.  The lower rate of background is the most significant reason that our denoised data will yield a stronger limit on $\beta\beta 0\nu$ decay.
 
 \begin{figure}
 \begin{center}
-%\includegraphics[keepaspectratio=true,width=\textwidth]{???}
+\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_SSPdf_ThOnly.pdf}
 \end{center}
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Denoised (red) and undenoised (blue) pdf contributions form \textcolor{red}{VARIOUS BACKGROUNDS}.}
-\label{fig:DenoisedComparison_PdfComponents}
+\caption{Denoised (red) and undenoised (blue) single-site PDF contributions from $^{232}$Th and its daughter products, where we constrain $\beta\beta 0\nu$ to have no decays in both fits.}
+\label{fig:DenoisedComparison_PdfComponentsTh}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-In figure~\ref{fig:DenoisedComparison_PdfComponents}
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_SSPdf_UOnly.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Denoised (red) and undenoised (blue) single-site PDF contributions from $^{238}$U and its daughter products, where we constrain $\beta\beta 0\nu$ to have no decays in both fits.}
+\label{fig:DenoisedComparison_PdfComponentsU}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
 
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_SSPdf_Xe137Only.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Denoised (red) and undenoised (blue) single-site PDF contributions from $^{137}$Xe, where we constrain $\beta\beta 0\nu$ to have no decays in both fits.}
+\label{fig:DenoisedComparison_PdfComponentsXe137}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
 
-Pdfs of just thorium components (no bb0n), and integrated thorium contributiosn.
+In figures~\ref{fig:DenoisedComparison_PdfComponentsTh}, \ref{fig:DenoisedComparison_PdfComponentsU}, and \ref{fig:DenoisedComparison_PdfComponentsXe137} we show the independent contributions from $^{232}$Th and its daughter products, $^{238}$U and its daughter products, and $^{137}$Xe, respectively; these three backgrounds account for most of the background counts in our $2\sigma$ region of interest for both denoised and undenoised data.  We can see, as expected, that denoising has the most significant impact on the expected number of $^{232}$Th backgrounds because the improvement in resolution moves our $2\sigma$ region of interest off of the $^{208}$Tl peak at 2615 keV.  We also see a moderate reduction in the expected contribution from $^{137}$Xe.  Regarding $^{238}$U, figure~\ref{fig:BackgroundVsResolution} leads us to expect no significant change in the $^{238}$U contribution to our $2\sigma$ region of interest; in reality, the denoised fit resulted in 864 expected $^{238}$U counts over the entire fit window, compared to only 724 expected counts from the undenoised fit, so the difference comes from the change in the best-fit background levels.
 
-Pdfs of just Xe137 components (no bb0n), and integrated contributions.
-
-Pdfs of just U238 components (no bb0n), and integrated contributions.
-
-Profile curves.
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_bb0nProfiles.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Denoised (red) and undenoised (blue) profile likelihood curves for $\beta\beta 0\nu$.}
+\label{fig:DenoisedComparison_Profiles}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+Profile curves~\ref{fig:DenoisedComparison_Profiles}
 
 \begin{center}
 \begin{longtable}{|c|c|c|c|c|c|c|}
@@ -1011,4 +1045,4 @@ Profile curves.
 
 \section{Summary}\label{sec:ResultSummary}
 
-We have seen that denoising now occupies a central place in the EXO-200 analysis, providing one of the two energy quantities (charge and light) which together determine the size of the region of interest we must use.  Denoising has been shown to produce a 21\% improvements in single-site energy resolution at our $Q$-value and a correpondingly significant reduction in the backgrounds observed and expected.  Even with denoising, the $\beta\beta 0\nu$ half-life limit we obtain is less than our mean sensitivity would lead us to hope; however, this fluctuation is not unreasonable and is a natural part of low-background physics research.  The upgrade of the present analysis using denoising has led to exciting new investigations, and we can already see that our improved resolution has exposed new avenues for improvements in our calibration techniques.  In chapter~\ref{ch:Conclusions} we conclude with a reminder of the accomplishments of the present work and a look ahead to more anticipated upgrades to the EXO-200 system.
+We have seen that denoising now occupies a central place in the EXO-200 analysis, providing one of the two energy quantities (charge and light) which together determine the size of the region of interest we must use.  Denoising has been shown to produce a 21\% improvements in single-site energy resolution at our $Q$-value and a correspondingly significant reduction in the backgrounds observed and expected.  Even with denoising, the $\beta\beta 0\nu$ half-life limit we obtain is less than our mean sensitivity would lead us to hope; however, this fluctuation is not unreasonable and is a natural part of low-background physics research.  The upgrade of the present analysis using denoising has led to exciting new investigations, and we can already see that our improved resolution has exposed new avenues for improvements in our calibration techniques.  In chapter~\ref{ch:Conclusions} we conclude with a reminder of the accomplishments of the present work and a look ahead to more anticipated upgrades to the EXO-200 system.
