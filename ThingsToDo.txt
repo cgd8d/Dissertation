@@ -1,0 +1,21 @@
+A list of things I really need to make sure I do (denoising chapter):
+
+Careful how I use the terms signal and event!!
+
+Plot of pulse and noise power spectra.
+
+f(\vec{x}) is for single-site; i should explicitly say that it's a weighted sum for multisite.
+
+
+
+
+A list of things which I should revisit if time permits, but which aren't critical for the Thursday deadline.
+I do not list future analyses which should be done, like non-uniformity noise investigation.
+
+* I provide an estimate of how much our <m> discovery potential moves from the change in backgrounds; but I do this based on the backgrounds estimated from denoised vs undenoised data.  I should compare this change in backgrounds to the one we expect from pdfs, where the ratios of the different sources is taken from the denoised fit.
+
+* I would love to produce sensitivity/significance plots for denoised vs undenoised data; Ryan has sent scripts, but I will not have a chance to run them in time for Thursday.
+
+* Carter wants a heat plot of noise correlations for a particular frequency -- this is worth doing, but I think other additions to the denoising chapter demonstrate well enough that noise is correlated.  Also, might be better to add this to the noise chapter.
+
+

@@ -2,23 +2,13 @@
 \chapter{Denoising Theory and Implementation}
 \label{ch:DenoisingTheory}
 
-As has been discussed, the performance of double-beta experiments like EXO-200 is partially determined by their energy resolution.  In EXO-200, the energy resolution is limited by the scintillation energy resolution, which in turn is dominated by electronic noise in the APDs.  It is therefore worthwhile to understand and reduce the noise in the scintillation signals.
+We have shown in section~\ref{sec:DetectorBackgrounds} that if it is possible to improve the energy resolution of EXO-200 then backgrounds, particularly from $^{232}$Th and $^{137}$Xe, can be reduced.  The energy resolution of EXO-200 is limited by its scintillation energy resolution, so any attempt to improve the energy resolution should focus on improved reconstruction of APD pulses.  In this chapter we present a new technique for extracting optimal scintillation energy measurements based on an improved model of the pulses and noise on APD waveforms.  The estimator derived in this chapter will be optimal partly due to its ability to operate in the presence of noise; we will therefore describe it throughout as a ``denoising'' technique, though at no point are denoised waveforms produced.
 
-\begin{figure}
-\begin{center}
-\includegraphics[keepaspectratio=true,width=\textwidth]{APDNoisePowerSpectrum.png}
-\end{center}
-\renewcommand{\baselinestretch}{1}
-\small\normalsize
-\begin{quote}
-\caption{Coherent and incoherent noise power spectra for a sample set of APD channels without signal shaping~\cite{ElectronicsUpgradeReport}.}
-\label{fig:APDNoisePowerSpectrum}
-\end{quote}
-\end{figure}
-\renewcommand{\baselinestretch}{2}
-\small\normalsize
+We begin with a general overview in section~\ref{sec:WhatIsDenoising} of what qualitative methods of noise reduction a denoising technique may hope to apply and why they are necessary for our APDs.  Notational conventions and some crucial input parameters will be listed in section~\ref{sec:DenoisingNotationSetup}.  Section~\ref{sec:DescriptionOfPhotonNoise} presents a detailed physics model of the fluctuations in observed pulse magnitude, and section~\ref{sec:BridgePhotonsPulses} will connect that physics model to observable output of the APD channels.  The optimal energy estimator is presented in section~\ref{sec:DerivationOfEstimator} with a derivation.  Sections~\ref{sec:MatrixFormulationOfDenoising}-\ref{sec:DenoisingComputationalConsiderations} translate the optimal energy estimator into a usable form and describe the computational steps needed to apply it to data.  Differences between the optimal version of denoising presented in this chapter and the version used for the present physics analysis are shown in section~\ref{sec:DenoisingInPractice}.  We finish in section~\ref{sec:FutureDenoisingExtensions} by identifying some extensions to the denoising technique presented here which may prove interesting for future analyses.
 
-When the noise in the APDs is studied, it is found that the individual APD channels meet targeted root-mean-square noise levels of 2000 electrons~\cite{ElectronicsUpgradeReport}.  However, rather than observing the noise on summed APD channels increase proportionally to the square root of the number of channels, the summed APD noise is roughly two to three times higher than projected.  This unfortunate scaling of the noise with channels indicates that noise across different channels is correlated, and further analysis confirms that the bulk of the noise on an unshaped APD waveform is correlated with other channels, as shown in Figure~\ref{fig:APDNoisePowerSpectrum}.  There are many possible sources of coherent noise in the hardware, and reducing the amount of coherent noise is a topic for further research~\cite{ElectronicsUpgradeReport}.
+\section{What is Denoising?}\label{sec:WhatIsDenoising}
+
+Before the investigations described in this work, scintillation energy was not measured from individual APD channels.  Instead, two summed waveforms were constructed: a sum of all waveforms from APDs on the North plane, and a sum of all waveforms from APDs on the South plane.  This simplified the construction of a position-dependent correction function, or lightmap.  (For more details on why this is so, see section~\ref{ch:Lightmap}.  \textcolor{red}{UPDATE WITH A REAL SECTION REFERENCE WHEN I HAVE ONE.})  However, when we sum waveforms together we discard information; this section will show that the information which is thrown away is in fact critical to improving our scintillation energy measurements.
 
 \begin{figure}
 \begin{center}
@@ -34,48 +24,94 @@ When the noise in the APDs is studied, it is found that the individual APD chann
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-A strong correlation between noise on the APDs and the energy resolution achieved (without denoising) can be observed in figure~\ref{fig:ResolutionAPDNoiseComparison}.  \textcolor{red}{Revisit for text continuity later, just wanted to add figure.}
+Energy resolution is a critical factor in the strength of the EXO-200 experiment.  Figure~\ref{fig:ResolutionAPDNoiseComparison} shows the energy resolution trend which was observed before denoising was developed.  We can see that there was a long period of worsening resolution from March 2012 to February 2013, when the single-site energy resolution changed from 1.4\% to 1.9\% $\sigma/E$ at our $Q$-value, followed by a period of improvement to 1.6\% in July 2013.  There has always been interest in ways to improve the energy resolution, but the upward trend gave greater urgency to understand the observed fluctuations, reverse them, and find a way to counter the effect in offline analysis for existing data.
 
-However, since coherent noise is the dominant type of noise in the APDs, and thus also the limiting factor in EXO-200's energy resolution, it should be possible to exploit the correlations and reduce the level of noise in offline analysis.  This chapter describes a scheme to accomplish that goal and produce an optimal estimate of scintillation energy which takes noise correlations into account.
+A search began for environmental changes which could be correlated to the worsening energy resolution.  In addition to the energy resolution trend, figure~\ref{fig:ResolutionAPDNoiseComparison} overlays a trend of the root-mean-square noise on the sum of APD waveforms, and we can immediately see that the overall energy resolution is closely tied to electronic noise on the summed APD channels.
 
-It is worth noting that in fact there are a number of different qualitative approaches to reducing the noise levels in the scintillation channel.  We will refer to ``passive" approaches as those in which components of our signals are weighted based on their relative signal-to-noise content.  ``Active" approaches, by contrast, will be classified as those which attempt to improve the signal-to-noise content of the waveforms.  We identify the following three types of denoising:
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{APDNoisePowerSpectrum.png}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Coherent and incoherent noise power spectra for a sample set of APD channels without signal shaping.  The coherent noise power spectrum is measured by adding together waveforms from different channels and computing a power spectrum; the incoherent noise power spectrum is measured by computing power spectra for each channel individually and adding them together~\cite{ElectronicsUpgradeReport}.}
+\label{fig:APDNoisePowerSpectrum}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+The design goal of EXO-200 was for individual APD channels to have root-mean-square noise levels of 2000 electrons, and this goal was met~\cite{ElectronicsUpgradeReport}.  However, rather than observing the noise on summed APD channels increase proportionally to the square root of the number of channels, the summed APD noise is roughly two to three times higher than projected.  Figure~\ref{fig:APDNoisePowerSpectrum} compares the power spectrum of the summed APD waveforms to the sum of power spectra of individual APD waveforms; the power spectrum of the sum is 2-3 times higher than the sum of power spectra.  These observations indicate that the phases of the noise frequency components on different channels are positively correlated, leading to a worse impact on energy resolution than the same level of uncorrelated noise would give.
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth,clip=true,trim=1mm 21mm 91mm 24mm]{Run4705Ev5801_noiseEventDisplay.png}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{APD waveforms from a single event.  No energy deposit occured during this event, so the waveforms represent pure electronic noise.  The horizontal axis indicates time, and the vertical axis indicates channel number; colors ranging from blue to red indicate the baseline-subtracted waveform magnitude.  Vertical streaks are indicative of correlations in noise across channels.}
+\label{fig:EvtDisplay_APDNoise}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+The correlations in noise across channels are visible even by eye.  Figure~\ref{fig:EvtDisplay_APDNoise} shows a single noise event from the detector taken on January 30, 2013, when noise levels were near their highest.  The horizontal axis represents time, the vertical axis represents channel number, and color indicates the magnitude of the baseline-subtracted waveform.  If noise on different channels were uncorrelated, we should see no relation between the noise on different horizontal rows (channels) of the plot.  Instead, vertical streaks can be seen which indicate noise which is in phase across multiple channels.
+
+The observation that noise is correlated across channels has provided an important clue to the origin of the noise, and investigations led to the discovery that switching power supplies and a switched voltage regulator introduce noise into the electronics; these are magnified by a ground loop in the electronics and a pre-amplifier design which is not optimized to reject noise in its power supply.  Efforts are underway to address these issues in hardware~\cite{ElectronicsUpgradeReport_Dec2013,ElectronicsUpgradeReport_March2014}.
+
+The observation that coherent APD electronic noise is the limiting factor in our energy resolution also implies that we can mitigate this noise in offline analysis.  Although the correlations in noise initially worsen our energy resolution due to their linear scaling with the number of channels, knowledge of these correlations will permit us to take advantage of the redundancy in the noise and reduce its overall magnitude.  By observing that the majority of our APD noise is correlated, we have learned that we can eliminate the majority of our APD noise in offline analysis and improve the quality of data which has already been taken.  Efforts to denoise the data in this way have been made by many members of the EXO collaboration; here we describe the success of one of these denoising approaches.
+
+Although the previous discussion emphasizes the electronic noise which induces time variations in our energy resolution, we note that this is not the only source of noise in APD waveforms.  The types of noise which will be considered in the present work are:
+\begin{itemize}
+\item Electronic noise.  More generally, we consider collectively additive noise which is uncorrelated with pulses.  APD dark current is another possible source of such noise.
+\item Fluctuations in photon collection efficiency.
+\item Fluctuations in APD gain.
+\end{itemize}
+The last two will sometimes collectively be described as Poissonian noise because they each will introduce a variance term which is roughly linear in the energy of the event.
+
+We note that the electronic noise will scale linearly with the number of channels used, in the case where it is dominated by coherent noise; by contrast, Poissonian noise will decrease proportionally to the square root of the number of channels used, in the case where all channels are expected to have similar mean photon collection and gain.  Thus, there are competing forces to form our energy estimates from a small number of channels to minimize the electronic noise and from a large number of channels to minimize the Poissonian noise.  Finding the optimal balance between these two extremes will be one of the challenges of denoising.
+
+The energy estimator which we derive in this chapter is an optimal linear estimator, and we do not attempt to control how it produces its estimates.  However, we still can identify a number of qualitative approaches to reducing the noise levels in the scintillation channel.  We refer to ``passive" approaches as those in which components of our waveforms are weighted based on their relative signal-to-noise content.  ``Active" approaches, by contrast, are classified as those which attempt to improve the signal-to-noise content of the waveforms.  We identify the following three types of denoising:
 \begin{description}
 \item[Frequency weighting] \hfill \\
-On a given channel signal, weight more heavily the frequency components which contain larger signal-to-noise ratio.  This passive denoising scheme requires knowledge of the power spectra of the signal and the noise.
+On a given channel waveform, weight more heavily the frequency components which contain larger signal-to-noise ratio.  This passive denoising scheme requires knowledge of the power spectra of the signal and the noise.
 
 \item[Channel weighting] \hfill \\
-Different channels may have differing levels of noise, so some may generally have higher-quality signals.  More importantly, though, the amount of signal on a given channel depends strongly on the proximity of the APD gang to the source of scintillation within the detector.  This passive denoising scheme therefore allows us to weight more heavily the channels which have more scintillation, provided we can identify these weights on an event-by-event basis.  This requires knowledge of the magnitude of noise on each channel and of the correspondence between event position and signal magnitude on each APD gang. The latter is described by the lightmap, described earlier.
+Different channels may have differing levels of noise, so some may generally have lower signal-to-noise ratios.  More importantly, though, the pulse magnitude on a given channel depends strongly on the proximity of the APD gang to the source of scintillation within the detector.  This passive denoising scheme therefore consists of weighting more heavily the channels which have larger expected pulse magnitudes, as determined on an event-by-event basis.
 
-\item[Noise subtraction] \hfill \\
-This active form of denoising consists of using correlations between noise on multiple channels to produce a better estimate of the noise component of waveforms than each signal taken independently could provide.  To accomplish this, we require detailed information about the pairwise noise correlations across channels at each frequency.
+\item[Noise cancellation] \hfill \\
+This active form of denoising consists of using correlations between noise on multiple channels to produce a better estimate of the noise component of waveforms than each waveform taken independently could provide.  To accomplish this, we require detailed information about the pairwise noise correlations across channels at each frequency.
 \end{description}
 
-In the following, we describe a general linear operator on the APD signals which in principle can accomplish each of these forms of denoising, assuming that all of the necessary inputs are available. By identifying the parameters for that linear operator which are optimal, we can be confident that the denoising operator will accomplish all three forms of denoising described above.
+Section~\ref{sec:DenoisingNotationSetup} specifies the mathematical framework for denoising.  This framework is general enough to include all of the features described in this section.
 
-\section{Setup}\label{sec:DenoisingNotationSetup}
+\section{Notational Conventions and External Input}\label{sec:DenoisingNotationSetup}
 
-We first establish a number of notational conventions:
+In this section, we first establish a set of notational conventions which will clarify the mathematics of this chapter.  We then describe the overarching framework in which denoising will take place, taking care that the framework is general enough to include all of the qualitative features described in section~\ref{sec:WhatIsDenoising}.
+
+Throughout this chapter we use the following notational conventions:
 \begin{itemize}
-\item $i$, $j$ will represent indices over APD channels.
-\item $a$, $b$, $c$ will represent indices of signals in an event.
-\item $\tau$ will represent the time indices of a discrete waveform; $t_a$ represents the calendar time of a signal $a$.
+\item $i$, $j$ will represent indices over APD channels (or equivalently, APD gangs).
+\item $a$, $b$, $c$ will represent indices of scintillation clusters in an event; a scintillation cluster is a set of simultaneous energy deposits which may occur at multiple locations.
+\item $\tau$ will represent the time indices of a discrete-time waveform; $t_a$ represents the calendar time of a scintillation deposit $a$.
 \item $f$, $g$ will represent the frequency indices of Fourier-transformed waveforms.
+\item $\delta_{ij}$ is the Kronecker delta, equal to 1 if $i = j$ and 0 otherwise.
 \item For a waveform $*[\tau]$, we will represent the discrete Fourier transform of that waveform with $\widetilde{*}[f]$, where the particular convention used to evaluate the Fourier transform is not significant.
 \item For a Fourier-transformed waveform $\widetilde{*}[f]$, we denote the real and imaginary parts of that waveform by $\widetilde{*}^R[f]$ and $\widetilde{*}^I[f]$, respectively.
-\item For an unknown parameter $*$, the symbol $\widehat{*}$ will identify an estimator for $*$.
-\item For an expression $*$ containing random variables, $\left<*\right>$ is the expectation value of $*$.
+\item For an unknown parameter $p$, the symbol $\widehat{p}$ will identify an estimator for $p$.
+\item For an expression $f(\cdot)$ containing random variables, $\left<f(\cdot)\right>$ is the expectation value of $f(\cdot)$.  Here the expectation value will be meant in a frequentist sense: if we could repeat the experiment of generating the same number of initial photons in the same places, $\left<f(\cdot)\right>$ would be the average value of $f(\cdot)$ from many trials of this hypothetical experiment.  The expectation value of $f(\cdot)$ conditional on the value of some random variable X is written $\left<f(\cdot) \middle\vert X\right>$.
+\item When a bare index appears on both sides of an equation, the equation holds for all possible values of that index; for example, $f_i(\cdot) = g_i(\cdot)$ would mean that for all possible indices $i$ the equation holds.
+\item Einstein notation is not used; all summations are written explicitly.
 \end{itemize}
 
-We describe the data as a collection of discretely sampled waveforms, $X_i[\tau]$.  We assume that all signal times and shapes are already known, so we can model the waveforms by $X_i[\tau] = \sum_a M_{ia}Y_{ia}[\tau] + N_i[\tau] + b_i$, where $Y$ is the shape of signal $a$ on channel $i$, $M$ is the magnitude of that signal, and $N$ and $b$ represent the electronic noise and baseline, respectively, of the channel.
-
-To break the degeneracy between $M$ and $Y$, we choose to fix the magnitude of the template signal $Y$.  We choose to require that the signal $Y$ has a magnitude of one, as described in figure~\ref{fig:SampleAPDTemplates}.  We assume that the expected magnitude of a signal on channel $i$ from a single-site $2615$-keV deposit is known, and is characterized as a function $L_i(\vec{x}, t)$ of the deposit position $\vec{x}$ and calendar time $t$.  The exact methods for measuring $L_i(\vec{x}, t)$ will be described in chapter~\ref{ch:Lightmap}.  In cases where a multi-site event deposits energy in multiple locations, we use the charge information to estimate the energy deposited in each location; the estimated lightmap yield from such an event will be a weighted sum:
-\begin{equation}
-L_i^{MS}(\vec{x}_1, \dots, \vec{x}_{n_{max}}, t) = \frac{\sum_n E_n^{charge} L_i(\vec{x}_n, t)}{\sum_n E_n^{charge}}.
+We describe the data as a collection of discretely sampled waveforms, $X_i[\tau]$.  We assume that all pulse times and shapes are already known, and only their magnitudes need to be extracted; so we can model the waveforms by
+\begin{equation}\label{eqn:TimeDomainModelEquation}
+X_i[\tau] = \sum_a M_{ia}Y_{ia}[\tau] + N_i[\tau] + b_i,
 \end{equation}
-For notational simplicity, we will still characterize the expected yield on a gang $i$ from a multi-site event as $L_i(\vec{x}, t)$; in practice it will always be clear how to compute the expected yields for any event from this function.  We can thereby characterize the expected yields $M_{ia}$ from an event with energy $E_a$ as:
-\begin{equation}
-\left< M_{ia} \right> = L_i(\vec{x}_a, t_a) E_a.
-\end{equation}
+where $Y_{ia}[\tau]$ is the template function of the pulse caused by scintillation cluster $a$ on channel $i$, $M_{ia}$ is the unknown magnitude of that pulse, and $N_i[\tau]$ and $b_i$ represent the electronic noise and baseline, respectively, of the channel.
 
 \begin{figure}
 \begin{center}
@@ -92,67 +128,95 @@ For notational simplicity, we will still characterize the expected yield on a ga
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-Noise correlations will be much simpler in frequency space, so we take the Fourier transform and drop the zero-frequency component to obtain
+To break the degeneracy between $M$ and $Y$ we must fix the magnitude of the template function $Y$.  We choose to require that the function $Y$ has a baseline of zero and a peak magnitude of one, as illustrated in figure~\ref{fig:SampleAPDTemplates}.
+
+The magnitude of a pulse is a random variable which depends on both the energy of the scintillation cluster and on random fluctuations detailed in section~\ref{sec:DescriptionOfPhotonNoise}.  We assume that the expected magnitude $\left<M_{ia}\right>$ of a pulse on channel $i$ from a single-site $2615$-keV deposit is known, and is characterized as a function $L_i(\vec{x}_a, t_a)$ of the deposit position $\vec{x}_a$ and calendar time $t_a$.  We can thereby characterize the expected yields $M_{ia}$ from a scintillation cluster with energy $E_a$ as:
 \begin{equation}
+\left< M_{ia} \right> = L_i(\vec{x}_a, t_a) E_a.
+\end{equation}
+The exact methods for measuring $L_i(\vec{x}, t)$ will be described in chapter~\ref{ch:Lightmap}.
+
+In cases where a multi-site scintillation cluster deposits energy in multiple locations, we use the charge information to estimate the energy deposited in each location; the estimated lightmap yield $L_i^{MS}$ from a multi-site scintillation cluster will be a weighted sum:
+\begin{equation}
+L_i^{MS}(\vec{x}_1, \dots, \vec{x}_{n_{max}}, t) = \frac{\sum_n E_n^{charge} L_i(\vec{x}_n, t)}{\sum_n E_n^{charge}},
+\end{equation}
+where the index $n$ ranges over the charge clusters associated with this scintillation cluster.  For notational simplicity, we will still write the expected yield on a channel $i$ from a multi-site scintillation cluster as $L_i(\vec{x}, t)$; in practice it will always be clear how to compute the expected yields for any scintillation cluster from this function.
+
+For describing the electronic noise, it is much simpler to characterize its properties in frequency space, so we take the Fourier transform of equation~\ref{eqn:TimeDomainModelEquation} and drop the zero-frequency component (which only serves as a measure of the baseline $b_i$) to obtain
+\begin{equation}\label{FrequencyDomainModelEquation}
 \widetilde{X}_i[f] = \sum_a M_{ia}\widetilde{Y}_{ia}[f] + \widetilde{N}_i[f].
 \end{equation}
-As with the lightmap, we will assume that all correlations in the noise, of the form
-\begin{subequations}\begin{align}
-&\left< \widetilde{N}^R_i[f]\widetilde{N}^R_j[g] \right> \\
-&\left< \widetilde{N}^R_i[f]\widetilde{N}^I_j[g] \right> \\
-&\left< \widetilde{N}^I_i[f]\widetilde{N}^R_j[g] \right> \\
-&\left< \widetilde{N}^I_i[f]\widetilde{N}^I_j[g] \right>,
+We characterize the electronic noise by its second moments.  It will be computationally useful to decompose complex-valued numbers into their rectangular coordinates, so our characterization of the electronic noise should include the expectation values of:
+\begin{subequations}\label{eq:FirstStatementOfNoiseCorrelations}\begin{align}
+&\left< \widetilde{N}^R_i[f]\widetilde{N}^R_j[f] \right> \\
+&\left< \widetilde{N}^R_i[f]\widetilde{N}^I_j[f] \right> \\
+&\left< \widetilde{N}^I_i[f]\widetilde{N}^R_j[f] \right> \\
+&\left< \widetilde{N}^I_i[f]\widetilde{N}^I_j[f] \right>,
 \end{align}\end{subequations}
-are known; our means of measuring these correlations will be described in chapter~\ref{ch:NoiseMeasurements}.
+for all pairs $i$, $j$ of APD channels and all non-zero frequency components $f$.  Correlations between noise in different frequencies, $\left<\widetilde{N}_i[f]\widetilde{N}_j[g]\right>$ where $f \ne g$, are always equal to zero.  The measurement of these correlations will be described in chapter~\ref{ch:NoiseMeasurements}; this chapter will simply presume that they are known.
 
-\section{The Signal Model}
+\section{APD Noise Model: the Photon Perspective}\label{sec:DescriptionOfPhotonNoise}
 
-It is important to characterize the response of the APDs to energy deposits in EXO-200.  This requires us to understand the signal amplification of the detector at each physical stage, as well as the noise introduced by each of these processes.  We will describe both in detail here.
+In this section we describe a model for the Poissonian noise which comes from fluctuations in photon collection and APD gain.  The model is constructed from a physical understanding of the APDs, and includes a step-by-step breakdown of where noise is introduced at each stage of the light collection process.  For reference, the reader is referred to section~\ref{sec:DetectorReadout} which describes the readout process, including the operation of APDs.
 
-\subsection{APD Noise}\label{sec:DescriptionOfPhotonNoise}
+We define $P_a^{(0)}$ to be the initial number of photons generated by scintillation cluster $a$; this parameter is an unknown non-random parameter.  Subsequent steps in the readout process will result in $P_{ia}^{(n)}$ quanta (photons, electron-hole pairs, or electrons) on channel $i$, where $n$ indicates the step of the readout process; this quantity is a function of $P_a^{(0)}$ and also incorporate the randomness of photon collection and gain fluctuations, so $P_{ia}^{(n)}$ is a random parameter whose distribution reflects the unknown non-random parameter $P_a^{(0)}$.  We now describe the readout stages.
 
-We assume that there are two sources of noise in this model.  First, the electronic noise $N_i[\tau]$ is assumed to be random.  We require that noise with different frequencies is uncorrelated:
-\begin{equation}\label{eq:FirstStatementOfNoiseCorrelations}
-\left< \widetilde{N}_i[f] \widetilde{N}_j[g] \right> = 0 \text{~when~} f \ne g.
-\end{equation}
-The noise correlations $\left< \widetilde{N}_i[f] \widetilde{N}_j[f] \right>$ are assumed to be known; our means for measuring them are described in chapter~\ref{ch:NoiseMeasurements}.
+First, each APD gang $i$ has some number $P^{(1)}_{ia}$ of photons which reach its active surface.  The mean fraction of photons reaching a particular gang $i$ from position $\vec{x}_a$ is written $f_i(\vec{x}_a)$ and is assumed to be known; however, the initial paths of the optical photons emitted from the source, their trajectories through the xenon, and their success in reflecting off of teflon surfaces are all random, so $P^{(1)}_{ia}$ is a Poisson-distributed random variable with mean $f_i(\vec{x}_a)P^{(0)}_a$.  A typical $\beta\beta 0\nu$ event may deposit up to $\sim 1000$ photons on a nearby APD gang, resulting in roughly $3\%$ uncertainty from photon statistics; for a deposit in the bulk of the xenon, individual APD gangs may collect only one-tenth of this number of photons, resulting in closer to $10\%$ uncertainty due to photon statistics on the nearest APD gang.  Thus, we find that the noise on a single APD channel due to photon collection fluctuations may be quite significant.
 
-The second random variable will be the magnitude of the signal itself, $M_{ia}$.  When an energetic decay occurs in the bulk of the detector, it creates some number of photons.  We will denote the number of photons created by signal $a$ by $P^{(0)}_a$, and this is the parameter we wish to measure.  However, the magnitude of the signal actually observed on APD channels number of photons actually collected by sensors is a random variable whose distribution depends on $P^{(0)}_a$, and we will now identify the chain of events which produce it.
-
-First, each APD gang $i$ has some number $P^{(1)}_{ia}$ of photons which reach them.  The mean fraction of photons reaching a particular gang $i$ from position $\vec{x}_a$, $f_i(\vec{x}_a)$, is assumed to be known; however, the initial paths of the optical photons emitted from the source, their trajectories through the Xenon, and their success in reflecting off of teflon are all random, so we treat $P^{(1)}_{ia}$ as a Poisson-distributed random variable with mean $f_i(\vec{x}_a)P^{(0)}_a$.  A typical $\beta\beta 0\nu$ event may deposit up to roughly $1000$ photons on a nearby APD gang, resulting in roughly $3\%$ uncertainty from photon statistics; in the bulk of the Xenon, it may be that the largest single APD signal is only one-tenth of this size, resulting in closer to $10\%$ uncertainty due to photon statistics on the nearest APD gang.  Thus, we find that the Poisson noise on a single APD channel may be quite significant.
-
-Additionally, the number of photons reaching different gangs are not uncorrelated; since a photon which reaches gang $i$ cannot deposit on a different gang $j$, $P^{(1)}_{ia}$ and $P^{(1)}_{ja}$ are anticorrelated for different gangs $i \ne j$.  This process is described by a multinomial distribution.  Explicitly, the expectation values of a multinomial distribution:
-\begin{IEEEeqnarray}{cCl}
+Additionally, the numbers of photons reaching different gangs are not uncorrelated; since a photon which reaches gang $i$ cannot deposit on a different gang $j$, $P^{(1)}_{ia}$ and $P^{(1)}_{ja}$ are anticorrelated for different gangs $i \ne j$.  This process is described by a multinomial distribution.  Explicitly, the expectation values of our multinomial distribution are known to be:~\cite{ProbabilityTextbook}
+\begin{IEEEeqnarray}{cCl}\label{eqn:CorrelationsOfP1}
 \left< P^{(1)}_{ia} \right> &=& f_i(\vec{x}_a)P^{(0)}_a \IEEEyesnumber\IEEEyessubnumber\label{eqn:MeanOfP1}\\
 \left< P^{(1)}_{ia} P^{(1)}_{jb} \right> &=& \left< P^{(1)}_{ia} \right> \left< P^{(1)}_{jb} \right> + \left[ f_i(\vec{x}_a)\delta_{ij} - f_i(\vec{x}_a)f_j(\vec{x}_a) \right] P^{(0)}_a \delta_{ab} \IEEEyessubnumber
 \end{IEEEeqnarray}
 
-(As a detail, we should note that the multinomial distribution is an incorrect model in one important respect: photons may reflect off of teflon one or more times on its way to the APD.  Photons incident on the teflon may be absorbed, leading to a reflection efficiency which may be less than one.  Furthermore, it is possible that teflon may be mildly fluorescent at the wavelength of our scintillation, leading to an increase in efficiency for reflection.  As a result, photons which reflect off of teflon experience a combination of variances from each path photons travel and variances in each gain which they undergo.  These conditional variances will always be larger than a simple Poisson distribution would indicate~\cite{ProbabilityTextbook}, so our variance estimate for $P^{(1)}$ is probably an underestimate.)
+(As a detail, we should note that the multinomial distribution is an incorrect model in one important respect: a photon may reflect off of teflon one or more times on its way to the APD.  Photons incident on the teflon may be absorbed, which would lead to a reflection efficiency which is less than one.  Furthermore, it is possible that teflon is be mildly fluorescent at the wavelength of our scintillation, leading to an increase in reflection efficiency.  Combining the variances which come from each segment on a photon's trajectory and the variances from fluctuations in the reflection efficiency of teflon can be done with the conditional variance formula~\cite{ProbabilityTextbook}, but we currently have no estimate of the number of reflections a photon will undergo.  The consequence is that we probably mis-estimate the variance of $P^{(1)}_{ia}$.)
 
-Following the random process associated with photons reaching the APD gangs, there is also randomness associated with signal amplification internally in the APDs.  These processes are described in detail in~\cite{EXOLAAPD}, but we summarize here:
-
-\begin{enumerate}
-\item Scintillation photons arrive at the active layer of the APDs. The energy required to produce one electron-hole pair in silicon is $3.66$ eV, so each incident photon produces roughly $1.9$ electron-hole pairs. We will define $P^{(2)}_{ia}$ to be the number of electron-hole pairs actually produced from $P^{(1)}_{ia}$ incident photons.  The corresponding Fano factor for electrons produced in silicon is roughly $0.1$, meaning that in addition to the uncertainty in $P^{(1)}_{ia}$ which we have already characterized, there is an additional uncorrelated variance in $P^{(2)}_{ia}$ equal to $0.1 \left<P^{(2)}_{ia}\right>$.  The correlations in the parameters $P^{(2)}_{ia}$ are therefore:
-\begin{IEEEeqnarray}{cCl}
-\left< P^{(2)}_{ia} \right> &=& 1.9 \cdot P^{(1)}_{ia} \IEEEyesnumber\IEEEyessubnumber \label{eqn:MeanOfP2}\\
-\left< P^{(2)}_{ia} P^{(2)}_{jb} \right> &=& (1.9)^2\left< P^{(1)}_{ia} P^{(1)}_{jb} \right> + 0.1 \left< P^{(2)}_{ia}\right> \delta_{ij}\delta_{ab} \IEEEyessubnumber \label{eqn:VarOfP2}
+Next, photons which arrive at the active surface of an APD must convert to electron-hole pairs in the silicon semiconductor layer of the APD; see section~\ref{sec:DetectorReadout} for details.  The energy required to produce one electron-hole pair in silicon is $3.66$ eV, so each incident photon produces roughly $1.9$ electron-hole pairs. We will define $P^{(2)}_{ia}$ to be the number of electron-hole pairs actually produced from $P^{(1)}_{ia}$ incident photons.  The Fano factor for electrons produced in silicon is roughly $0.1$, meaning that in addition to the uncertainty in $P^{(1)}_{ia}$ which we have already characterized, there is an additional uncorrelated variance in $P^{(2)}_{ia}$ equal to $0.1 \left<P^{(2)}_{ia}\right>$~\cite{EXOLAAPD}.  The correlations in the parameters $P^{(2)}_{ia}$ are therefore:
+\begin{IEEEeqnarray}{cCl}\label{eqn:CorrelationsOfP2}
+\left< P^{(2)}_{ia} \middle\vert P^{(1)}_{ia}\right> &=& 1.9 \cdot P^{(1)}_{ia} \IEEEyesnumber\IEEEyessubnumber \label{eqn:MeanOfP2}\\
+\left< P^{(2)}_{ia} P^{(2)}_{jb} \middle\vert P^{(1)}_{ia}, P^{(1)}_{jb} \right> &=& (1.9)^2\cdot P^{(1)}_{ia} P^{(1)}_{jb}  + 0.1 \cdot 1.9 \cdot P^{(1)}_{ia} \delta_{ij}\delta_{ab} \IEEEyessubnumber \label{eqn:VarOfP2}
 \end{IEEEeqnarray}
-\item Electron-hole pairs are then amplified by an avalanche process inside the APDs.  The magnitude of this gain is APD-dependent, generally on the order of $200-300$, and can be identified by a time-dependent quantity $G^P_i(t)$; we will call the number of output electrons $P^{(3)}_{ia}$.  In addition to amplification of existing noise in $P^{(2)}_{ia}$, two additional source of noise are introduced.  First, there is statistical variance in the amplification experienced by each electron due to the randomness of the avalanche process.  This variance is dependent on many factors, including the gain, and scales like the square root of the number of electrons; we define the variance on the gain experienced by a single electron as $\sigma^2_{G_i}(t)$.  From~\cite{EXOLAAPD}, $\sigma^2_{G_i}(t)$ is approximately equal to $\left(G^P_i(t)\right)^2$ when $G^P_i(t)=100$; as a result, we approximate $\sigma^2_{G_i}(t) \approx \left(G^P_i(t)\right)^2$.  Second, there are gain non-uniformities in the diode volume, which contribute variance proportional to the square of the number of initial electron-hole pairs; we will identify the proportionality constant as $\sigma^2_{NU}$, which may depend on time and APD gang.  The magnitude of this uncertainty is not well-known, but may be significant.  Our current code base treats $\sigma^2_{NU}$ as zero; however, future analyses will likely attempt to estimate it, and the derivation which follows will retain it as an aid to that anticipated work.  The correlations in the parameters $P^{(3)}_{ia}$ are therefore:
-\begin{IEEEeqnarray}{cCl}
-\left< P^{(3)}_{ia} \right> &=& G^P_i(t_a)P^{(2)}_{ia} \IEEEyesnumber\IEEEyessubnumber \label{eqn:MeanOfP3}\\
-\left< P^{(3)}_{ia} P^{(3)}_{jb} \right> &=& G^P_i(t_a)G^P_j(t_b) \left< P^{(2)}_{ia} P^{(2)}_{jb} \right> + \left[P^{(2)}_{ia}\sigma^2_{G_i}(t_a) + \left(P^{(2)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab} \nonumber \\* \IEEEyessubnumber\label{eqn:VarOfP3}
+
+Electron-hole pairs are then amplified by an avalanche process inside the APDs.  The magnitude of this gain is APD-dependent, generally on the order of $200-300$, and can be identified by a time-dependent quantity $G^D_i(t)$ (where $D$ stands for diode); we will call the number of output electrons $P^{(3)}_{ia}$.  In addition to amplification of existing noise in $P^{(2)}_{ia}$, two additional source of noise are introduced:
+\begin{itemize}
+\item First, there is statistical variance in the amplification experienced by each electron due to the randomness of the avalanche process.  This variance is dependent on many factors, including the gain, and scales linearly with the number of electrons; we define the variance on the gain experienced by a single electron on channel $i$ as $\sigma^2_{G_i}(t)$.  From~\cite{EXOLAAPD}, $\sigma^2_{G_i}(t)$ is approximately equal to $\left(G^D_i(t)\right)^2$ when $G^D_i(t)=100$; as a result, we approximate $\sigma^2_{G_i}(t) \approx \left(G^D_i(t)\right)^2$.
+\item Second, there are gain non-uniformities in the diode volume, which contribute variance proportional to the square of the number of initial electron-hole pairs; we will identify the proportionality constant as $\sigma^2_{NU}$, which may depend on time and APD gang.  The magnitude of this uncertainty is not well-known, but may be significant.  In particular, the ganging together of APDs means that a single channel is a sum of pulses which have been exposed to six or seven different gain factors from the different APDs in that gang; the diameter of an APD gang is 58 mm~\cite{detectorPartI}, and gain non-uniformity is expected to be a significant factor when photons deposit preferentially on one portion of that area.  Our current code base treats $\sigma^2_{NU}$ as zero; however, future analyses will likely attempt to estimate it, and the derivation which follows retains it as an aid to that anticipated work.
+\end{itemize}
+These fluctuations are not correlated across channels, so their variances are multiplied by $\delta_{ij}\delta_{ab}$ to ensure they only contribute to variance terms and not covariance terms.  The correlations in the parameters $P^{(3)}_{ia}$ are therefore:
+\begin{IEEEeqnarray}{cCl}\label{eqn:CorrelationsOfP3}
+\left< P^{(3)}_{ia} \middle\vert P^{(2)}_{ia}\right> &=& G^D_i(t_a)P^{(2)}_{ia} \IEEEyesnumber\IEEEyessubnumber \label{eqn:MeanOfP3}\\
+\left< P^{(3)}_{ia} P^{(3)}_{jb} \middle\vert P^{(2)}_{ia}, P^{(2)}_{jb}\right> &=& G^D_i(t_a)G^D_j(t_b) P^{(2)}_{ia} P^{(2)}_{jb} + \left[P^{(2)}_{ia}\sigma^2_{G_i}(t_a) + \left(P^{(2)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab} \nonumber \\* \IEEEyessubnumber\label{eqn:VarOfP3}
 \end{IEEEeqnarray}
-\end{enumerate}
 
-\textcolor{red}{My thinking on non-uniformities has evolved a little bit -- clarify in this section why it's such a big deal.}
+Finally, there is amplification $G^E_i(t)$ associated with the electronics of the APDs which is dependent on time and channel.This includes preamplifier gain, shaper gain, gain associated with the shaping times, and conversion from voltage to ADC counts.  We assume that this gain does not suffer any fluctuations, so no new variance is produced.  The output from this amplification is a waveform in ADC counts, so we can link it to the magnitude variable $M_{ia}$ of equation~\ref{FrequencyDomainModelEquation} by stating that:
+\begin{IEEEeqnarray}{cCl}\label{eqn:DefnOfMFromP3}
+\left<M_{ia} \middle\vert P^{(3)}_{ia}\right> &=& G^{E}_i(t_a) P^{(3)}_{ia} \IEEEyesnumber\IEEEyessubnumber\\
+\left<M_{ia}M_{jb} \middle\vert P^{(3)}_{ia}, P^{(3)}_{jb}\right> &=& G^{E}_i(t_a)G^E_j(t_b) P^{(3)}_{ia} P^{(3)}_{jb}. \IEEEyessubnumber
+\end{IEEEeqnarray}
+Although we assume that no noise correlated with pulses is introduced during this stage, there is electronic noise $N_i[\tau]$ introduced at this stage which has been described above and is uncorrelated with the pulses.  Additionally, the APDs can contribute noise in the form of a dark current which is uncorrelated with pulses; this is inseparable from the electronic noise, and so we absorb it into our description of $N_i[\tau]$.
 
-Finally, there is amplification
-\begin{equation} \label{eqn:DefnOfMFromP3}
-M_{ia} = G^{E}_i(t) P^{(3)}_{ia}
+Equations~\ref{eqn:CorrelationsOfP1}, \ref{eqn:CorrelationsOfP2}, \ref{eqn:CorrelationsOfP3}, and \ref{eqn:DefnOfMFromP3} collectively chart the mean and variance of the APD pulse magnitudes at each step of readout and amplification.  We can eliminate the intermediate terms $P^{(1)}_{ia}$, $P^{(2)}_{ia}$, and $P^{(3)}_{ia}$ by substitution and obtain a full description for the first and second moments of the pulse magnitudes $M_{ia}$, $M_{jb}$ depending only on the unknown numbers of emitted photons $P^{(0)}_a$, $P^{(0)}_b$ and not on any random variables:
+\begin{IEEEeqnarray}{cCl}\label{eqn:DefnOfMFromP0}
+\left<M_{ia} \right> &=& 1.9 \cdot G_i(t_a) f_i(\vec{x}_a) P^{(0)}_a \IEEEyesnumber\IEEEyessubnumber\\
+\left<M_{ia}M_{jb}\right> &=& (1.9)^2 \cdot G_i(t_a) G_j(t_b) f_i(\vec{x}_a)f_j(\vec{x}_b) P^{(0)}_a P^{(0)}_b\left(1 + \frac{\sigma_{NU}^2}{\left(G_i^D(t_a)\right)^2} \delta_{ij}\delta_{ab}\right) \nonumber \\
+& & {}- (1.9)^2 \cdot G_i(t_a)G_j(t_a) f_i(\vec{x}_a)f_j(\vec{x}_a)P^{(0)}_a \delta_{ab} \IEEEyessubnumber\\
+& & {}+ (1.9)\cdot G_i(t_a) G^E_i(t_a)f_i(\vec{x}_a) P^{(0)}_a \delta_{ij}\delta_{ab} \left[ (1.9 + 0.1)G_i^D(t_a) + \frac{\sigma^2_{G_i}(t_a)}{G_i^D(t_a)}\right],\nonumber
+\end{IEEEeqnarray}
+where for notational convenience we have defined $G_i(t) = G_i^E(t)G_i^D(t)$ as the product of the electronic and APD gains.
+
+A simple substitution is possible by the property of conditional expectations, which states that the expectation value of a random value $X$ is the same as the result from taking an expectation value of $X$ conditional on $Y$ followed by an expectation value of the result:~\cite{ProbabilityTextbook}
+\begin{equation}
+\left<X \right> = \left< \left< X \middle\vert Y\right>\right>.
 \end{equation}
-associated with the electronics of the APDs which is dependent on time and channel.  This includes preamplifier gain, shaper gain, gain associated with the shaping times, and conversion from voltage to ADC counts.  We assume that no signal-dependent noise is introduced during this stage, but there is constant electronic noise $N_i[\tau]$ which has been described above.  Additionally, the APDs can contribute noise in the form of a dark current which is uncorrelated with signals; this is inseparable from the electronic noise, and so we absorb it into our description of $N_i[\tau]$.
+The choice throughout to convey second moments of random variables with expectation values, as $\left<XY\right>$, rather than with covariances as $\mathrm{cov}(X,Y)$, is for the simplicity this provides; had we chosen to use covariances, combining these separate results would have required the use of the conditional covariance formula:~\cite{ProbabilityTextbook}
+\begin{equation}
+\mathrm{cov}(X,Y) = \left<\mathrm{cov}(X,Y \vert Z)\right> + \mathrm{cov}(\left<X\middle\vert Z\right>, \left<Y\middle\vert Z\right>.
+\end{equation}
+So, simplicity has been gained by avoiding a description of the model in terms of covariances.
 
-\subsection{APD Signals and Noise}
+Equations~\ref{eqn:DefnOfMFromP0} fully characterize the first and second moments of the random variables $M_{ia}$, which are the magnitudes of the observed pulses.  This is a key step in building a full model of the APD noise.  However, the expressions for these first and second moments are in terms of some parameters which are not directly observable.  In particular, we do not have the ability to directly measure the function $f_i(\vec{x})$ which describes the average fraction of photons which arrive on channel $i$ from an initial position $\vec{x}$.  In section~\ref{sec:BridgePhotonsPulses} we will restate equations~\ref{eqn:DefnOfMFromP0} in terms of quantities which are directly observable so that it is usable in practice.
+
+\section{Bridge between Photons and Pulses}\label{sec:BridgePhotonsPulses}
 
 We have characterized the overall gain of the APDs using the lightmap described earlier.  We know that a typical single-site deposit of $2615$ keV at position $\vec{x}$ and time $t$ will produce a signal with expected magnitude $L_i(\vec{x},t)$ on APD channel $i$.  We must now connect this empirical understanding of our APD signals with the physical understanding in terms of photons and electrons described above.
 
@@ -166,18 +230,18 @@ where $E$ is the energy measured in units of $2615$ keV.  We will treat this rel
 
 Ignoring variances for a moment, we can combine equations~\ref{eqn:MeanOfP1}, \ref{eqn:MeanOfP2}, \ref{eqn:MeanOfP3}, \ref{eqn:DefnOfMFromP3}, and \ref{eqn:DefnOfP0} to state that on average,
 \begin{equation}
-M_{ia} = 1.9 \cdot c f_i(\vec{x}_a) G^P_i(t_a) G^E_i(t_a) E_a.
+M_{ia} = 1.9 \cdot c f_i(\vec{x}_a) G^D_i(t_a) G^E_i(t_a) E_a.
 \end{equation}
 We can compare this to our empirical lightmap measurements, which are expressed by $M_{ia} = L_i(\vec{x}_a,t_a) E_a$,
 and we conclude that:
 \begin{equation}
-L_i(\vec{x},t) = 1.9 \cdot c f_i(\vec{x}) G^P_i(t) G^E_i(t).
+L_i(\vec{x},t) = 1.9 \cdot c f_i(\vec{x}) G^D_i(t) G^E_i(t).
 \end{equation}
 
 We recall that it is assumed the lightmap is a separable function, $L_i(\vec{x},t) = R_i(\vec{x})S_i(t)$, and we can provide the two proportionalities:
 \begin{subequations}\begin{align}
 R_i(\vec{x}) &\propto f_i(\vec{x}) \\
-S_i(t) &\propto G^P_i(t) G^E_i(t).
+S_i(t) &\propto G^D_i(t) G^E_i(t).
 \end{align}\end{subequations}
 
 Although $G^E_i(t)$ is in principle time-dependent, due to environmental effects on the APD electronics and occasional replacement of electronics cards for certain channels, precision data on its value is not readily available.  Instead, we use a time-independent estimate
@@ -186,23 +250,23 @@ G^E_i(t) = 1.1 \cdot 10^{-3} \label{eqn:ValueOfGE}
 \end{equation}
 ADC counts per electron emitted from the APD; the uncertainty in this figure is dominated by uncertainty in the preamplifier gains, which are controlled by a $5$ pF capacitor.  Other contributors to the gain include shaper gain of $21.2$ (from a combination of amplification and shaping) and a full-scale digitizer range of $2.5$ volts for $12$-bit digitization.
 
-We have independent measurements of the APD gains $G^P_i(t)$ available from laser calibration runs.  These special runs allow a laser to shine into the detector from a fixed point and with a stable amplitude while the bias voltages on the APDs are varied from an effective unity gain to our standard voltage settings.  Using these measurements, we are able to measure $G^P_i(t)$ at weekly intervals from September 2012 to the present time.  Before September 2012, some less-reliable laser data is available, but results from that data are not readily available as of this writing.
+We have independent measurements of the APD gains $G^D_i(t)$ available from laser calibration runs.  These special runs allow a laser to shine into the detector from a fixed point and with a stable amplitude while the bias voltages on the APDs are varied from an effective unity gain to our standard voltage settings.  Using these measurements, we are able to measure $G^D_i(t)$ at weekly intervals from September 2012 to the present time.  Before September 2012, some less-reliable laser data is available, but results from that data are not readily available as of this writing.
 
-It would be possible, and should be a goal for future improvements, to make use of this full range of laser data.  However, the laser data provides a less uniform history of APD gains over the full data-taking window of EXO-200 from September 2011 to November 2013, and it is much easier to track time-dependent behavior from Thorium source data which have been collected regularly throughout that period.  As a result, a compromise is used to characterize $G^P_i(t)$.  One particular laser run, run 4540 (taken on December 13, 2012), is used to fix $G^P_i(t_{4540})$, and the function is extrapolated using Thorium source data with:
+It would be possible, and should be a goal for future improvements, to make use of this full range of laser data.  However, the laser data provides a less uniform history of APD gains over the full data-taking window of EXO-200 from September 2011 to November 2013, and it is much easier to track time-dependent behavior from Thorium source data which have been collected regularly throughout that period.  As a result, a compromise is used to characterize $G^D_i(t)$.  One particular laser run, run 4540 (taken on December 13, 2012), is used to fix $G^D_i(t_{4540})$, and the function is extrapolated using Thorium source data with:
 \begin{equation}
-G^P_i(t) \approx G^P_i(t_{4540}) \cdot S_i(t)/S_i(t_{4540}).
+G^D_i(t) \approx G^D_i(t_{4540}) \cdot S_i(t)/S_i(t_{4540}).
 \end{equation}
-This assumption makes use of the approximation that $G^E_i(t)$ is roughly constant in time, which is probably only accurate to one significant figure; therefore when an electronics change is made to a channel, we can expect that the accuracy of $G^P_i(t)$ is no better than one significant figure.  These results mean that we can also estimate with the same level of accuracy:
+This assumption makes use of the approximation that $G^E_i(t)$ is roughly constant in time, which is probably only accurate to one significant figure; therefore when an electronics change is made to a channel, we can expect that the accuracy of $G^D_i(t)$ is no better than one significant figure.  These results mean that we can also estimate with the same level of accuracy:
 \begin{equation}
-f_i(\vec{x}) \approx \frac{S_i(t_{4540})}{G^P_i(t_{4540})} \cdot \frac{R_i(\vec{x})}{1.9 \cdot c G^E_i(t)}.
+f_i(\vec{x}) \approx \frac{S_i(t_{4540})}{G^D_i(t_{4540})} \cdot \frac{R_i(\vec{x})}{1.9 \cdot c G^E_i(t)}.
 \end{equation}
 
 It is then possible to express the full correlations in signal magnitudes in terms of the scintillation energies of deposits as:
 \begin{IEEEeqnarray}{cCl}
 \left< M_{ia} \right> &=& L_i(\vec{x}_a,t_a) E_a \IEEEyesnumber\IEEEyessubnumber \\
-\left< M_{ia} M_{jb} \right> &=& L_i(\vec{x}_a,t_a)L_j(\vec{x}_b,t_b) E_a E_b \left[1 + \frac{\sigma^2_{NU}}{\left(G^P_i(t)\right)^2} \delta_{ij}\delta_{ab} \right] \nonumber \\
+\left< M_{ia} M_{jb} \right> &=& L_i(\vec{x}_a,t_a)L_j(\vec{x}_b,t_b) E_a E_b \left[1 + \frac{\sigma^2_{NU}}{\left(G^D_i(t)\right)^2} \delta_{ij}\delta_{ab} \right] \nonumber \\
 && {} - L_i(\vec{x}_a,t_a) L_j(\vec{x}_a,t_a) E_a \delta_{ab}/c \nonumber \\
-&& {} + L_i(\vec{x}_a,t_a) G^E_i(t) E_a \delta_{ij} \delta_{ab} \left[\left(0.1 + 1.9\right)G^P_i(t) + \frac{\sigma^2_{G_i}(t)}{G^P_i(t)}\right]. \IEEEyessubnumber\label{eqn:MMcorrelations}
+&& {} + L_i(\vec{x}_a,t_a) G^E_i(t) E_a \delta_{ij} \delta_{ab} \left[\left(0.1 + 1.9\right)G^D_i(t) + \frac{\sigma^2_{G_i}(t)}{G^D_i(t)}\right]. \IEEEyessubnumber\label{eqn:MMcorrelations}
 \end{IEEEeqnarray}
 \begin{comment}
 THE FOLLOWING IS MY WORK IN EXPANDING THE M_M CORRELATIONS.
@@ -210,104 +274,104 @@ IF NEEDED, IT CAN BE UNCOMMENTED AND IS VALID LATEX CODE.
 
 \[ \left< M_{ia} M_{jb} \right> = G^E_i(t) G^E_j(t) \left<P^{(3)}_{ia}P^{(3)}_{jb} \right> \]
 
-\[ \left< M_{ia} M_{jb} \right> = G^E_i(t) G^E_j(t) \left( G^P_i(t)G^P_j(t) \left< P^{(2)}_{ia} P^{(2)}_{jb} \right> + \left[P^{(2)}_{ia}\sigma^2_{G_i}(t) + \left(P^{(2)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab}\right)\]
+\[ \left< M_{ia} M_{jb} \right> = G^E_i(t) G^E_j(t) \left( G^D_i(t)G^D_j(t) \left< P^{(2)}_{ia} P^{(2)}_{jb} \right> + \left[P^{(2)}_{ia}\sigma^2_{G_i}(t) + \left(P^{(2)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab}\right)\]
 
 \begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) \left< P^{(2)}_{ia} P^{(2)}_{jb} \right> \\
+\left< M_{ia} M_{jb} \right> ={}& G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) \left< P^{(2)}_{ia} P^{(2)}_{jb} \right> \\
  & + G^E_i(t) G^E_j(t) \left[P^{(2)}_{ia}\sigma^2_{G_i}(t) + \left(P^{(2)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab}
 \end{split}\end{equation*}
 
 \begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) \left( (1.9)^2\left< P^{(1)}_{ia} P^{(1)}_{jb} \right> + 0.1 \left< P^{(2)}_{ia}\right> \delta_{ij}\delta_{ab} \right) \\
+\left< M_{ia} M_{jb} \right> ={}& G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) \left( (1.9)^2\left< P^{(1)}_{ia} P^{(1)}_{jb} \right> + 0.1 \left< P^{(2)}_{ia}\right> \delta_{ij}\delta_{ab} \right) \\
  & + G^E_i(t) G^E_j(t) \left[1.9 \cdot P^{(1)}_{ia}\sigma^2_{G_i}(t) + (1.9)^2 \left(P^{(1)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab}
 \end{split}\end{equation*}
 
 \begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) \left< P^{(1)}_{ia} P^{(1)}_{jb} \right> \\
-& + 0.1 \cdot 1.9 \cdot G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) P^{(1)}_{ia} \delta_{ij}\delta_{ab} \\
+\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) \left< P^{(1)}_{ia} P^{(1)}_{jb} \right> \\
+& + 0.1 \cdot 1.9 \cdot G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) P^{(1)}_{ia} \delta_{ij}\delta_{ab} \\
  & + G^E_i(t) G^E_j(t) \left[1.9 \cdot P^{(1)}_{ia}\sigma^2_{G_i}(t) + (1.9)^2 \left(P^{(1)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab}
 \end{split}\end{equation*}
 
 \begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) \left< P^{(1)}_{ia} P^{(1)}_{jb} \right> \\
- & + G^E_i(t) G^E_j(t) \left[1.9 \cdot P^{(1)}_{ia}\sigma^2_{G_i}(t) + (1.9)^2 \left(P^{(1)}_{ia}\right)^2\sigma^2_{NU} + 0.1 \cdot 1.9 \cdot G^P_i(t)G^P_j(t) P^{(1)}_{ia}\right]\delta_{ij}\delta_{ab}
+\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) \left< P^{(1)}_{ia} P^{(1)}_{jb} \right> \\
+ & + G^E_i(t) G^E_j(t) \left[1.9 \cdot P^{(1)}_{ia}\sigma^2_{G_i}(t) + (1.9)^2 \left(P^{(1)}_{ia}\right)^2\sigma^2_{NU} + 0.1 \cdot 1.9 \cdot G^D_i(t)G^D_j(t) P^{(1)}_{ia}\right]\delta_{ij}\delta_{ab}
 \end{split}\end{equation*}
 
 \begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) \left< P^{(1)}_{ia} P^{(1)}_{jb} \right> \\
- & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot P^{(1)}_{ia} \sigma^2_{NU} + 0.1 \cdot G^P_i(t)G^P_j(t) \right] \left(G^E_i(t)\right)^2 P^{(1)}_{ia} \delta_{ij}\delta_{ab}
+\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) \left< P^{(1)}_{ia} P^{(1)}_{jb} \right> \\
+ & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot P^{(1)}_{ia} \sigma^2_{NU} + 0.1 \cdot G^D_i(t)G^D_j(t) \right] \left(G^E_i(t)\right)^2 P^{(1)}_{ia} \delta_{ij}\delta_{ab}
 \end{split}\end{equation*}
 
 \begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) \left< P^{(1)}_{ia} \right> \left< P^{(1)}_{jb} \right> \\
-& + (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t)\left[ f_i(x,y,z)\delta_{ij} - f_i(x,y,z)f_j(x,y,z) \right] P^{(0)}_a \delta_{ab}  \\
- & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot P^{(1)}_{ia} \sigma^2_{NU} + 0.1 \cdot G^P_i(t)G^P_j(t) \right] \left(G^E_i(t)\right)^2 P^{(1)}_{ia} \delta_{ij}\delta_{ab}
+\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) \left< P^{(1)}_{ia} \right> \left< P^{(1)}_{jb} \right> \\
+& + (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t)\left[ f_i(x,y,z)\delta_{ij} - f_i(x,y,z)f_j(x,y,z) \right] P^{(0)}_a \delta_{ab}  \\
+ & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot P^{(1)}_{ia} \sigma^2_{NU} + 0.1 \cdot G^D_i(t)G^D_j(t) \right] \left(G^E_i(t)\right)^2 P^{(1)}_{ia} \delta_{ij}\delta_{ab}
 \end{split}\end{equation*}
 
 \begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) f_i(x,y,z) f_j(x,y,z) \left(P^{(0)}_a\right)^2 \\
-& + (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t)\left[ f_i(x,y,z)\delta_{ij} - f_i(x,y,z)f_j(x,y,z) \right] P^{(0)}_a \delta_{ab}  \\
- & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot f_i(x,y,z) P^{(0)}_a \sigma^2_{NU} + 0.1 \cdot G^P_i(t)G^P_j(t) \right] \left(G^E_i(t)\right)^2 f_i(x,y,z) P^{(0)}_a \delta_{ij}\delta_{ab}
+\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) f_i(x,y,z) f_j(x,y,z) \left(P^{(0)}_a\right)^2 \\
+& + (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t)\left[ f_i(x,y,z)\delta_{ij} - f_i(x,y,z)f_j(x,y,z) \right] P^{(0)}_a \delta_{ab}  \\
+ & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot f_i(x,y,z) P^{(0)}_a \sigma^2_{NU} + 0.1 \cdot G^D_i(t)G^D_j(t) \right] \left(G^E_i(t)\right)^2 f_i(x,y,z) P^{(0)}_a \delta_{ij}\delta_{ab}
 \end{split}\end{equation*}
 
 \begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) f_i(x,y,z) f_j(x,y,z) c^2 E^2_a \\
-& + (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t)\left[ f_i(x,y,z)\delta_{ij} - f_i(x,y,z)f_j(x,y,z) \right] c E_a \delta_{ab}  \\
- & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot f_i(x,y,z) c E_a \sigma^2_{NU} + 0.1 \cdot G^P_i(t)G^P_j(t) \right] \left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab}
-\end{split}\end{equation*}
-
-\begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \\
-& + (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) f_i(x,y,z)\delta_{ij} c E_a \delta_{ab}  \\
-& - (1.9)^2 G^E_i(t) G^E_j(t) G^P_i(t)G^P_j(t) f_i(x,y,z)f_j(x,y,z) c E_a \delta_{ab} \\
- & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot f_i(x,y,z) c E_a \sigma^2_{NU} + 0.1 \cdot G^P_i(t)G^P_j(t) \right] \left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab}
+\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) f_i(x,y,z) f_j(x,y,z) c^2 E^2_a \\
+& + (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t)\left[ f_i(x,y,z)\delta_{ij} - f_i(x,y,z)f_j(x,y,z) \right] c E_a \delta_{ab}  \\
+ & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot f_i(x,y,z) c E_a \sigma^2_{NU} + 0.1 \cdot G^D_i(t)G^D_j(t) \right] \left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab}
 \end{split}\end{equation*}
 
 \begin{equation*}\begin{split}
 \left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \\
-& + L_i(x,y,z,t) (1.9)  G^E_i(t) G^P_i(t) \delta_{ij}  E_a \delta_{ab}  \\
-& - L_i(x,y,z,t)     (1.9) G^E_j(t) G^P_j(t) f_j(x,y,z) E_a \delta_{ab} \\
- & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot f_i(x,y,z) c E_a \sigma^2_{NU} + 0.1 \cdot \left(G^P_i(t)\right)^2 \right] \left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab}
+& + (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) f_i(x,y,z)\delta_{ij} c E_a \delta_{ab}  \\
+& - (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) f_i(x,y,z)f_j(x,y,z) c E_a \delta_{ab} \\
+ & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot f_i(x,y,z) c E_a \sigma^2_{NU} + 0.1 \cdot G^D_i(t)G^D_j(t) \right] \left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab}
 \end{split}\end{equation*}
 
 \begin{equation*}\begin{split}
 \left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \\
-& + L_i(x,y,z,t) (1.9)  G^E_i(t) G^P_i(t) E_a \delta_{ij} \delta_{ab}  \\
+& + L_i(x,y,z,t) (1.9)  G^E_i(t) G^D_i(t) \delta_{ij}  E_a \delta_{ab}  \\
+& - L_i(x,y,z,t)     (1.9) G^E_j(t) G^D_j(t) f_j(x,y,z) E_a \delta_{ab} \\
+ & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot f_i(x,y,z) c E_a \sigma^2_{NU} + 0.1 \cdot \left(G^D_i(t)\right)^2 \right] \left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab}
+\end{split}\end{equation*}
+
+\begin{equation*}\begin{split}
+\left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \\
+& + L_i(x,y,z,t) (1.9)  G^E_i(t) G^D_i(t) E_a \delta_{ij} \delta_{ab}  \\
 & - L_i(x,y,z,t) L_j(x,y,z,t) E_a \delta_{ab}/c \\
 & + (1.9)\sigma^2_{G_i}(t)\left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab} \\
 & + (1.9)^2 f_i(x,y,z) c E_a \sigma^2_{NU} \left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab} \\
-& + (1.9) (0.1) \left(G^P_i(t)\right)^2 \left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab}
+& + (1.9) (0.1) \left(G^D_i(t)\right)^2 \left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab}
 \end{split}\end{equation*}
 
 \begin{equation*}\begin{split}
 \left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \\
 & + (1.9)^2 f^2_i(x,y,z) \sigma^2_{NU} \left(G^E_i(t)\right)^2 c^2 E^2_a \delta_{ij}\delta_{ab} \\
 & - L_i(x,y,z,t) L_j(x,y,z,t) E_a \delta_{ab}/c \\
-& + L_i(x,y,z,t) (1.9)  G^E_i(t) G^P_i(t) E_a \delta_{ij} \delta_{ab}  \\
+& + L_i(x,y,z,t) (1.9)  G^E_i(t) G^D_i(t) E_a \delta_{ij} \delta_{ab}  \\
 & + (1.9)\sigma^2_{G_i}(t)\left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab} \\
-& + L_i(x,y,z,t) (0.1) G^P_i(t) G^E_i(t) E_a \delta_{ij}\delta_{ab}
+& + L_i(x,y,z,t) (0.1) G^D_i(t) G^E_i(t) E_a \delta_{ij}\delta_{ab}
 \end{split}\end{equation*}
 
 \begin{equation*}\begin{split}
 \left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \\
-& + L^2_i(x,y,z,t) \sigma^2_{NU} E^2_a \delta_{ij}\delta_{ab}/\left(G^P_i(t)\right)^2 \\
+& + L^2_i(x,y,z,t) \sigma^2_{NU} E^2_a \delta_{ij}\delta_{ab}/\left(G^D_i(t)\right)^2 \\
 & - L_i(x,y,z,t) L_j(x,y,z,t) E_a \delta_{ab}/c \\
-& + L_i(x,y,z,t) (1.9)  G^E_i(t) G^P_i(t) E_a \delta_{ij} \delta_{ab}  \\
-& + L_i(x,y,z,t) \sigma^2_{G_i}(t)G^E_i(t) E_a \delta_{ij}\delta_{ab}/G^P_i(t) \\
-& + L_i(x,y,z,t) (0.1) G^P_i(t) G^E_i(t) E_a \delta_{ij}\delta_{ab}
+& + L_i(x,y,z,t) (1.9)  G^E_i(t) G^D_i(t) E_a \delta_{ij} \delta_{ab}  \\
+& + L_i(x,y,z,t) \sigma^2_{G_i}(t)G^E_i(t) E_a \delta_{ij}\delta_{ab}/G^D_i(t) \\
+& + L_i(x,y,z,t) (0.1) G^D_i(t) G^E_i(t) E_a \delta_{ij}\delta_{ab}
 \end{split}\end{equation*}
 
 \begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \left[1 + \frac{\sigma^2_{NU}}{\left(G^P_i(t)\right)^2} \delta_{ij}\delta_{ab} \right] \\
+\left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \left[1 + \frac{\sigma^2_{NU}}{\left(G^D_i(t)\right)^2} \delta_{ij}\delta_{ab} \right] \\
 & - L_i(x,y,z,t) L_j(x,y,z,t) E_a \delta_{ab}/c \\
-& + L_i(x,y,z,t) \sigma^2_{G_i}(t)G^E_i(t) E_a \delta_{ij}\delta_{ab}/G^P_i(t) \\
-& + L_i(x,y,z,t) (1.9 + 0.1)  G^E_i(t) G^P_i(t) E_a \delta_{ij} \delta_{ab}
+& + L_i(x,y,z,t) \sigma^2_{G_i}(t)G^E_i(t) E_a \delta_{ij}\delta_{ab}/G^D_i(t) \\
+& + L_i(x,y,z,t) (1.9 + 0.1)  G^E_i(t) G^D_i(t) E_a \delta_{ij} \delta_{ab}
 \end{split}\end{equation*}
 
 \begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \left[1 + \frac{\sigma^2_{NU}}{\left(G^P_i(t)\right)^2} \delta_{ij}\delta_{ab} \right] \\
+\left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \left[1 + \frac{\sigma^2_{NU}}{\left(G^D_i(t)\right)^2} \delta_{ij}\delta_{ab} \right] \\
 & - L_i(x,y,z,t) L_j(x,y,z,t) E_a \delta_{ab}/c \\
-& + L_i(x,y,z,t) G^E_i(t) E_a \delta_{ij} \delta_{ab} \left[\left(0.1 + 1.9\right)G^P_i(t) + \frac{\sigma^2_{G_i}(t)}{G^P_i(t)}\right]
+& + L_i(x,y,z,t) G^E_i(t) E_a \delta_{ij} \delta_{ab} \left[\left(0.1 + 1.9\right)G^D_i(t) + \frac{\sigma^2_{G_i}(t)}{G^D_i(t)}\right]
 \end{split}\end{equation*}
 \end{comment}
 
@@ -321,7 +385,7 @@ We combine this with our knowledge of the noise coefficients:
 \end{align}\end{subequations}
 and can claim to now have a complete description of the signals and noise observed in the APD channels.
 
-\section{Derivation}
+\section{Derivation of an Optimal Energy Estimator}\label{sec:DerivationOfEstimator}
 
 It is now possible to specify the optimization criteria for generating an energy estimate from the APD signals.  We wish to identify an energy estimator which is unbiased and has a minimal expected error.  For the problem to remain tractable, we will demand that the operator be linear.  Furthermore, although the Fourier-transformed waveforms $\widetilde{X}_i[f]$ are complex-valued, we will require that the energy estimate be strictly real-valued.
 
@@ -391,8 +455,8 @@ We now proceed with the optimization.  We start by expanding $\epsilon^2_a$:
 &\quad \begin{aligned}
   + \sum_{ifgb} &\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]\left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \cdot \\
   & \begin{aligned}
-    L_i(\vec{x}_b,t_b) E_b \bigg[ &(0.1 + 1.9) G^E_i(t_b) G^P_i(t_b) \\
-    & + \frac{G^E_i(t_b)}{G^P_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t_b)\right)^2} \bigg]
+    L_i(\vec{x}_b,t_b) E_b \bigg[ &(0.1 + 1.9) G^E_i(t_b) G^D_i(t_b) \\
+    & + \frac{G^E_i(t_b)}{G^D_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^D_i(t_b)\right)^2} \bigg]
 \end{aligned} \end{aligned} \\
 %
 & \begin{aligned}
@@ -401,8 +465,8 @@ We now proceed with the optimization.  We start by expanding $\epsilon^2_a$:
 &\quad \begin{aligned}
   + \sum_{ib} &\left( \sum_f \left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]\right)^2 \cdot \\
   & \begin{aligned}
-    L_i(\vec{x}_b,t_b) E_b \bigg[ &(0.1 + 1.9) G^E_i(t_b) G^P_i(t_b) \\
-    & + \frac{G^E_i(t_b)}{G^P_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t_b)\right)^2} \bigg]
+    L_i(\vec{x}_b,t_b) E_b \bigg[ &(0.1 + 1.9) G^E_i(t_b) G^D_i(t_b) \\
+    & + \frac{G^E_i(t_b)}{G^D_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^D_i(t_b)\right)^2} \bigg]
 \end{aligned} \end{aligned} \nonumber \\
 &\quad - \frac{E_a}{c}
 \end{align}
@@ -413,16 +477,16 @@ We are now in a position to evaluate the partial derivatives of $\epsilon^2_a$ w
 &\quad \begin{aligned}
   + 2 \sum_{gb} & E_b\widetilde{Y}_{ib}^R[f] L_i(\vec{x}_b,t_b)\left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \cdot \\
   & \begin{aligned}
-    \bigg[ &(0.1 + 1.9) G^E_i(t_b) G^P_i(t_b) \\
-  & + \frac{G^E_i(t_b)}{G^P_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t_b)\right)^2} \bigg]
+    \bigg[ &(0.1 + 1.9) G^E_i(t_b) G^D_i(t_b) \\
+  & + \frac{G^E_i(t_b)}{G^D_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^D_i(t_b)\right)^2} \bigg]
 \end{aligned} \end{aligned}\\
 %
 \frac{\partial \epsilon^2_a}{\partial B_{ifa}} &= 2 \sum_j \left[ A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\right] \nonumber \\
 &\quad \begin{aligned}
   + 2 \sum_{gb} & E_b\widetilde{Y}_{ib}^I[f] L_i(\vec{x}_b,t_b)\left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \cdot \\
   & \begin{aligned}
-    \bigg[ &(0.1 + 1.9) G^E_i(t_b) G^P_i(t_b) \\
-  & + \frac{G^E_i(t_b)}{G^P_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t_b)\right)^2} \bigg]
+    \bigg[ &(0.1 + 1.9) G^E_i(t_b) G^D_i(t_b) \\
+  & + \frac{G^E_i(t_b)}{G^D_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^D_i(t_b)\right)^2} \bigg]
 \end{aligned} \end{aligned}
 \end{align}\end{subequations}
 
@@ -445,13 +509,13 @@ Denoting the set of Lagrange multipliers for $\epsilon^2_a$ with $\lambda_{ab}$,
 &\sum_j \left[ A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right>\right]\nonumber\\
 &+ \sum_{gb} \begin{aligned}[t]
   & E_b\widetilde{Y}_{ib}^R[f] L_i(\vec{x}_b,t_b)\left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \cdot \\
-  & \left[ (0.1 + 1.9) G^E_i(t_b) G^P_i(t_b) + \frac{G^E_i(t_b)}{G^P_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t_b)\right)^2} \right] \end{aligned} \nonumber \\
+  & \left[ (0.1 + 1.9) G^E_i(t_b) G^D_i(t_b) + \frac{G^E_i(t_b)}{G^D_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^D_i(t_b)\right)^2} \right] \end{aligned} \nonumber \\
 &+ \sum_b \lambda_{ab} \widetilde{Y}^R_{ib}[f] L_i(\vec{x}_b,t_b) = 0 \qquad \qquad \qquad \qquad \quad \text{for each $i$, $f$}\\
 %
 &\sum_j \left[ A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\right]\nonumber\\
 &+ \sum_{gb} \begin{aligned}[t]
   & E_b\widetilde{Y}_{ib}^I[f] L_i(\vec{x}_b,t_b)\left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \cdot \\
-  & \left[ (0.1 + 1.9) G^E_i(t_b) G^P_i(t_b) + \frac{G^E_i(t_b)}{G^P_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t_b)\right)^2} \right] \end{aligned} \nonumber\\
+  & \left[ (0.1 + 1.9) G^E_i(t_b) G^D_i(t_b) + \frac{G^E_i(t_b)}{G^D_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^D_i(t_b)\right)^2} \right] \end{aligned} \nonumber\\
 &+ \sum_b \lambda_{ab} \widetilde{Y}^I_{ib}[f] L_i(\vec{x}_b,t_b) = 0 \qquad \qquad \qquad \qquad \quad \text{for each $i$, $f$}\\
 %
 &\sum_{if}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) = \delta_{ab} \qquad \text{for each $b$}
@@ -460,8 +524,8 @@ Denoting the set of Lagrange multipliers for $\epsilon^2_a$ with $\lambda_{ab}$,
 To simplify the notation, let us define a new function:
 \begin{equation} \label{eqn:DefinitionOfQ}
 q(i,b) := \begin{aligned}[t]
-  \bigg( &(0.1 + 1.9) G^E_i(t_b) G^P_i(t_b) + \frac{G^E_i(t_b)}{G^P_i(t_b)} \sigma^2_{G_i}(t_b)\\
-  &+ L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^P_i(t_b)\right)^2}\bigg)L_i(\vec{x}_b, t_b) E_b
+  \bigg( &(0.1 + 1.9) G^E_i(t_b) G^D_i(t_b) + \frac{G^E_i(t_b)}{G^D_i(t_b)} \sigma^2_{G_i}(t_b)\\
+  &+ L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^D_i(t_b)\right)^2}\bigg)L_i(\vec{x}_b, t_b) E_b
 \end{aligned}
 \end{equation}
 which we note should be strictly positive if measured correctly (because all gains and lightmap values should be strictly positive, and all variances are non-negative).  Using this shorthand, we can re-write our system of equations in the more compact form:
@@ -481,7 +545,7 @@ It is important to note here that energies $E_b$, which we are intending to meas
 
 We can see, then, that some estimate of energy is necessary to know the relative importance of different forms of noise.  But the constraint equation ensures that our estimate will be unbiased regardless of what energy estimates are fed into the system of equations, so we can be confident that it is only a rough estimate of the energy scale which is needed, and not worry that the optimization will be biased to estimate energies similar to the estimates we feed in.  For this purpose, it is sufficient to use the charge-only energy as an estimate of the scintillation-only energy.
 
-\section{Matrix Version}
+\section{Matrix Formulation of Denoising}\label{sec:MatrixFormulationOfDenoising}
 
 Because the system of equations above is linear in $A_{ifa}$ and $B_{ifa}$, we wish to solve it as a matrix equation.  This requires, first, that we choose an ordering of the unknowns; the best ordering will be the one which groups nonzero entries into blocks, since this will allow us to make more efficient use of matrix libraries.  We define:
 \begin{equation}
@@ -582,7 +646,7 @@ The matrix $\mathbf{N}$ is the same as the covariance matrix of the electronic n
 
 We also note the important observation that this matrix is sparse.  Given roughly $1000$ frequency components in our signals, only $0.1\%$ of the entries of $\mathbf{N}$ are non-zero.  And with $70$ APD channels and only a small number of signals we wish to denoise, the combined number of non-zero entries in $\mathbf{P}_1$ and $\mathbf{P}_2$ is easily an order of magnitude less than the number of non-zero entries in $\mathbf{N}$.  As a result, we can conclude that this matrix is extremely sparse, and should ensure that whatever method we use to solve these equations takes advantage of this sparsity.
 
-\section{Preconditioning}
+\section{Preconditioning of the Matrix Formulation}
 
 We have specified a matrix equation which we now wish to solve.  However, it is generally recommended that large matrix equations should not be solved directly.  Instead, it is recommended that the matrix should be preconditioned.  This means that if a matrix equation $\mathbf{A}\vec{x} = \vec{b}$ should be solved, one should first find a matrix $\mathbf{A}'$ which is approximately equal to $\mathbf{A}$ and which is easily invertible.  Finding the right balance between the quality of the approximation $\mathbf{A}' \approx \mathbf{A}$ and the difficulty of computing the inverse $\left(\mathbf{A}'\right)^{-1}$ is more art than science, but we will present here a preconditioning matrix which seems to strike a good balance for this particular system.
 
@@ -712,7 +776,7 @@ Based on these various advantages, it is this system which we attempt to solve r
 \end{align}\end{subequations}
 
 
-\section{Solver}
+\section{Matrix Solver}\label{sec:MatrixSolverAlgorithm}
 
 The matrix $\mathbf{\widetilde{A}}$ for which we attempt to solve will have as many columns as there are signals we wish to denoise within an event; often, this will only be one, and $\mathbf{\widetilde{A}}$ will simply be a column vector.  However, there certainly are many events with multiple scintillation signals; we will also later discuss extended applications of denoising where we may treat events as having additional signals.  In these cases the number of columns may be larger.  In such cases it would be possible to solve for each column of $\mathbf{\widetilde{A}}$ independently, but more efficient to solve the entire system simultaneously.  In this way, information obtained from multiplying the matrix by one column may be exploited to solve the other columns as well, effectively multiplying the benefit from each matrix-multiplication by the number of columns of $\mathbf{\widetilde{A}}$.
 
@@ -747,9 +811,11 @@ Matrix-solving algorithms which handle multiple vectors simultaneously are commo
 
 Since each column of $\mathbf{\widetilde{A}}$ corresponds to one signal we are refitting, the norm of the corresponding column of $\mathbf{R}$ tells us how well we have identified the optimal magnitude estimator for that signal; thus, to test for termination we should evaluate the norm of each column of $\mathbf{R}$, and while any of those norms are above some threshold, the solver must be permitted to continue.  Because our resolution is only on the order of $1\%$, solutions generally need not be very accurate; in practice, we establish reasonable thresholds by plotting resolution against threshold for a small subset of data, and observing when the resolution stops improving.
 
-\section{Implementation}
+\section{Computational Considerations}\label{sec:DenoisingComputationalConsiderations}
 
 Although the previous section described the algorithm used for solving these matrix equations, in practice the processing time required is still significant; combined with the very large number of events which we hope to denoise (hundreds of millions), we still must seek out any possible speed-ups.  There are certain implementation tricks which can be applied with significant impact.  These are described here.
+
+\textcolor{red}{Give a sense of how much computation is used, and that the scale comes from the number of events rather than the complexity of each individual one.}
 
 The majority of non-zero matrix entries comes from the electronic noise matrix $\mathbf{N}$, making it the computational bottleneck of the algorithm.  $\mathbf{N}$ is block-diagonal, as seen in equation~\ref{eqn:DefinitionOfN}; if we assume roughly $70$ APD channels, then the last block of $\mathbf{N}$ will have $70^2$ non-zero entries and all other blocks will have $4\cdot 70^2$ non-zero entries.  With waveforms having $2048$ samples, and ignoring the baseline component, the problem of multiplying a vector by the electronic noise terms thus consists of $1024$ matrix-matrix multiplications, with each left matrix containing roughly $20,000$ non-zero terms and each right matrix consisting of $O(1)$ columns and roughly $150$ rows.  (The number of columns in the right matrix is equal to the number of signals, which may be sometimes $3-5$ or more; however, it is always much smaller than $150$, and describing it as $O(1)$ captures this fact.)
 
@@ -791,7 +857,7 @@ In this section we outline the places where the denoising used for the current p
 \begin{itemize}
 \item The signal variance coming from sources internal to the APDs was not fully understood by this author when denoising was first implemented, and as a result the signal variance is significantly underestimated.  Specifically, in place of equations~\ref{eqn:VarOfP2} and \ref{eqn:VarOfP3} we take
 \begin{equation}
-\left< P^{(3)}_{ia} P^{(3)}_{jb} \right> = (1.9)^2 \cdot G^P_i(t_a)G^P_j(t_b) \left< P^{(1)}_{ia} P^{(1)}_{jb} \right>.
+\left< P^{(3)}_{ia} P^{(3)}_{jb} \right> = (1.9)^2 \cdot G^D_i(t_a)G^D_j(t_b) \left< P^{(1)}_{ia} P^{(1)}_{jb} \right>.
 \end{equation}
 \item We have described with equation~\ref{eqn:ValueOfGE} that the electronic gain is treated as having a constant value of $1.1 \cdot 10^{-3}$ ADC counts per electron emitted from the APDs.  The wires use a similar set of electronics; however, their gain is nominally set to a different value of roughly $6.3 \cdot 10^{-4}$ ADC counts per electron collected on the wires. In the EXO code the two numbers are mistakenly reversed.  As a result, $G^E_i(t)$ was underestimated by almost a factor of two; the effect of this is to overestimate by almost a factor of two the number of photons being deposited on APDs, which again causes us to underestimate the signal variance introduced within the APDs.
 \end{itemize}
@@ -817,7 +883,7 @@ The effect of both of these issues is, loosely speaking, to fool denoising into 
 
 However, neither of these mistakes have any impact on the correctness of the constraints.  As a result, the denoised energy measurements should still be unbiased, even if they have worse variance than necessary.  Results from the use of this data will be described in chapter~\ref{ch:DenoisingResults}.
 
-\section{Future Plans}
+\section{Future Extensions to Denoising}\label{sec:FutureDenoisingExtensions}
 
 As outlined here, denoising is capable of producing optimal estimates of the total energy emitted in scintillation by a particular event; however, it should be noted that this algorithm can be applied to a more general range of problems in the EXO-200 detector with only minor modifications.
 
@@ -848,3 +914,7 @@ The last benefit to this approach is more technical: evaluating the lightmap for
 The current EXO-200 resolution is limited by the scintillation resolution of the APDs.  As a result, little benefit is anticipated from denoising the wires.  However, it is possible that a future detector could reduce the scintillation noise to a point where resolution of the wires is non-negligible; alternatively, a future detector could have noise which is correlated between wires and APDs, making it possible to use noise information from the wires to improve our scintillation resolution even though no direct benefit is expected to the wire resolution itself.
 
 In any case, it is possible to apply equations~\ref{eqn:SystemToSolve} to a system with a combination of wires and APDs without significant adjustment.  The template functions $Y[t]$ will of course be significantly different, and must include a time offset to account for the different time of arrival of the electrons and photons.  The ``lightmap'' of charge will be far less diffuse than for APDs because charge from any location generally drifts directly to only a small number of wires along externally imposed field lines.  And finally, because electron statistics should be negligible and signal amplification should not be a noisy process, for wire channels we would modify equation~\ref{eqn:DefinitionOfQ} to state that $q(i_{wire}, b) = 0$.  In this sense, denoising of wires consists of minimizing the variance in the energy estimator due to electronic noise, and using the wires to improve our denoising of APDs consists of using information about the wires to reduce variance due to electronic noise without expecting any correlations between APD and wire signals, all while ensuring that the energy estimates are unbiased by retaining the same constraints.
+
+\section{Summary}
+
+\textcolor{red}{At least a brief comment on why conventional approaches don't apply here.}
