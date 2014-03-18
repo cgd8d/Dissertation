@@ -6,6 +6,7 @@ Plot of pulse and noise power spectra.
 
 f(\vec{x}) is for single-site; i should explicitly say that it's a weighted sum for multisite.
 
+Am I really going to switch to using E_a/2615 keV throughout?  (Figure out whether it's feasible.)
 
 
 

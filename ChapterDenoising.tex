@@ -2,7 +2,7 @@
 \chapter{Denoising Theory and Implementation}
 \label{ch:DenoisingTheory}
 
-We have shown in section~\ref{sec:DetectorBackgrounds} that if it is possible to improve the energy resolution of EXO-200 then backgrounds, particularly from $^{232}$Th and $^{137}$Xe, can be reduced.  The energy resolution of EXO-200 is limited by its scintillation energy resolution, so any attempt to improve the energy resolution should focus on improved reconstruction of APD pulses.  In this chapter we present a new technique for extracting optimal scintillation energy measurements based on an improved model of the pulses and noise on APD waveforms.  The estimator derived in this chapter will be optimal partly due to its ability to operate in the presence of noise; we will therefore describe it throughout as a ``denoising'' technique, though at no point are denoised waveforms produced.
+We have shown in section~\ref{sec:DetectorBackgrounds} that if it is possible to improve the energy resolution of EXO-200 then backgrounds, particularly from $^{232}$Th and $^{137}$Xe, can be reduced.  The energy resolution of EXO-200 is limited by its scintillation energy resolution, so any attempt to improve the energy resolution should focus on improved extraction of APD pulse magnitudes.  In this chapter we present a new technique for extracting optimal scintillation energy measurements based on an improved model of the pulses and noise on APD waveforms.  The estimator derived in this chapter will be optimal partly due to its ability to operate in the presence of noise; we will therefore describe it throughout as a ``denoising'' technique, though at no point are denoised waveforms produced.
 
 We begin with a general overview in section~\ref{sec:WhatIsDenoising} of what qualitative methods of noise reduction a denoising technique may hope to apply and why they are necessary for our APDs.  Notational conventions and some crucial input parameters will be listed in section~\ref{sec:DenoisingNotationSetup}.  Section~\ref{sec:DescriptionOfPhotonNoise} presents a detailed physics model of the fluctuations in observed pulse magnitude, and section~\ref{sec:BridgePhotonsPulses} will connect that physics model to observable output of the APD channels.  The optimal energy estimator is presented in section~\ref{sec:DerivationOfEstimator} with a derivation.  Sections~\ref{sec:MatrixFormulationOfDenoising}-\ref{sec:DenoisingComputationalConsiderations} translate the optimal energy estimator into a usable form and describe the computational steps needed to apply it to data.  Differences between the optimal version of denoising presented in this chapter and the version used for the present physics analysis are shown in section~\ref{sec:DenoisingInPractice}.  We finish in section~\ref{sec:FutureDenoisingExtensions} by identifying some extensions to the denoising technique presented here which may prove interesting for future analyses.
 
@@ -35,7 +35,7 @@ A search began for environmental changes which could be correlated to the worsen
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Coherent and incoherent noise power spectra for a sample set of APD channels without signal shaping.  The coherent noise power spectrum is measured by adding together waveforms from different channels and computing a power spectrum; the incoherent noise power spectrum is measured by computing power spectra for each channel individually and adding them together~\cite{ElectronicsUpgradeReport}.}
+\caption{Coherent and incoherent noise power spectra for a sample set of APD channels without pulse shaping.  The coherent noise power spectrum is measured by adding together waveforms from different channels and computing a power spectrum; the incoherent noise power spectrum is measured by computing power spectra for each channel individually and adding them together~\cite{ElectronicsUpgradeReport}.}
 \label{fig:APDNoisePowerSpectrum}
 \end{quote}
 \end{figure}
@@ -77,7 +77,7 @@ We note that the electronic noise will scale linearly with the number of channel
 The energy estimator which we derive in this chapter is an optimal linear estimator, and we do not attempt to control how it produces its estimates.  However, we still can identify a number of qualitative approaches to reducing the noise levels in the scintillation channel.  We refer to ``passive" approaches as those in which components of our waveforms are weighted based on their relative signal-to-noise content.  ``Active" approaches, by contrast, are classified as those which attempt to improve the signal-to-noise content of the waveforms.  We identify the following three types of denoising:
 \begin{description}
 \item[Frequency weighting] \hfill \\
-On a given channel waveform, weight more heavily the frequency components which contain larger signal-to-noise ratio.  This passive denoising scheme requires knowledge of the power spectra of the signal and the noise.
+On a given channel waveform, weight more heavily the frequency components which contain larger signal-to-noise ratio.  This passive denoising scheme requires knowledge of the power spectra of the pulse signal and the noise.
 
 \item[Channel weighting] \hfill \\
 Different channels may have differing levels of noise, so some may generally have lower signal-to-noise ratios.  More importantly, though, the pulse magnitude on a given channel depends strongly on the proximity of the APD gang to the source of scintillation within the detector.  This passive denoising scheme therefore consists of weighting more heavily the channels which have larger expected pulse magnitudes, as determined on an event-by-event basis.
@@ -105,6 +105,7 @@ Throughout this chapter we use the following notational conventions:
 \item For an expression $f(\cdot)$ containing random variables, $\left<f(\cdot)\right>$ is the expectation value of $f(\cdot)$.  Here the expectation value will be meant in a frequentist sense: if we could repeat the experiment of generating the same number of initial photons in the same places, $\left<f(\cdot)\right>$ would be the average value of $f(\cdot)$ from many trials of this hypothetical experiment.  The expectation value of $f(\cdot)$ conditional on the value of some random variable X is written $\left<f(\cdot) \middle\vert X\right>$.
 \item When a bare index appears on both sides of an equation, the equation holds for all possible values of that index; for example, $f_i(\cdot) = g_i(\cdot)$ would mean that for all possible indices $i$ the equation holds.
 \item Einstein notation is not used; all summations are written explicitly.
+\item All energies will be in units of 2615 keV (the energy of the $^{208}$Tl gamma line).  This energy scale is natural for us because the lightmap of chapter~\ref{ch:Lightmap} is measured with events from that gamma line.
 \end{itemize}
 
 We describe the data as a collection of discretely sampled waveforms, $X_i[\tau]$.  We assume that all pulse times and shapes are already known, and only their magnitudes need to be extracted; so we can model the waveforms by
@@ -130,8 +131,8 @@ where $Y_{ia}[\tau]$ is the template function of the pulse caused by scintillati
 
 To break the degeneracy between $M$ and $Y$ we must fix the magnitude of the template function $Y$.  We choose to require that the function $Y$ has a baseline of zero and a peak magnitude of one, as illustrated in figure~\ref{fig:SampleAPDTemplates}.
 
-The magnitude of a pulse is a random variable which depends on both the energy of the scintillation cluster and on random fluctuations detailed in section~\ref{sec:DescriptionOfPhotonNoise}.  We assume that the expected magnitude $\left<M_{ia}\right>$ of a pulse on channel $i$ from a single-site $2615$-keV deposit is known, and is characterized as a function $L_i(\vec{x}_a, t_a)$ of the deposit position $\vec{x}_a$ and calendar time $t_a$.  We can thereby characterize the expected yields $M_{ia}$ from a scintillation cluster with energy $E_a$ as:
-\begin{equation}
+The magnitude of a pulse is a random variable which depends on both the energy of the scintillation cluster and on random fluctuations detailed in section~\ref{sec:DescriptionOfPhotonNoise}.  We assume that the expected magnitude $\left<M_{ia}\right>$ of a pulse on channel $i$ from a single-site $2615$-keV deposit is known, and is characterized as a function $L_i(\vec{x}_a, t_a)$ of the deposit position $\vec{x}_a$ and calendar time $t_a$.  We can thereby characterize the expected yields $M_{ia}$ from a scintillation cluster with energy $E_a$ (in units of 2615 keV) as:
+\begin{equation}\label{eqn:DefineLByEandM}
 \left< M_{ia} \right> = L_i(\vec{x}_a, t_a) E_a.
 \end{equation}
 The exact methods for measuring $L_i(\vec{x}, t)$ will be described in chapter~\ref{ch:Lightmap}.
@@ -196,8 +197,8 @@ Finally, there is amplification $G^E_i(t)$ associated with the electronics of th
 Although we assume that no noise correlated with pulses is introduced during this stage, there is electronic noise $N_i[\tau]$ introduced at this stage which has been described above and is uncorrelated with the pulses.  Additionally, the APDs can contribute noise in the form of a dark current which is uncorrelated with pulses; this is inseparable from the electronic noise, and so we absorb it into our description of $N_i[\tau]$.
 
 Equations~\ref{eqn:CorrelationsOfP1}, \ref{eqn:CorrelationsOfP2}, \ref{eqn:CorrelationsOfP3}, and \ref{eqn:DefnOfMFromP3} collectively chart the mean and variance of the APD pulse magnitudes at each step of readout and amplification.  We can eliminate the intermediate terms $P^{(1)}_{ia}$, $P^{(2)}_{ia}$, and $P^{(3)}_{ia}$ by substitution and obtain a full description for the first and second moments of the pulse magnitudes $M_{ia}$, $M_{jb}$ depending only on the unknown numbers of emitted photons $P^{(0)}_a$, $P^{(0)}_b$ and not on any random variables:
-\begin{IEEEeqnarray}{cCl}\label{eqn:DefnOfMFromP0}
-\left<M_{ia} \right> &=& 1.9 \cdot G_i(t_a) f_i(\vec{x}_a) P^{(0)}_a \IEEEyesnumber\IEEEyessubnumber\\
+\begin{IEEEeqnarray}{cCl}\IEEEyesnumber\phantomsection\label{eqn:DefnOfMFromP0}
+\left<M_{ia} \right> &=& 1.9 \cdot G_i(t_a) f_i(\vec{x}_a) P^{(0)}_a \IEEEyessubnumber\label{eqn:DefnOfMFromP0_Mean}\\
 \left<M_{ia}M_{jb}\right> &=& (1.9)^2 \cdot G_i(t_a) G_j(t_b) f_i(\vec{x}_a)f_j(\vec{x}_b) P^{(0)}_a P^{(0)}_b\left(1 + \frac{\sigma_{NU}^2}{\left(G_i^D(t_a)\right)^2} \delta_{ij}\delta_{ab}\right) \nonumber \\
 & & {}- (1.9)^2 \cdot G_i(t_a)G_j(t_a) f_i(\vec{x}_a)f_j(\vec{x}_a)P^{(0)}_a \delta_{ab} \IEEEyessubnumber\\
 & & {}+ (1.9)\cdot G_i(t_a) G^E_i(t_a)f_i(\vec{x}_a) P^{(0)}_a \delta_{ij}\delta_{ab} \left[ (1.9 + 0.1)G_i^D(t_a) + \frac{\sigma^2_{G_i}(t_a)}{G_i^D(t_a)}\right],\nonumber
@@ -218,39 +219,69 @@ Equations~\ref{eqn:DefnOfMFromP0} fully characterize the first and second moment
 
 \section{Bridge between Photons and Pulses}\label{sec:BridgePhotonsPulses}
 
-We have characterized the overall gain of the APDs using the lightmap described earlier.  We know that a typical single-site deposit of $2615$ keV at position $\vec{x}$ and time $t$ will produce a signal with expected magnitude $L_i(\vec{x},t)$ on APD channel $i$.  We must now connect this empirical understanding of our APD signals with the physical understanding in terms of photons and electrons described above.
+We have characterized in equation~\ref{eqn:DefnOfMFromP0} the first and second moments of the random variables $M_{ia}$.  However, that characterization is phrased in terms of quantities which are not observable, so its practical utility is limited.  In this section we transform equation~\ref{eqn:DefnOfMFromP0} into a form which is usable in practice, and identify where we obtain the key parameters which it contains.
 
-We have identified the number of photons created by an event $a$ as $P^{(0)}_a$.  In reality, an ideal scintillation measurement can only measure this quantity, and not the true energy of the event -- there is randomness in the number of photons produced by a known-energy deposit, so $P^{(0)}_a$ will not be a perfect measure of the energy $E_a$ of the event.  However, the number of photons generated is a difficult parameter to understand empirically, and all of our calibrations occur at a known energy even though the corresponding number of deposited photons is unknown.
+The main part of equation~\ref{eqn:DefnOfMFromP0} which we are unable to access experimentally is $f_i(\vec{x})$, the fraction of photons originating from position $\vec{x}$ which will arrive at APD channel $i$.  However, we do have observations of a related quantity: in equation~\ref{eqn:DefineLByEandM} we make use of a lightmap function $L_i(\vec{x}, t)$ which identifies the average magnitude (in ADC counts) of a pulse on channel $i$ produced from a 2615-keV energy deposit at position $\vec{x}$ and calendar time $t$ (where 2615 keV is selected because we measure it from the 2615-keV $^{208}$Tl gamma line of our thorium source calibrations).  Chapter~\ref{ch:Lightmap} describes how this lightmap function is measured from data; here we simply note that, because $L_i(\vec{x}, t)$ relates deposited energy to measured pulse sizes without reference to the number of photons internally created, it is possible to measure it directly from data.
 
-Simulations using NEST~\cite{NESTpaper} which have been performed within the EXO group by Liangjian Wen at our bulk electric field indicate that we can expect $82,000$ photons from a $2615$-keV gamma deposit.  We will identify this parameter with $c$, and express the average relation between energy and photon yield in EXO-200 by
+Additionally, we must relate the quantity of energy deposited to the number of photons produced.  This is not directly measurable in the EXO-200 detector, so we must rely on simulation to estimate it; however, in section~\ref{sec:DerivationOfEstimator} we find that this relation will not have an impact on our energy estimator, so it need not be precise.  Simulations using NEST~\cite{NESTpaper} which have been performed within the EXO group by Liangjian Wen at our bulk electric field of 376 V/cm indicate that we can expect $82,000$ photons from a $2615$-keV gamma deposit.  We identify this ratio between photons generated and energy deposited with the parameter $c \approx 82,000$, and express the average relation between energy and photon yield in EXO-200 by
 \begin{equation} \label{eqn:DefnOfP0}
-P^{(0)} = c \cdot E,
+P^{(0)}_a = c \cdot E_a,
 \end{equation}
-where $E$ is the energy measured in units of $2615$ keV.  We will treat this relationship as exact, and attempt to measure $E$ rather than $P^{(0)}$; this means that when we speak of measuring the energy of an event using the APD signals, we really are referring to measuring the ``scintillation energy," or a parameter proportional to the number of emitted photons which on average will equal the true energy of the deposit.
+where $E_a$ is the energy of scintillation cluster $a$ in units of 2615 keV.
 
-Ignoring variances for a moment, we can combine equations~\ref{eqn:MeanOfP1}, \ref{eqn:MeanOfP2}, \ref{eqn:MeanOfP3}, \ref{eqn:DefnOfMFromP3}, and \ref{eqn:DefnOfP0} to state that on average,
-\begin{equation}
-M_{ia} = 1.9 \cdot c f_i(\vec{x}_a) G^D_i(t_a) G^E_i(t_a) E_a.
-\end{equation}
-We can compare this to our empirical lightmap measurements, which are expressed by $M_{ia} = L_i(\vec{x}_a,t_a) E_a$,
-and we conclude that:
-\begin{equation}
-L_i(\vec{x},t) = 1.9 \cdot c f_i(\vec{x}) G^D_i(t) G^E_i(t).
-\end{equation}
+Equation~\ref{eqn:DefnOfP0} is treated here as exact, but this may not be so.  It is likely that photon yield does not scale linearly with energy; additionally, there are fluctuations in the number of photons produced for a particular energy deposit, and we are not treating $P^{(0)}_a$ as a random variable depending on $E$.  The essential point here is that the scintillation ``energy'' which we measure with the APD waveforms is a direct reflection of the number of photons $P^{(0)}_a$, and only indirectly reflects the true scintillation cluster energy $E_a$.  Similarly, the ionization energy measurement which is made with the u-wires is a direct reflection of the number of free electrons generated, and only indirectly reflects the true deposit energy.  The purpose of the energy calibration, described in section~\ref{sec:ResultEnergy}, is to combine our estimates of scintillation energy (proportional to the number of photons) and ionization energy (proportional to the number of free electrons) into a single estimate of the true deposited energy, taking into account any non-linearities in either component.  We find it convenient to report the scintillation energy as $P^{(0)}_a/c$ rather than the true number of photons $P^{(0)}_a$, so the reported scintillation energy is roughly comparable to the true amount of deposited energy; but our goal is still only to measure (a quantity proportional to) the number of photons created.  In the derivations of this chapter we will refer to $E_a$ as the energy of scintillation cluster $a$, but it is the scintillation energy, not the true deposited energy, which we mean by this variable.
 
-We recall that it is assumed the lightmap is a separable function, $L_i(\vec{x},t) = R_i(\vec{x})S_i(t)$, and we can provide the two proportionalities:
+We can now combine equations~\ref{eqn:DefineLByEandM}, \ref{eqn:DefnOfMFromP0_Mean}, and \ref{eqn:DefnOfP0} to relate $f_i(\vec{x})$ and $L_i(\vec{x}, t)$:
+\begin{equation}\label{eqn:RelationLandF}
+L_i(\vec{x}, t) = 1.9 \cdot c f_i(\vec{x}) G_i(t).
+\end{equation}
+We use this relation and equation~\ref{eqn:DefnOfP0} to eliminate $f_i(\vec{x})$ from equation~\ref{eqn:DefnOfMFromP0} and restate the moments of the pulse magnitudes $M_{ia}$ as:
+\begin{IEEEeqnarray}{cCl}\phantomsection\label{eqn:DefnOfMFromE}
+\left<M_{ia} \right> &=& L_i(\vec{x}_a, t_a) E_a \IEEEyesnumber\IEEEyessubnumber\label{eqn:DefnOfMFromE_Mean}\\
+\left<M_{ia}M_{jb}\right> &=& L_i(\vec{x}_a, t_a) L_j(\vec{x}_b, t_b) E_a E_b\left(1 + \frac{\sigma_{NU}^2}{\left(G_i^D(t_a)\right)^2} \delta_{ij}\delta_{ab}\right) \nonumber \\
+& & {}- L_i(\vec{x}_a, t_a) L_j(\vec{x}_a, t_a) E_a \delta_{ab}/c \IEEEyessubnumber\\
+& & {}+ L_i(\vec{x}_a, t_a)E_a \delta_{ij}\delta_{ab} \left[ (1.9 + 0.1)G_i(t_a) + \frac{G^E_i(t_a)}{G_i^D(t_a)}\sigma^2_{G_i}(t_a)\right].\nonumber
+\end{IEEEeqnarray}
+
+We will see in equation~\ref{eqn:SeparableLightmap} that the lightmap $L_i(\vec{x},t)$ is treated as a separable function, $L_i(\vec{x},t) = R_i(\vec{x})S_i(t)$.  The right hand side of equation~\ref{eqn:RelationLandF} has factors which depend strictly on either position or time, but not both; so we can separate the position-dependent and time-dependent factor from both sides and state:
 \begin{subequations}\begin{align}
 R_i(\vec{x}) &\propto f_i(\vec{x}) \\
-S_i(t) &\propto G^D_i(t) G^E_i(t).
+S_i(t) &\propto G_i(t).\label{eqn:SProportionalToGProduct}
 \end{align}\end{subequations}
+So, we can use the lightmap to understand the time-dependent behavior of the product of electronic and APD gain, $G_i(t)$, for each channel; but we cannot use it to set the absolute scale, nor can we use it to understand separately $G_i^E(t)$ and $G_i^D(t)$.
 
-Although $G^E_i(t)$ is in principle time-dependent, due to environmental effects on the APD electronics and occasional replacement of electronics cards for certain channels, precision data on its value is not readily available.  Instead, we use a time-independent estimate
+Measurements of $G^E_i(t)$ are possible from internal charge injection runs, as described in section~\ref{sec:DetectorCalibration}.  However, using these runs in a uniform way is difficult.  Internal charge injection runs are only useful for understanding relative changes in the electronic gain over time, and an external charge injection run is needed to set an absolute scale for the gain.  The only APD external charge injection runs were taken in February 2011, and have not been analyzed since that time; also, since that time some APD electronics boards have been replaced, resetting the scale of the internal charge injection runs.  For the present analysis, the charge injection runs are not used to fix $G^E_i(t)$.
+
+However, we can still derive an estimate for the electronic gain which is sufficient for the present analysis.  The electronic gain comes entirely from known electronic components; based on these electronic components, the preamplifier has a gain of 1/(5 pF), shapers have a combined 21.2, and the digitizer digitizes 12 bits (4096 ADC counts) for a 2.5 volt pulse.  Combining these factors, we will use a time-independent estimate:
 \begin{equation}
-G^E_i(t) = 1.1 \cdot 10^{-3} \label{eqn:ValueOfGE}
+G^E_i(t) = 1.1 \cdot 10^{-3} \text{ADC}/\text{e}^-.\label{eqn:ValueOfGE}
 \end{equation}
-ADC counts per electron emitted from the APD; the uncertainty in this figure is dominated by uncertainty in the preamplifier gains, which are controlled by a $5$ pF capacitor.  Other contributors to the gain include shaper gain of $21.2$ (from a combination of amplification and shaping) and a full-scale digitizer range of $2.5$ volts for $12$-bit digitization.
+The uncertainty in this figure is dominated by uncertainty in capacitance of the 5 pF capacitor in the preamplifiers.  Future work should include a more careful study of the charge injection runs to improve this estimate, but we perform the present analysis using it.  A consequence of this choice is that all time-dependence of $S_i(t)$ must be absorbed into $G^D_i(t)$, so we can strengthen equation~\ref{eqn:SProportionalToGProduct} to:
+\begin{equation}
+S_i(t) &\propto G_i^D(t).
+\end{equation}
 
-We have independent measurements of the APD gains $G^D_i(t)$ available from laser calibration runs.  These special runs allow a laser to shine into the detector from a fixed point and with a stable amplitude while the bias voltages on the APDs are varied from an effective unity gain to our standard voltage settings.  Using these measurements, we are able to measure $G^D_i(t)$ at weekly intervals from September 2012 to the present time.  Before September 2012, some less-reliable laser data is available, but results from that data are not readily available as of this writing.
+We also have independent measurements of the APD gains $G^D_i(t)$ available from laser calibration runs.  These special runs allow a laser to shine into the detector from a fixed point and with a stable amplitude while the bias voltages on the APDs are varied from an effective unity gain to our standard voltage settings.  Using these measurements, we are able to measure $G^D_i(t)$ at weekly intervals from September 2012 to the present time.  Before September 2012, some less-reliable laser data is available, but results from that data are not readily available as of this writing.
+
+It would be possible, and should be a goal for future improvements, to make use of this full range of laser data.  However, the laser data provides a less uniform history of APD gains over the full data-taking window of EXO-200 from September 2011 to November 2013, and it is much easier to track time-dependent behavior from thorium source data which have been collected regularly throughout that period.  As a result, a compromise is used to characterize $G^D_i(t)$.  One particular laser run, run 4540 (taken on December 13, 2012), is used to fix $G^D_i(t_{4540})$, and the function is extrapolated using Thorium source data with:
+\begin{equation}
+G^D_i(t) \approx G^D_i(t_{4540}) \cdot S_i(t)/S_i(t_{4540}).
+\end{equation}
+This assumption makes use of the approximation that $G^E_i(t)$ is roughly constant in time, which is probably only accurate to one significant figure; therefore when an electronics change is made to a channel, we can expect that the accuracy of $G^D_i(t)$ is no better than one significant figure.  These results mean that we can also estimate with the same level of accuracy:
+\begin{equation}
+f_i(\vec{x}) \approx \frac{S_i(t_{4540})}{G^D_i(t_{4540})} \cdot \frac{R_i(\vec{x})}{1.9 \cdot c G^E_i(t)}.
+\end{equation}
+
+
+
+
+
+
+
+
+Measurements of the APD gain $G_i^D(t)$ are made from weekly laser runs, as described in section~\ref{sec:DetectorCalibration}.  However, the laser dataset is not uniform for the whole history of the detector, and it has proven difficult to generate a uniform set of APD gain functions from the laser data.  Future work will include a more complete treatment of the APD gains from laser data.  However, in this work we simply use the APD gains extracted 
+
+
 
 It would be possible, and should be a goal for future improvements, to make use of this full range of laser data.  However, the laser data provides a less uniform history of APD gains over the full data-taking window of EXO-200 from September 2011 to November 2013, and it is much easier to track time-dependent behavior from Thorium source data which have been collected regularly throughout that period.  As a result, a compromise is used to characterize $G^D_i(t)$.  One particular laser run, run 4540 (taken on December 13, 2012), is used to fix $G^D_i(t_{4540})$, and the function is extrapolated using Thorium source data with:
 \begin{equation}
