@@ -180,7 +180,10 @@ Next, photons which arrive at the active surface of an APD must convert to elect
 
 Electron-hole pairs are then amplified by an avalanche process inside the APDs.  The magnitude of this gain is APD-dependent, generally on the order of $200-300$, and can be identified by a time-dependent quantity $G^D_i(t)$ (where $D$ stands for diode); we will call the number of output electrons $P^{(3)}_{ia}$.  In addition to amplification of existing noise in $P^{(2)}_{ia}$, two additional source of noise are introduced:
 \begin{itemize}
-\item First, there is statistical variance in the amplification experienced by each electron due to the randomness of the avalanche process.  This variance is dependent on many factors, including the gain, and scales linearly with the number of electrons; we define the variance on the gain experienced by a single electron on channel $i$ as $\sigma^2_{G_i}(t)$.  From~\cite{EXOLAAPD}, $\sigma^2_{G_i}(t)$ is approximately equal to $\left(G^D_i(t)\right)^2$ when $G^D_i(t)=100$; as a result, we approximate $\sigma^2_{G_i}(t) \approx \left(G^D_i(t)\right)^2$.
+\item First, there is statistical variance in the amplification experienced by each electron due to the randomness of the avalanche process.  This variance is dependent on many factors, including the gain, and scales linearly with the number of electrons; we define the variance on the gain experienced by a single electron on channel $i$ as $\sigma^2_{G_i}(t)$.  From~\cite{EXOLAAPD}, $\sigma^2_{G_i}(t)$ is approximately equal to $\left(G^D_i(t)\right)^2$ when $G^D_i(t)=100$; as a result, we approximate
+\begin{equation}\label{eqn:GainFluctuationEstimate}
+\sigma^2_{G_i}(t) \approx \left(G^D_i(t)\right)^2.
+\end{equation}
 \item Second, there are gain non-uniformities in the diode volume, which contribute variance proportional to the square of the number of initial electron-hole pairs; we will identify the proportionality constant as $\sigma^2_{NU}$, which may depend on time and APD gang.  The magnitude of this uncertainty is not well-known, but may be significant.  In particular, the ganging together of APDs means that a single channel is a sum of pulses which have been exposed to six or seven different gain factors from the different APDs in that gang; the diameter of an APD gang is 58 mm~\cite{detectorPartI}, and gain non-uniformity is expected to be a significant factor when photons deposit preferentially on one portion of that area.  Our current code base treats $\sigma^2_{NU}$ as zero; however, future analyses will likely attempt to estimate it, and the derivation which follows retains it as an aid to that anticipated work.
 \end{itemize}
 These fluctuations are not correlated across channels, so their variances are multiplied by $\delta_{ij}\delta_{ab}$ to ensure they only contribute to variance terms and not covariance terms.  The correlations in the parameters $P^{(3)}_{ia}$ are therefore:
@@ -253,18 +256,18 @@ So, we can use the lightmap to understand the time-dependent behavior of the pro
 Measurements of $G^E_i(t)$ are possible from internal charge injection runs, as described in section~\ref{sec:DetectorCalibration}.  However, using these runs in a uniform way is difficult.  Internal charge injection runs are only useful for understanding relative changes in the electronic gain over time, and an external charge injection run is needed to set an absolute scale for the gain.  The only APD external charge injection runs were taken in February 2011, and have not been analyzed since that time; also, since that time some APD electronics boards have been replaced, resetting the scale of the internal charge injection runs.  For the present analysis, the charge injection runs are not used to fix $G^E_i(t)$.
 
 However, we can still derive an estimate for the electronic gain which is sufficient for the present analysis.  The electronic gain comes entirely from known electronic components; based on these electronic components, the preamplifier has a gain of 1/(5 pF), shapers have a combined 21.2, and the digitizer digitizes 12 bits (4096 ADC counts) for a 2.5 volt pulse.  Combining these factors, we will use a time-independent estimate:
-\begin{equation}
-G^E_i(t) = 1.1 \cdot 10^{-3} \text{ADC}/\text{e}^-.\label{eqn:ValueOfGE}
+\begin{equation}\label{eqn:ApproxForGE}
+G^E_i(t) = 1.1 \cdot 10^{-3}\:\text{ADC}/\text{e}^-.
 \end{equation}
-The uncertainty in this figure is dominated by uncertainty in capacitance of the 5 pF capacitor in the preamplifiers.  Future work should include a more careful study of the charge injection runs to improve this estimate, but we perform the present analysis using it.  A consequence of this choice is that all time-dependence of $S_i(t)$ must be absorbed into $G^D_i(t)$, so we can strengthen equation~\ref{eqn:SProportionalToGProduct} to:
-\begin{equation}
-S_i(t) &\propto G_i^D(t).
+Future work should include a more careful study of the charge injection runs to improve this estimate, but we use this value to perform the present analysis.  A consequence of this choice is that all time-dependence of $S_i(t)$ must be absorbed into $G^D_i(t)$, so we can strengthen equation~\ref{eqn:SProportionalToGProduct} to:
+\begin{equation}\label{eqn:S_propto_GD}
+S_i(t) \propto G_i^D(t).
 \end{equation}
 
 We also have independent measurements of the APD gains $G^D_i(t)$ available from laser calibration runs.  These special runs allow a laser to shine into the detector from a fixed point and with a stable amplitude while the bias voltages on the APDs are varied from an effective unity gain to our standard voltage settings.  Using these measurements, we are able to measure $G^D_i(t)$ at weekly intervals from September 2012 to the present time.  Before September 2012, some less-reliable laser data is available, but results from that data are not readily available as of this writing.
 
-It would be possible, and should be a goal for future improvements, to make use of this full range of laser data.  However, the laser data provides a less uniform history of APD gains over the full data-taking window of EXO-200 from September 2011 to November 2013, and it is much easier to track time-dependent behavior from thorium source data which have been collected regularly throughout that period.  As a result, a compromise is used to characterize $G^D_i(t)$.  One particular laser run, run 4540 (taken on December 13, 2012), is used to fix $G^D_i(t_{4540})$, and the function is extrapolated using Thorium source data with:
-\begin{equation}
+It would be possible, and should be a goal for future improvements, to make use of this full range of laser data.  However, the laser data provides a less uniform history of APD gains over the full data-taking window of EXO-200 from September 2011 to November 2013, and it is much easier to track time-dependent behavior from thorium source data which have been collected regularly throughout that period.  As a result, a compromise is used to characterize $G^D_i(t)$.  One particular laser run, run 4540 (taken on December 13, 2012), is used to fix $G^D_i(t_{4540})$, and equation~\ref{eqn:S_propto_GD} is used to extrapolated using thorium source data:
+\begin{equation}\label{eqn:ApproxForGD}
 G^D_i(t) \approx G^D_i(t_{4540}) \cdot S_i(t)/S_i(t_{4540}).
 \end{equation}
 This assumption makes use of the approximation that $G^E_i(t)$ is roughly constant in time, which is probably only accurate to one significant figure; therefore when an electronics change is made to a channel, we can expect that the accuracy of $G^D_i(t)$ is no better than one significant figure.  These results mean that we can also estimate with the same level of accuracy:
@@ -272,161 +275,25 @@ This assumption makes use of the approximation that $G^E_i(t)$ is roughly consta
 f_i(\vec{x}) \approx \frac{S_i(t_{4540})}{G^D_i(t_{4540})} \cdot \frac{R_i(\vec{x})}{1.9 \cdot c G^E_i(t)}.
 \end{equation}
 
+The set of inputs needed to use equations~\ref{eqn:DefnOfMFromE} are $L_i(\vec{x},t)$, $G_i^D(t)$, $G_i^E(t)$, $\sigma_{NU}^2$, $\sigma_{G_i}^2(t)$, and $c$.  The lightmap $L_i(\vec{x},t)$ is measured in chapter~\ref{ch:Lightmap}.  Our approximations for $G_i^D(t)$ and $G_i^E(t)$ have been described in equations~\ref{eqn:ApproxForGD} and \ref{eqn:ApproxForGE}, respectively.  $c \approx 82,000$ was identified for equation~\ref{eqn:DefnOfP0}.  We have stated that $\sigma_{NU}^2$ is set equal to zero for this analysis, and is retained in this work to facilitate future investigations.  Equation~\ref{eqn:GainFluctuationEstimate} has estimated $\sigma^2_{G_i}(t) \approx \left(G^D_i(t)\right)^2$.
 
-
-
-
-
-
-
-Measurements of the APD gain $G_i^D(t)$ are made from weekly laser runs, as described in section~\ref{sec:DetectorCalibration}.  However, the laser dataset is not uniform for the whole history of the detector, and it has proven difficult to generate a uniform set of APD gain functions from the laser data.  Future work will include a more complete treatment of the APD gains from laser data.  However, in this work we simply use the APD gains extracted 
-
-
-
-It would be possible, and should be a goal for future improvements, to make use of this full range of laser data.  However, the laser data provides a less uniform history of APD gains over the full data-taking window of EXO-200 from September 2011 to November 2013, and it is much easier to track time-dependent behavior from Thorium source data which have been collected regularly throughout that period.  As a result, a compromise is used to characterize $G^D_i(t)$.  One particular laser run, run 4540 (taken on December 13, 2012), is used to fix $G^D_i(t_{4540})$, and the function is extrapolated using Thorium source data with:
-\begin{equation}
-G^D_i(t) \approx G^D_i(t_{4540}) \cdot S_i(t)/S_i(t_{4540}).
-\end{equation}
-This assumption makes use of the approximation that $G^E_i(t)$ is roughly constant in time, which is probably only accurate to one significant figure; therefore when an electronics change is made to a channel, we can expect that the accuracy of $G^D_i(t)$ is no better than one significant figure.  These results mean that we can also estimate with the same level of accuracy:
-\begin{equation}
-f_i(\vec{x}) \approx \frac{S_i(t_{4540})}{G^D_i(t_{4540})} \cdot \frac{R_i(\vec{x})}{1.9 \cdot c G^E_i(t)}.
-\end{equation}
-
-It is then possible to express the full correlations in signal magnitudes in terms of the scintillation energies of deposits as:
-\begin{IEEEeqnarray}{cCl}
-\left< M_{ia} \right> &=& L_i(\vec{x}_a,t_a) E_a \IEEEyesnumber\IEEEyessubnumber \\
-\left< M_{ia} M_{jb} \right> &=& L_i(\vec{x}_a,t_a)L_j(\vec{x}_b,t_b) E_a E_b \left[1 + \frac{\sigma^2_{NU}}{\left(G^D_i(t)\right)^2} \delta_{ij}\delta_{ab} \right] \nonumber \\
-&& {} - L_i(\vec{x}_a,t_a) L_j(\vec{x}_a,t_a) E_a \delta_{ab}/c \nonumber \\
-&& {} + L_i(\vec{x}_a,t_a) G^E_i(t) E_a \delta_{ij} \delta_{ab} \left[\left(0.1 + 1.9\right)G^D_i(t) + \frac{\sigma^2_{G_i}(t)}{G^D_i(t)}\right]. \IEEEyessubnumber\label{eqn:MMcorrelations}
-\end{IEEEeqnarray}
-\begin{comment}
-THE FOLLOWING IS MY WORK IN EXPANDING THE M_M CORRELATIONS.
-IF NEEDED, IT CAN BE UNCOMMENTED AND IS VALID LATEX CODE.
-
-\[ \left< M_{ia} M_{jb} \right> = G^E_i(t) G^E_j(t) \left<P^{(3)}_{ia}P^{(3)}_{jb} \right> \]
-
-\[ \left< M_{ia} M_{jb} \right> = G^E_i(t) G^E_j(t) \left( G^D_i(t)G^D_j(t) \left< P^{(2)}_{ia} P^{(2)}_{jb} \right> + \left[P^{(2)}_{ia}\sigma^2_{G_i}(t) + \left(P^{(2)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab}\right)\]
-
-\begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) \left< P^{(2)}_{ia} P^{(2)}_{jb} \right> \\
- & + G^E_i(t) G^E_j(t) \left[P^{(2)}_{ia}\sigma^2_{G_i}(t) + \left(P^{(2)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab}
-\end{split}\end{equation*}
-
-\begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) \left( (1.9)^2\left< P^{(1)}_{ia} P^{(1)}_{jb} \right> + 0.1 \left< P^{(2)}_{ia}\right> \delta_{ij}\delta_{ab} \right) \\
- & + G^E_i(t) G^E_j(t) \left[1.9 \cdot P^{(1)}_{ia}\sigma^2_{G_i}(t) + (1.9)^2 \left(P^{(1)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab}
-\end{split}\end{equation*}
-
-\begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) \left< P^{(1)}_{ia} P^{(1)}_{jb} \right> \\
-& + 0.1 \cdot 1.9 \cdot G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) P^{(1)}_{ia} \delta_{ij}\delta_{ab} \\
- & + G^E_i(t) G^E_j(t) \left[1.9 \cdot P^{(1)}_{ia}\sigma^2_{G_i}(t) + (1.9)^2 \left(P^{(1)}_{ia}\right)^2\sigma^2_{NU}\right]\delta_{ij}\delta_{ab}
-\end{split}\end{equation*}
-
-\begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) \left< P^{(1)}_{ia} P^{(1)}_{jb} \right> \\
- & + G^E_i(t) G^E_j(t) \left[1.9 \cdot P^{(1)}_{ia}\sigma^2_{G_i}(t) + (1.9)^2 \left(P^{(1)}_{ia}\right)^2\sigma^2_{NU} + 0.1 \cdot 1.9 \cdot G^D_i(t)G^D_j(t) P^{(1)}_{ia}\right]\delta_{ij}\delta_{ab}
-\end{split}\end{equation*}
-
-\begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) \left< P^{(1)}_{ia} P^{(1)}_{jb} \right> \\
- & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot P^{(1)}_{ia} \sigma^2_{NU} + 0.1 \cdot G^D_i(t)G^D_j(t) \right] \left(G^E_i(t)\right)^2 P^{(1)}_{ia} \delta_{ij}\delta_{ab}
-\end{split}\end{equation*}
-
-\begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) \left< P^{(1)}_{ia} \right> \left< P^{(1)}_{jb} \right> \\
-& + (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t)\left[ f_i(x,y,z)\delta_{ij} - f_i(x,y,z)f_j(x,y,z) \right] P^{(0)}_a \delta_{ab}  \\
- & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot P^{(1)}_{ia} \sigma^2_{NU} + 0.1 \cdot G^D_i(t)G^D_j(t) \right] \left(G^E_i(t)\right)^2 P^{(1)}_{ia} \delta_{ij}\delta_{ab}
-\end{split}\end{equation*}
-
-\begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) f_i(x,y,z) f_j(x,y,z) \left(P^{(0)}_a\right)^2 \\
-& + (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t)\left[ f_i(x,y,z)\delta_{ij} - f_i(x,y,z)f_j(x,y,z) \right] P^{(0)}_a \delta_{ab}  \\
- & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot f_i(x,y,z) P^{(0)}_a \sigma^2_{NU} + 0.1 \cdot G^D_i(t)G^D_j(t) \right] \left(G^E_i(t)\right)^2 f_i(x,y,z) P^{(0)}_a \delta_{ij}\delta_{ab}
-\end{split}\end{equation*}
-
-\begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) f_i(x,y,z) f_j(x,y,z) c^2 E^2_a \\
-& + (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t)\left[ f_i(x,y,z)\delta_{ij} - f_i(x,y,z)f_j(x,y,z) \right] c E_a \delta_{ab}  \\
- & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot f_i(x,y,z) c E_a \sigma^2_{NU} + 0.1 \cdot G^D_i(t)G^D_j(t) \right] \left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab}
-\end{split}\end{equation*}
-
-\begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \\
-& + (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) f_i(x,y,z)\delta_{ij} c E_a \delta_{ab}  \\
-& - (1.9)^2 G^E_i(t) G^E_j(t) G^D_i(t)G^D_j(t) f_i(x,y,z)f_j(x,y,z) c E_a \delta_{ab} \\
- & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot f_i(x,y,z) c E_a \sigma^2_{NU} + 0.1 \cdot G^D_i(t)G^D_j(t) \right] \left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab}
-\end{split}\end{equation*}
-
-\begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \\
-& + L_i(x,y,z,t) (1.9)  G^E_i(t) G^D_i(t) \delta_{ij}  E_a \delta_{ab}  \\
-& - L_i(x,y,z,t)     (1.9) G^E_j(t) G^D_j(t) f_j(x,y,z) E_a \delta_{ab} \\
- & + 1.9\left[\sigma^2_{G_i}(t) + 1.9 \cdot f_i(x,y,z) c E_a \sigma^2_{NU} + 0.1 \cdot \left(G^D_i(t)\right)^2 \right] \left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab}
-\end{split}\end{equation*}
-
-\begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \\
-& + L_i(x,y,z,t) (1.9)  G^E_i(t) G^D_i(t) E_a \delta_{ij} \delta_{ab}  \\
-& - L_i(x,y,z,t) L_j(x,y,z,t) E_a \delta_{ab}/c \\
-& + (1.9)\sigma^2_{G_i}(t)\left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab} \\
-& + (1.9)^2 f_i(x,y,z) c E_a \sigma^2_{NU} \left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab} \\
-& + (1.9) (0.1) \left(G^D_i(t)\right)^2 \left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab}
-\end{split}\end{equation*}
-
-\begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \\
-& + (1.9)^2 f^2_i(x,y,z) \sigma^2_{NU} \left(G^E_i(t)\right)^2 c^2 E^2_a \delta_{ij}\delta_{ab} \\
-& - L_i(x,y,z,t) L_j(x,y,z,t) E_a \delta_{ab}/c \\
-& + L_i(x,y,z,t) (1.9)  G^E_i(t) G^D_i(t) E_a \delta_{ij} \delta_{ab}  \\
-& + (1.9)\sigma^2_{G_i}(t)\left(G^E_i(t)\right)^2 f_i(x,y,z) c E_a \delta_{ij}\delta_{ab} \\
-& + L_i(x,y,z,t) (0.1) G^D_i(t) G^E_i(t) E_a \delta_{ij}\delta_{ab}
-\end{split}\end{equation*}
-
-\begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \\
-& + L^2_i(x,y,z,t) \sigma^2_{NU} E^2_a \delta_{ij}\delta_{ab}/\left(G^D_i(t)\right)^2 \\
-& - L_i(x,y,z,t) L_j(x,y,z,t) E_a \delta_{ab}/c \\
-& + L_i(x,y,z,t) (1.9)  G^E_i(t) G^D_i(t) E_a \delta_{ij} \delta_{ab}  \\
-& + L_i(x,y,z,t) \sigma^2_{G_i}(t)G^E_i(t) E_a \delta_{ij}\delta_{ab}/G^D_i(t) \\
-& + L_i(x,y,z,t) (0.1) G^D_i(t) G^E_i(t) E_a \delta_{ij}\delta_{ab}
-\end{split}\end{equation*}
-
-\begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \left[1 + \frac{\sigma^2_{NU}}{\left(G^D_i(t)\right)^2} \delta_{ij}\delta_{ab} \right] \\
-& - L_i(x,y,z,t) L_j(x,y,z,t) E_a \delta_{ab}/c \\
-& + L_i(x,y,z,t) \sigma^2_{G_i}(t)G^E_i(t) E_a \delta_{ij}\delta_{ab}/G^D_i(t) \\
-& + L_i(x,y,z,t) (1.9 + 0.1)  G^E_i(t) G^D_i(t) E_a \delta_{ij} \delta_{ab}
-\end{split}\end{equation*}
-
-\begin{equation*}\begin{split}
-\left< M_{ia} M_{jb} \right> ={}& L_i(x,y,z,t)L_j(x,y,z,t) E^2_a \left[1 + \frac{\sigma^2_{NU}}{\left(G^D_i(t)\right)^2} \delta_{ij}\delta_{ab} \right] \\
-& - L_i(x,y,z,t) L_j(x,y,z,t) E_a \delta_{ab}/c \\
-& + L_i(x,y,z,t) G^E_i(t) E_a \delta_{ij} \delta_{ab} \left[\left(0.1 + 1.9\right)G^D_i(t) + \frac{\sigma^2_{G_i}(t)}{G^D_i(t)}\right]
-\end{split}\end{equation*}
-\end{comment}
-
-We combine this with our knowledge of the noise coefficients:
-\begin{subequations}\begin{align}
-\left< \widetilde{N}_i[f] \right> &= 0 \\
-\left< \widetilde{N}_i[f] \widetilde{N}_j[g] \right> &= \left\{ \begin{aligned}
-0~ &\text{if}~ f \ne g \\
-\text{known}~ &\text{if}~ f = g
-\end{aligned}\right.
-\end{align}\end{subequations}
-and can claim to now have a complete description of the signals and noise observed in the APD channels.
+Thus, we have specified fully the parameters needed as inputs to equations~\ref{eqn:DefnOfMFromE}.  We now have at our disposal a full model for the Poissonian noise on APD channels.  We are finally prepared with all tools necessary to derive an optimal energy estimator, and this is done in section~\ref{sec:DerivationOfEstimator}.
 
 \section{Derivation of an Optimal Energy Estimator}\label{sec:DerivationOfEstimator}
 
-It is now possible to specify the optimization criteria for generating an energy estimate from the APD signals.  We wish to identify an energy estimator which is unbiased and has a minimal expected error.  For the problem to remain tractable, we will demand that the operator be linear.  Furthermore, although the Fourier-transformed waveforms $\widetilde{X}_i[f]$ are complex-valued, we will require that the energy estimate be strictly real-valued.
+It is now possible to specify the optimization criteria for generating an energy estimate from the APD waveforms.  We wish to identify an energy estimator which is unbiased and has a minimal expected error.  For the problem to remain tractable, we demand that the estimator be linear.  Furthermore, although the Fourier-transformed waveforms $\widetilde{X}_i[f]$ are complex-valued, we require that the energy estimate be strictly real-valued.  This section describes the optimization criteria and constraints for the energy estimator, and then proceeds to derive an optimal estimator satisfying those constraints.
 
-We will therefore take the energy estimator to be of the form:
-\begin{equation}
-\widehat{E}_a = \sum_{if} A_{ifa} \widetilde{X}_i^R[f] + B_{ifa} \widetilde{X}_i^I[f].
+We recall from equation~\ref{FrequencyDomainModelEquation} our model for the APD waveforms:
+\begin{equation}\label{eqn:FrequencyDomainModelEquation2}
+\widetilde{X}_i[f] = \sum_a M_{ia}\widetilde{Y}_{ia}[f] + \widetilde{N}_i[f],
 \end{equation}
-The goal of denoising is therefore reduced to identifying the optimal parameters $A_{ifa}$ and $B_{ifa}$ for this estimator.
+where $M_{ia}$ and $\widetilde{N}_i[f]$ are random variables with known probability distributions, we choose to drop the zero-frequency component, and the probability distribution of $M_{ia}$ reflects the energy parameter which we intend to estimate.  We therefore take the energy estimator $\widehat{E}_a$ for the energy of scintillation cluster $a$ to be of the form:
+\begin{equation}
+\widehat{E}_a = \sum_{if} A_{ia}[f] \widetilde{X}_i^R[f] + B_{ia}[f] \widetilde{X}_i^I[f],
+\end{equation}
+where we recall from section~\ref{sec:DenoisingNotationSetup} that $*^R$ and $*^I$ are the real and imaginary parts, respectively, of a complex-valued parameter.  This expression is one form for the most general real-valued linear functional on $X_i[f]$.  The goal of denoising is therefore reduced to identifying the optimal parameters $A_{ia}[f]$ and $B_{ia}[f]$ for this estimator.
 
-The error in the energy estimate $\widehat{E}_a$ of $E_a$ is defined by:
+The mean squared error $\epsilon^2_a$ in the energy estimate $\widehat{E}_a$ of $E_a$ is defined by:
 \begin{equation}
 \epsilon^2_a = \left< \left(\widehat{E}_a - E_a\right)^2\right>.
 \end{equation}
@@ -434,15 +301,15 @@ Our goal is to minimize $\epsilon^2_a$ under the constraint of no bias, ie. that
 \begin{equation}\label{eqn:ConstraintForm1}
 \left<\widehat{E}_a - E_a\right> = 0
 \end{equation}
-or, equivalently,
+or, by substitution of equation~\ref{eqn:FrequencyDomainModelEquation2} and applying our knowledge of the expectation value of $M_{ia}$ from equation~\ref{eqn:DefnOfMFromE_Mean} and our knowledge that the noise terms have mean zero, the no-bias constraint is equivalent to:
 \begin{equation}
-\sum_{ifb}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) E_b = E_a.
+\sum_{ifb}\left[A_{ia}[f] \widetilde{Y}_{ib}^R[f] + B_{ia}[f] \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) E_b = E_a.
 \end{equation}
-However, we will find that it is necessary to specify a slightly stronger constraint.  In particular, it will be desirable to ensure that the constraints are as independent of energy as possible to reduce the need to input an estimated energy into our energy estimator; therefore we will freely employ the stronger constraint
+However, we will find that it is necessary to specify a slightly stronger constraint.  In particular, it is desirable to ensure that the constraints are as independent of energy as possible to reduce the need to input an estimated energy into our energy estimator; therefore we freely employ the stronger constraint
 \begin{equation}
-\sum_{if}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) = \delta_{ab} \text{~for all b,} \label{eqn:ConstraintForm3}
+\sum_{if}\left[A_{ia}[f] \widetilde{Y}_{ib}^R[f] + B_{ia}[f] \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) = \delta_{ab} \text{~for all b,} \label{eqn:ConstraintForm3}
 \end{equation}
-which implies the earlier forms and leads to advantageous cancellations of terms.
+which implies the earlier forms and leads to advantageous cancellations of terms.  Conceptually, this constraint is equivalent to saying that estimates of the energy $E_a$ of a scintillation cluster $a$ should be unbiased and independent of any other energies $E_b$ which are present on the same waveform.
 
 We now proceed with the optimization.  We start by expanding $\epsilon^2_a$:
 \begin{align}
@@ -450,51 +317,51 @@ We now proceed with the optimization.  We start by expanding $\epsilon^2_a$:
 %
 &= \left< \widehat{E}^2_a \right> - E_a \left<\widehat{E}_a\right> - \left< \widehat{E}_a - E_a \right> E_a \\
 %
-\intertext{We can employ the constraint of equation~\ref{eqn:ConstraintForm1} to simplify the second term of this expansion, and eliminate the third altogether; we then proceed:}
+\intertext{We employ the constraint of equation~\ref{eqn:ConstraintForm1} to simplify the second term of this expansion, and eliminate the third altogether; we then proceed:}
 %
 \epsilon^2_a &= \left< \widehat{E}^2_a \right> - E^2_a \\
 %
-&= \left< \left(\sum_{if}\left[ A_{ifa} \widetilde{X}_i^R[f] + B_{ifa} \widetilde{X}_i^I[f]\right]\right)^2\right> - E^2_a \\
+&= \left< \left(\sum_{if}\left[ A_{ia}[f] \widetilde{X}_i^R[f] + B_{ia}[f] \widetilde{X}_i^I[f]\right]\right)^2\right> - E^2_a \\
 %
 & \begin{aligned}= \bigg< \bigg(&
-  \sum_{if} \left[ A_{ifa} \widetilde{N}_i^R[f] + B_{ifa} \widetilde{N}_i^I[f]\right] \\
-  & + \sum_{ifb} \left[ A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]M_{ib}  \bigg)^2 \bigg> - E^2_a
+  \sum_{if} \left[ A_{ia}[f] \widetilde{N}_i^R[f] + B_{ia}[f] \widetilde{N}_i^I[f]\right] \\
+  & + \sum_{ifb} \left[ A_{ia}[f] \widetilde{Y}_{ib}^R[f] + B_{ia}[f] \widetilde{Y}_{ib}^I[f]\right]M_{ib}  \bigg)^2 \bigg> - E^2_a
 \end{aligned} \\
 %
-\intertext{The noise $\widetilde{N}$ and signal $M_{ia}$ are uncorrelated, so multiplicative cross-terms will have an expectation value of zero:}
+\intertext{The noise $\widetilde{N}$ and signal $M_{ia}$ are uncorrelated, so multiplicative cross-terms have an expectation value of zero:}
 %
-\epsilon^2_a &= \left< \left(\sum_{if} \left[ A_{ifa} \widetilde{N}_i^R[f] + B_{ifa} \widetilde{N}_i^I[f]\right]\right)^2\right> \nonumber \\
-&\quad + \left<\left(\sum_{ifb} \left[ A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]M_{ib} \right)^2 \right> - E^2_a \\
+\epsilon^2_a &= \left< \left(\sum_{if} \left[ A_{ia}[f] \widetilde{N}_i^R[f] + B_{ia}[f] \widetilde{N}_i^I[f]\right]\right)^2\right> \nonumber \\
+&\quad + \left<\left(\sum_{ifb} \left[ A_{ia}[f] \widetilde{Y}_{ib}^R[f] + B_{ia}[f] \widetilde{Y}_{ib}^I[f]\right]M_{ib} \right)^2 \right> - E^2_a \\
 %
-\intertext{Additionally, electronic noise cross-terms between different frequencies will not survive:}
+\intertext{Additionally, electronic noise cross-terms between different frequencies evaluate to zero:}
 %
-\epsilon^2_a &= \left< \sum_{ijf} \left[ A_{ifa} \widetilde{N}_i^R[f] + B_{ifa} \widetilde{N}_i^I[f]\right] \left[ A_{jfa} \widetilde{N}_j^R[f] + B_{jfa} \widetilde{N}_j^I[f]\right] \right> \nonumber \\
-&\quad + \left<\left(\sum_{ifb} \left[ A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]M_{ib} \right)^2 \right> - E^2_a \\
+\epsilon^2_a &= \left< \sum_{ijf} \left[ A_{ia}[f] \widetilde{N}_i^R[f] + B_{ia}[f] \widetilde{N}_i^I[f]\right] \left[ A_{ja}[f] \widetilde{N}_j^R[f] + B_{ja}[f] \widetilde{N}_j^I[f]\right] \right> \nonumber \\
+&\quad + \left<\left(\sum_{ifb} \left[ A_{ia}[f] \widetilde{Y}_{ib}^R[f] + B_{ia}[f] \widetilde{Y}_{ib}^I[f]\right]M_{ib} \right)^2 \right> - E^2_a \\
 %
 & \begin{aligned}
-  = \sum_{ijf} \bigg[ & A_{ifa}A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + A_{ifa}B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right> \nonumber \\
-  & + B_{ifa}A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ifa}B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\bigg] \end{aligned} \nonumber \\
-&\quad + \sum_{\substack{ifb\\jgc}} \left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]\left[A_{jga} \widetilde{Y}_{jc}^R[g] + B_{jga} \widetilde{Y}_{jc}^I[g]\right] \left<M_{ib}M_{jc}\right> - E^2_a \\
+  = \sum_{ijf} \bigg[ & A_{ia}[f]A_{ja}[f] \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + A_{ia}[f]B_{ja}[f] \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right> \nonumber \\
+  & + B_{ia}[f]A_{ja}[f] \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ia}[f]B_{ja}[f] \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\bigg] \end{aligned} \nonumber \\
+&\quad + \sum_{\substack{ifb\\jgc}} \left[A_{ia}[f] \widetilde{Y}_{ib}^R[f] + B_{ia}[f] \widetilde{Y}_{ib}^I[f]\right]\left[A_{ja}[g] \widetilde{Y}_{jc}^R[g] + B_{ja}[g] \widetilde{Y}_{jc}^I[g]\right] \left<M_{ib}M_{jc}\right> - E^2_a \\
 %
-\intertext{We will now expand $\left<M_{ib}M_{jc}\right>$ using equation~\ref{eqn:MMcorrelations} and take advantage of the stronger form of our constraint~\ref{eqn:ConstraintForm3} to simplify the expression:}
+\intertext{We now expand $\left<M_{ib}M_{jc}\right>$ using equation~\ref{eqn:DefnOfMFromE} and take advantage of the stronger form of our constraint~\ref{eqn:ConstraintForm3} to simplify the expression:}
 %
 \epsilon^2_a & \begin{aligned}[t]
-  = \sum_{ijf} \bigg[ & A_{ifa}A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + A_{ifa}B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right> \\
-  & + B_{ifa}A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ifa}B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\bigg] \end{aligned} \nonumber \\
-&\quad + \left( \sum_{ifb} \left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) E_b \right)^2 - E^2_a \nonumber \\
-&\quad - \sum_b \left( \sum_{if} \left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) \right)^2 \frac{E_b}{c} \nonumber \\
+  = \sum_{ijf} \bigg[ & A_{ia}[f]A_{ja}[f] \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + A_{ia}[f]B_{ja}[f] \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right> \\
+  & + B_{ia}[f]A_{ja}[f] \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ia}[f]B_{ja}[f] \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\bigg] \end{aligned} \nonumber \\
+&\quad + \left( \sum_{ifb} \left[A_{ia}[f] \widetilde{Y}_{ib}^R[f] + B_{ia}[f] \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) E_b \right)^2 - E^2_a \nonumber \\
+&\quad - \sum_b \left( \sum_{if} \left[A_{ia}[f] \widetilde{Y}_{ib}^R[f] + B_{ia}[f] \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) \right)^2 \frac{E_b}{c} \nonumber \\
 &\quad \begin{aligned}
-  + \sum_{ifgb} &\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]\left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \cdot \\
+  + \sum_{ifgb} &\left[A_{ia}[f] \widetilde{Y}_{ib}^R[f] + B_{ia}[f] \widetilde{Y}_{ib}^I[f]\right]\left[A_{ia}[g] \widetilde{Y}_{ib}^R[g] + B_{ia}[g] \widetilde{Y}_{ib}^I[g]\right] \cdot \\
   & \begin{aligned}
     L_i(\vec{x}_b,t_b) E_b \bigg[ &(0.1 + 1.9) G^E_i(t_b) G^D_i(t_b) \\
     & + \frac{G^E_i(t_b)}{G^D_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^D_i(t_b)\right)^2} \bigg]
 \end{aligned} \end{aligned} \\
 %
 & \begin{aligned}
-  = \sum_{ijf} \bigg[ & A_{ifa}A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + A_{ifa}B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right> \\
-  & + B_{ifa}A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ifa}B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\bigg] \end{aligned} \nonumber \\
+  = \sum_{ijf} \bigg[ & A_{ia}[f]A_{ja}[f] \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + A_{ia}[f]B_{ja}[f] \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right> \\
+  & + B_{ia}[f]A_{ja}[f] \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ia}[f]B_{ja}[f] \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\bigg] \end{aligned} \nonumber \\
 &\quad \begin{aligned}
-  + \sum_{ib} &\left( \sum_f \left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right]\right)^2 \cdot \\
+  + \sum_{ib} &\left( \sum_f \left[A_{ia}[f] \widetilde{Y}_{ib}^R[f] + B_{ia}[f] \widetilde{Y}_{ib}^I[f]\right]\right)^2 \cdot \\
   & \begin{aligned}
     L_i(\vec{x}_b,t_b) E_b \bigg[ &(0.1 + 1.9) G^E_i(t_b) G^D_i(t_b) \\
     & + \frac{G^E_i(t_b)}{G^D_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^D_i(t_b)\right)^2} \bigg]
@@ -502,54 +369,54 @@ We now proceed with the optimization.  We start by expanding $\epsilon^2_a$:
 &\quad - \frac{E_a}{c}
 \end{align}
 
-We are now in a position to evaluate the partial derivatives of $\epsilon^2_a$ with respect to the parameters $A_{ifa}$ and $B_{ifa}$.  They are:
+We are now in a position to evaluate the partial derivatives of $\epsilon^2_a$ with respect to the parameters $A_{ia}[f]$ and $B_{ia}[f]$.  They are:
 \begin{subequations}\begin{align}
-\frac{\partial \epsilon^2_a}{\partial A_{ifa}} &= 2 \sum_j \left[ A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right>\right] \nonumber \\
+\frac{\partial \epsilon^2_a}{\partial A_{ia}[f]} &= 2 \sum_j \left[ A_{ja}[f] \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + B_{ja}[f] \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right>\right] \nonumber \\
 &\quad \begin{aligned}
-  + 2 \sum_{gb} & E_b\widetilde{Y}_{ib}^R[f] L_i(\vec{x}_b,t_b)\left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \cdot \\
+  + 2 \sum_{gb} & E_b\widetilde{Y}_{ib}^R[f] L_i(\vec{x}_b,t_b)\left[A_{ia}[g] \widetilde{Y}_{ib}^R[g] + B_{ia}[g] \widetilde{Y}_{ib}^I[g]\right] \cdot \\
   & \begin{aligned}
     \bigg[ &(0.1 + 1.9) G^E_i(t_b) G^D_i(t_b) \\
   & + \frac{G^E_i(t_b)}{G^D_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^D_i(t_b)\right)^2} \bigg]
 \end{aligned} \end{aligned}\\
 %
-\frac{\partial \epsilon^2_a}{\partial B_{ifa}} &= 2 \sum_j \left[ A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\right] \nonumber \\
+\frac{\partial \epsilon^2_a}{\partial B_{ia}[f]} &= 2 \sum_j \left[ A_{ja}[f] \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ja}[f] \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\right] \nonumber \\
 &\quad \begin{aligned}
-  + 2 \sum_{gb} & E_b\widetilde{Y}_{ib}^I[f] L_i(\vec{x}_b,t_b)\left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \cdot \\
+  + 2 \sum_{gb} & E_b\widetilde{Y}_{ib}^I[f] L_i(\vec{x}_b,t_b)\left[A_{ia}[g] \widetilde{Y}_{ib}^R[g] + B_{ia}[g] \widetilde{Y}_{ib}^I[g]\right] \cdot \\
   & \begin{aligned}
     \bigg[ &(0.1 + 1.9) G^E_i(t_b) G^D_i(t_b) \\
   & + \frac{G^E_i(t_b)}{G^D_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^D_i(t_b)\right)^2} \bigg]
 \end{aligned} \end{aligned}
 \end{align}\end{subequations}
 
-We will use Lagrange's method to minimize $\epsilon^2_a$ while satisfying our constraints; we define
+We use Lagrange's method to minimize $\epsilon^2_a$ while satisfying our constraints; we define
 \begin{equation}
-C_{ab} = \sum_{if}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b),
+C_{ab} = \sum_{if}\left[A_{ia}[f] \widetilde{Y}_{ib}^R[f] + B_{ia}[f] \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b),
 \end{equation}
-with ordered indices, and restate the constraints of equation~\ref{eqn:ConstraintForm3} as
+where the indices of $C_{ab}$ are ordered, and restate the constraints of equation~\ref{eqn:ConstraintForm3} as
 \begin{equation}
 C_{ab} = \delta_{ab}.
 \end{equation}
 Then, the partial derivatives of these constrained expressions are:
 \begin{subequations}\begin{align}
-\frac{\partial C_{bc}}{\partial A_{ifa}} &= \widetilde{Y}^R_{ic}[f] L_i(\vec{x}_c,t_c) \delta_{ab} \\
-\frac{\partial C_{bc}}{\partial B_{ifa}} &= \widetilde{Y}^I_{ic}[f] L_i(\vec{x}_c,t_c) \delta_{ab}
+\frac{\partial C_{bc}}{\partial A_{ia}[f]} &= \widetilde{Y}^R_{ic}[f] L_i(\vec{x}_c,t_c) \delta_{ab} \\
+\frac{\partial C_{bc}}{\partial B_{ia}[f]} &= \widetilde{Y}^I_{ic}[f] L_i(\vec{x}_c,t_c) \delta_{ab}
 \end{align}\end{subequations}
 
 Denoting the set of Lagrange multipliers for $\epsilon^2_a$ with $\lambda_{ab}$, where the indices are ordered, and allowing these parameters to absorb constant factors, we can at last identify the full set of linear equations describing the optimal energy estimator $\widehat{E}_a$:
 \begin{subequations}\begin{align}
-&\sum_j \left[ A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right>\right]\nonumber\\
+&\sum_j \left[ A_{ja}[f] \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + B_{ja}[f] \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right>\right]\nonumber\\
 &+ \sum_{gb} \begin{aligned}[t]
-  & E_b\widetilde{Y}_{ib}^R[f] L_i(\vec{x}_b,t_b)\left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \cdot \\
+  & E_b\widetilde{Y}_{ib}^R[f] L_i(\vec{x}_b,t_b)\left[A_{ia}[g] \widetilde{Y}_{ib}^R[g] + B_{ia}[g] \widetilde{Y}_{ib}^I[g]\right] \cdot \\
   & \left[ (0.1 + 1.9) G^E_i(t_b) G^D_i(t_b) + \frac{G^E_i(t_b)}{G^D_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^D_i(t_b)\right)^2} \right] \end{aligned} \nonumber \\
 &+ \sum_b \lambda_{ab} \widetilde{Y}^R_{ib}[f] L_i(\vec{x}_b,t_b) = 0 \qquad \qquad \qquad \qquad \quad \text{for each $i$, $f$}\\
 %
-&\sum_j \left[ A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\right]\nonumber\\
+&\sum_j \left[ A_{ja}[f] \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ja}[f] \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\right]\nonumber\\
 &+ \sum_{gb} \begin{aligned}[t]
-  & E_b\widetilde{Y}_{ib}^I[f] L_i(\vec{x}_b,t_b)\left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \cdot \\
+  & E_b\widetilde{Y}_{ib}^I[f] L_i(\vec{x}_b,t_b)\left[A_{ia}[g] \widetilde{Y}_{ib}^R[g] + B_{ia}[g] \widetilde{Y}_{ib}^I[g]\right] \cdot \\
   & \left[ (0.1 + 1.9) G^E_i(t_b) G^D_i(t_b) + \frac{G^E_i(t_b)}{G^D_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^D_i(t_b)\right)^2} \right] \end{aligned} \nonumber\\
 &+ \sum_b \lambda_{ab} \widetilde{Y}^I_{ib}[f] L_i(\vec{x}_b,t_b) = 0 \qquad \qquad \qquad \qquad \quad \text{for each $i$, $f$}\\
 %
-&\sum_{if}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) = \delta_{ab} \qquad \text{for each $b$}
+&\sum_{if}\left[A_{ia}[f] \widetilde{Y}_{ib}^R[f] + B_{ia}[f] \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) = \delta_{ab} \qquad \text{for each $b$}
 \end{align}\end{subequations}
 
 To simplify the notation, let us define a new function:
@@ -559,26 +426,28 @@ q(i,b) := \begin{aligned}[t]
   &+ L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^D_i(t_b)\right)^2}\bigg)L_i(\vec{x}_b, t_b) E_b
 \end{aligned}
 \end{equation}
-which we note should be strictly positive if measured correctly (because all gains and lightmap values should be strictly positive, and all variances are non-negative).  Using this shorthand, we can re-write our system of equations in the more compact form:
+which we note should be strictly positive if measured correctly (because all gains and lightmap values should be strictly positive, and all variances are non-negative).  Using this shorthand, we re-write our system of equations in the more compact form:
 \begin{subequations} \label{eqn:SystemToSolve} \begin{align}
-&\sum_j \left[ A_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right>\right] \notag \\
-&+ \sum_{gb} \widetilde{Y}_{ib}^R[f] q(i,b) \left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \notag \\
+&\sum_j \left[ A_{ja}[f] \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + B_{ja}[f] \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right>\right] \notag \\
+&+ \sum_{gb} \widetilde{Y}_{ib}^R[f] q(i,b) \left[A_{ia}[g] \widetilde{Y}_{ib}^R[g] + B_{ia}[g] \widetilde{Y}_{ib}^I[g]\right] \notag \\
 &+ \sum_b \lambda_{ab} \widetilde{Y}^R_{ib}[f] L_i(\vec{x}_b,t_b) = 0 \qquad \qquad \qquad \qquad \quad \text{for each $i$, $f$}\\
 %
-&\sum_j \left[ A_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{jfa} \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\right] \notag \\
-&+ \sum_{gb} \widetilde{Y}_{ib}^I[f] q(i,b) \left[A_{iga} \widetilde{Y}_{ib}^R[g] + B_{iga} \widetilde{Y}_{ib}^I[g]\right] \notag \\
+&\sum_j \left[ A_{ja}[f] \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ja}[f] \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\right] \notag \\
+&+ \sum_{gb} \widetilde{Y}_{ib}^I[f] q(i,b) \left[A_{ia}[g] \widetilde{Y}_{ib}^R[g] + B_{ia}[g] \widetilde{Y}_{ib}^I[g]\right] \notag \\
 &+ \sum_b \lambda_{ab} \widetilde{Y}^I_{ib}[f] L_i(\vec{x}_b,t_b) = 0 \qquad \qquad \qquad \qquad \quad \text{for each $i$, $f$}\\
 %
-&\sum_{if}\left[A_{ifa} \widetilde{Y}_{ib}^R[f] + B_{ifa} \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) = \delta_{ab} \qquad \text{for each $b$}
+&\sum_{if}\left[A_{ia}[f] \widetilde{Y}_{ib}^R[f] + B_{ia}[f] \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) = \delta_{ab} \qquad \text{for each $b$}
 \end{align} \end{subequations}
 
-It is important to note here that energies $E_b$, which we are intending to measure, do in fact enter into this linear set of equations.  At first this would seem to demonstrate that the equations here are impossible to apply, but in fact they remind us that the forms of noise which are correlated with the signal are also dependent on the magnitude of that signal.  Statistical fluctuations in the number of photons observed on each APD, for instance, scale like the square root of the number of photons emitted.
+It is important to note here that energies $E_b$, which we are intending to measure, do in fact enter into this linear set of equations.  At first this would seem to demonstrate that the equations here are impossible to apply, but in fact they remind us that our Poissonian noise, which is correlated with the signal, is also dependent on the magnitude of that signal.  Statistical fluctuations in the number of photons observed on each APD, for instance, scale like the square root of the number of photons emitted.
 
 We can see, then, that some estimate of energy is necessary to know the relative importance of different forms of noise.  But the constraint equation ensures that our estimate will be unbiased regardless of what energy estimates are fed into the system of equations, so we can be confident that it is only a rough estimate of the energy scale which is needed, and not worry that the optimization will be biased to estimate energies similar to the estimates we feed in.  For this purpose, it is sufficient to use the charge-only energy as an estimate of the scintillation-only energy.
 
+The optimal energy estimator is now fully specified by the parameters $A_{ia}[f]$ and $B_{ia}[f]$ which solve equations~\ref{eqn:SystemToSolve}, and the theory of denoising is fully specified.  Sections~\ref{sec:MatrixFormulationOfDenoising}-\ref{sec:DenoisingComputationalConsiderations} will consider the computational aspects of solving for this energy estimator.
+
 \section{Matrix Formulation of Denoising}\label{sec:MatrixFormulationOfDenoising}
 
-Because the system of equations above is linear in $A_{ifa}$ and $B_{ifa}$, we wish to solve it as a matrix equation.  This requires, first, that we choose an ordering of the unknowns; the best ordering will be the one which groups nonzero entries into blocks, since this will allow us to make more efficient use of matrix libraries.  We define:
+Because the system of equations above is linear in $A_{ia}[f]$ and $B_{ia}[f]$, we wish to solve it as a matrix equation.  This requires, first, that we choose an ordering of the unknowns; the best ordering will be the one which groups nonzero entries into blocks, since this will allow us to make more efficient use of matrix libraries.  We define:
 \begin{equation}
 \vec{A}_a = (A_{1 1 a}, B_{1 1 a}, A_{2 1 a}, B_{2 1 a}, \dots, B_{i_{max} 1 a}, A_{1 2 a}, \dots, A_{1 f_{max} a}, A_{2 f_{max} a}, \dots, A_{i_{max} f_{max} a})
 \end{equation}
@@ -890,7 +759,7 @@ In this section we outline the places where the denoising used for the current p
 \begin{equation}
 \left< P^{(3)}_{ia} P^{(3)}_{jb} \right> = (1.9)^2 \cdot G^D_i(t_a)G^D_j(t_b) \left< P^{(1)}_{ia} P^{(1)}_{jb} \right>.
 \end{equation}
-\item We have described with equation~\ref{eqn:ValueOfGE} that the electronic gain is treated as having a constant value of $1.1 \cdot 10^{-3}$ ADC counts per electron emitted from the APDs.  The wires use a similar set of electronics; however, their gain is nominally set to a different value of roughly $6.3 \cdot 10^{-4}$ ADC counts per electron collected on the wires. In the EXO code the two numbers are mistakenly reversed.  As a result, $G^E_i(t)$ was underestimated by almost a factor of two; the effect of this is to overestimate by almost a factor of two the number of photons being deposited on APDs, which again causes us to underestimate the signal variance introduced within the APDs.
+\item We have described with equation~\ref{eqn:ApproxForGE} that the electronic gain is treated as having a constant value of $1.1 \cdot 10^{-3}$ ADC counts per electron emitted from the APDs.  The wires use a similar set of electronics; however, their gain is nominally set to a different value of roughly $6.3 \cdot 10^{-4}$ ADC counts per electron collected on the wires. In the EXO code the two numbers are mistakenly reversed.  As a result, $G^E_i(t)$ was underestimated by almost a factor of two; the effect of this is to overestimate by almost a factor of two the number of photons being deposited on APDs, which again causes us to underestimate the signal variance introduced within the APDs.
 \end{itemize}
 
 \begin{figure}
