@@ -1,7 +1,5 @@
 A list of things I really need to make sure I do (denoising chapter):
 
-Careful how I use the terms signal and event!!
-
 Plot of pulse and noise power spectra.
 
 f(\vec{x}) is for single-site; i should explicitly say that it's a weighted sum for multisite.
