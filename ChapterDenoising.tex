@@ -534,7 +534,7 @@ The constraint equations are represented by a matrix $\mathbf{C}$ with rows that
 \end{matrix}\end{equation}
 
 Finally it is possible to restate the full linear equation specified above in matrix form, where we can simultaneously include the equations for all of the estimators $\widehat{E}_a$:
-\begin{equation}
+\begin{equation}\label{eqn:FullMatrixFormulation}
 \begin{pmatrix}
 \mathbf{N} + \mathbf{P} & \mathbf{C}^{\top} \\
 \mathbf{C} & \mathbf{0}
@@ -549,9 +549,11 @@ The matrix $\mathbf{N}$ is the same as the covariance matrix of the electronic n
 
 We also note the important observation that this matrix is sparse.  Given roughly $1000$ frequency components in our Fourier-transformed waveforms, only $0.1\%$ of the entries of $\mathbf{N}$ are non-zero.  And with $70$ APD channels and only a small number of scintillation clusters we wish to denoise, the combined number of non-zero entries in $\mathbf{P}_1$ and $\mathbf{P}_2$ is easily an order of magnitude less than the number of non-zero entries in $\mathbf{N}$.  As a result, we can conclude that this matrix is extremely sparse, and should ensure that whatever method we use to solve these equations takes advantage of this sparsity.
 
-\section{Preconditioning of the Matrix Formulation}
+The resulting system of equations~\ref{eqn:FullMatrixFormulation} fully specifies the optimal energy estimators for all scintillation clusters in an event.  In sections \ref{sec:Preconditioning}-\ref{sec:DenoisingComputationalConsiderations} we discuss computational aspects of the efficient solution of that system of equations.
 
-We have specified a matrix equation which we now wish to solve.  However, it is generally recommended that large matrix equations should not be solved directly.  Instead, it is recommended that the matrix should be preconditioned.  This means that if a matrix equation $\mathbf{A}\vec{x} = \vec{b}$ should be solved, one should first find a matrix $\mathbf{A}'$ which is approximately equal to $\mathbf{A}$ and which is easily invertible.  Finding the right balance between the quality of the approximation $\mathbf{A}' \approx \mathbf{A}$ and the difficulty of computing the inverse $\left(\mathbf{A}'\right)^{-1}$ is more art than science, but we will present here a preconditioning matrix which seems to strike a good balance for this particular system.
+\section{Preconditioning of the Matrix Formulation}\label{sec:Preconditioning}
+
+We have specified scintillation energy estimators with matrix equation~\ref{eqn:FullMatrixFormulation} which we now wish to solve.  However, it is generally recommended that large matrix equations should not be solved directly.  Instead, it is recommended that the matrix should be preconditioned.  This means that if a matrix equation $\mathbf{A}\vec{x} = \vec{b}$ should be solved, one should first find a matrix $\mathbf{A}'$ which is approximately equal to $\mathbf{A}$ and which is easily invertible.  Finding the right balance between the quality of the approximation $\mathbf{A}' \approx \mathbf{A}$ and the difficulty of computing the inverse $\left(\mathbf{A}'\right)^{-1}$ is more art than science, but we will present here a preconditioning matrix which seems to strike a good balance for this particular system.
 
 The matrix equation we wish to solve takes the form:
 \begin{equation}\begin{pmatrix}
@@ -665,7 +667,7 @@ This preconditioned set of equations is numerically quite stable.  It is also po
 \mathbf{\widetilde{A}}_0 = \begin{pmatrix}\mathbf{0}\\ \mathbf{H}^{-1}\end{pmatrix}
 \end{equation}
 Based on these various advantages, it is this system which we attempt to solve rather than the original form.  Below we define matrices $\mathbf{M}$ and $\mathbf{B}$ for convenience, and summarize the system to be solved:
-\begin{subequations}\begin{align}
+\begin{subequations}\label{eqn:FinalPreconditionedSystem}\begin{align}
 \mathbf{M} &= \mathbf{K}_1^{-1} 
 \left[
 \begin{pmatrix}\mathbf{D}^{-1/2}\mathbf{ND}^{-1/2}&\mathbf{0}\\ \mathbf{0}&\mathbf{0}\end{pmatrix}
@@ -816,4 +818,4 @@ In any case, it is possible to apply equations~\ref{eqn:SystemToSolve} to a syst
 
 \section{Summary}
 
-We have shown in this chapter that a technique exists to produce an optimal linear energy estimate for the scintillation clusters in EXO-200.  It requires detailed knowledge of the origins of noise in APD waveforms and a full lightmap describing the scintillation yield on each channel as a function of cluster position.  Chapters~\ref{ch:NoiseMeasurements} and \ref{ch:Lightmap} describe aspects of how we measure electronic noise and the APD lightmap, both of which have proven to be critical inputs to denoising.  We will show in section~\ref{sec:ResultComparison} that the result is a significant improvement in the energy resolution of EXO-200 and a corresponding increase in its sensitivity to $\beta\beta 0\nu$ decay.
+We have shown in this chapter that a technique exists to produce an optimal linear energy estimate for the scintillation clusters in EXO-200 and is fully described by equations~\ref{eqn:FinalPreconditionedSystem}.  It requires detailed knowledge of the origins of noise in APD waveforms and a full lightmap describing the scintillation yield on each channel as a function of cluster position.  Chapters~\ref{ch:NoiseMeasurements} and \ref{ch:Lightmap} describe aspects of how we measure electronic noise and the APD lightmap, both of which have proven to be critical inputs to denoising.  We will show in section~\ref{sec:ResultComparison} that the result is a significant improvement in the energy resolution of EXO-200 and a corresponding increase in its sensitivity to $\beta\beta 0\nu$ decay.
