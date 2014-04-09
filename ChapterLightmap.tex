@@ -66,8 +66,8 @@ One simple scheme to find $R$ and $S$ iteratively is described in algorithm~\ref
 \STATE Tabulate, using the best energy measurement available, a list of single-site 2615-keV events from Thorium-228 source data. \label{algline:LightmapFormListOfHits}
 \STATE Set $S(t) = 1$ for all APD channels.
 \REPEAT
-  \STATE For each APD channel, estimate $R(\vec{x}) = L(\vec{x},t)/S(t)$ from the set of events tabulated in line ~\ref{algline:LightmapFormListOfHits}.
-  \STATE For each APD channel, estimate $S(t) = L(\vec{x},t)/R(\vec{x})$ from the set of events tabulated in line ~\ref{algline:LightmapFormListOfHits}.
+  \STATE For each APD channel, estimate $R(\vec{x}) = L(\vec{x},t)/S(t)$ from the set of events tabulated in line~\ref{algline:LightmapFormListOfHits}.
+  \STATE For each APD channel, estimate $S(t) = L(\vec{x},t)/R(\vec{x})$ from the set of events tabulated in line~\ref{algline:LightmapFormListOfHits}.
 \UNTIL convergence is reached.
 \end{algorithmic}
 \end{algorithm}
@@ -127,7 +127,7 @@ The choice of binning or parametrization for $R(\vec{x})$ and $S(t)$ can have a 
 
 Our treatment of the convergence of algorithm~\ref{alg:LightmapScheme} and the resulting statistical errors in $L(\vec{x}, t)$ is rudimentary.  Cronvergence is checked not by analysis of the lightmap itself, but by verifying that the energy resolution from denoising is not improved by further iterations through algorithm~\ref{alg:LightmapScheme}.  Lightmap errors do not directly enter into the calculations of denoising (which treats the lightmap as perfectly known), so they are not estimated at all in the current analysis.
 
-As a proxy for estimation of the statistical errors in the lightmap, we instead study the number of hits observed in each position voxel of the detector (see section ~\ref{sec:LightmapVisualization}), and presume that the most significant source of error comes from low-statistics regions of the detector.  This information can motivate future data-taking campaigns to probe the light response in those regions of the detector and reduce these uncertainties.  However, no explicit estimation of the lightmap uncertainty has been attempted.
+As a proxy for estimation of the statistical errors in the lightmap, we instead study the number of hits observed in each position voxel of the detector (see section~\ref{sec:LightmapVisualization}), and presume that the most significant source of error comes from low-statistics regions of the detector.  This information can motivate future data-taking campaigns to probe the light response in those regions of the detector and reduce these uncertainties.  However, no explicit estimation of the lightmap uncertainty has been attempted.
 
 One difficulty with estimating the errors in the lightmap function $L(\vec{x},t)$ comes from the correlation between errors in $R(\vec{x})$ and $S(t)$.  If one of those two components were known perfectly, then we could treat the fit uncertainties of each hit as independent errors, and propagate those errors into an uncertainty for each voxel of $R(\vec{x})$ (if $S(t)$ is assumed to be perfectly known) or $S(t)$ (if $R(\vec{x})$ is assumed to be perfectly known).  But on the contrary, all of the measurements of $R(\vec{x})$ are correlated with all of the measurements of $S(t)$, meaning that even the errors of different voxels of $R(\vec{x})$ or different times in $S(t)$ are correlated with each other.  Fully characterizing these errors would require a significant effort and computation.
 

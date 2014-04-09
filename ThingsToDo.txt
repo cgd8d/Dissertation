@@ -1,3 +1,14 @@
+Don't forget to search again for \textcolor!!
+
+Tighten up discussion of why noise at different frequencies is "uncorrelated" (ie. to lowest order it is uncorrelated, higher-order correlations not considered).
+
+
+
+
+
+
+
+
 A list of things I really need to make sure I do (denoising chapter):
 
 Plot of pulse and noise power spectra.
