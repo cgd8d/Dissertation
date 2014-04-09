@@ -200,11 +200,12 @@ Finally, there is amplification $G^E_i(t)$ associated with the electronics of th
 Although we assume that no noise correlated with pulses is introduced during this stage, there is electronic noise $N_i[\tau]$ introduced at this stage which has been described above and is uncorrelated with the pulses.  Additionally, the APDs can contribute noise in the form of a dark current which is uncorrelated with pulses; this is inseparable from the electronic noise, and so we absorb it into our description of $N_i[\tau]$.
 
 Equations~\ref{eqn:CorrelationsOfP1}, \ref{eqn:CorrelationsOfP2}, \ref{eqn:CorrelationsOfP3}, and \ref{eqn:DefnOfMFromP3} collectively chart the mean and variance of the APD pulse magnitudes at each step of readout and amplification.  We can eliminate the intermediate terms $P^{(1)}_{ia}$, $P^{(2)}_{ia}$, and $P^{(3)}_{ia}$ by substitution and obtain a full description for the first and second moments of the pulse magnitudes $M_{ia}$, $M_{jb}$ depending only on the unknown numbers of emitted photons $P^{(0)}_a$, $P^{(0)}_b$ and not on any random variables:
-\begin{IEEEeqnarray}{cCl}\IEEEyesnumber\phantomsection\label{eqn:DefnOfMFromP0}
+\begin{IEEEeqnarray}{cCll}\IEEEyesnumber\phantomsection\label{eqn:DefnOfMFromP0}
 \left<M_{ia} \right> &=& 1.9 \cdot G_i(t_a) f_i(\vec{x}_a) P^{(0)}_a \IEEEyessubnumber\label{eqn:DefnOfMFromP0_Mean}\\
-\left<M_{ia}M_{jb}\right> &=& (1.9)^2 \cdot G_i(t_a) G_j(t_b) f_i(\vec{x}_a)f_j(\vec{x}_b) P^{(0)}_a P^{(0)}_b\left(1 + \frac{\sigma_{NU}^2}{\left(G_i^D(t_a)\right)^2} \delta_{ij}\delta_{ab}\right) \nonumber \\
-& & {}- (1.9)^2 \cdot G_i(t_a)G_j(t_a) f_i(\vec{x}_a)f_j(\vec{x}_a)P^{(0)}_a \delta_{ab} \IEEEyessubnumber\\
-& & {}+ (1.9)\cdot G_i(t_a) G^E_i(t_a)f_i(\vec{x}_a) P^{(0)}_a \delta_{ij}\delta_{ab} \left[ (1.9 + 0.1)G_i^D(t_a) + \frac{\sigma^2_{G_i}(t_a)}{G_i^D(t_a)}\right],\nonumber
+\left<M_{ia}M_{jb}\right> &=& \mathrlap{(1.9)^2 \cdot G_i(t_a) G_j(t_b) f_i(\vec{x}_a)f_j(\vec{x}_b) P^{(0)}_a P^{(0)}_b} \nonumber \\
+& & \mathrlap{{}- (1.9)^2 \cdot G_i(t_a)G_j(t_a) f_i(\vec{x}_a)f_j(\vec{x}_a)P^{(0)}_a \delta_{ab}} \IEEEyessubnumber\\
+& & {}+ 1.9\cdot \left(G^E_i(t_a)\right)^2 f_i(\vec{x}_a) P^{(0)}_a \bigg[ & \left[(0.1+1.9) + 1.9 \cdot f_i(\vec{x}_1)\left(P_a^{(0)}-1\right)\right]\sigma_{NU}^2 \nonumber \\
+& & &{}+ (1.9 + 0.1)\left(G_i^D(t_a)\right)^2 + \sigma^2_{G_i}(t_a)\bigg]\delta_{ij}\delta_{ab},\nonumber
 \end{IEEEeqnarray}
 where for notational convenience we have defined $G_i(t) = G_i^E(t)G_i^D(t)$ as the product of the electronic and APD gains.
 
@@ -239,11 +240,28 @@ We can now combine equations~\ref{eqn:DefineLByEandM}, \ref{eqn:DefnOfMFromP0_Me
 L_i(\vec{x}, t) = 1.9 \cdot c f_i(\vec{x}) G_i(t).
 \end{equation}
 We use this relation and equation~\ref{eqn:DefnOfP0} to eliminate $f_i(\vec{x})$ from equation~\ref{eqn:DefnOfMFromP0} and restate the moments of the pulse magnitudes $M_{ia}$ as:
-\begin{IEEEeqnarray}{cCl}\phantomsection\label{eqn:DefnOfMFromE}
+\begin{IEEEeqnarray}{cCll}\phantomsection\label{eqn:DefnOfMFromE_long}
+\left<M_{ia} \right> &=& L_i(\vec{x}_a, t_a) E_a \IEEEyesnumber\IEEEyessubnumber\\
+\left<M_{ia}M_{jb}\right> &=& \mathrlap{L_i(\vec{x}_a, t_a) L_j(\vec{x}_b, t_b) E_a E_b} \nonumber \\
+& & \mathrlap{{}- L_i(\vec{x}_a, t_a) L_j(\vec{x}_a, t_a) E_a \delta_{ab}/c} \IEEEyessubnumber\\
+& & {}+ L_i(\vec{x}_a, t_a)E_a \bigg[& \left[(0.1+1.9)G_i(t_a) + L_i(\vec{x}_a,t_a)\left(E_a - 1/c\right)\right]\frac{\sigma^2_{NU}}{\left(G^D_i(t_a)\right)^2} \nonumber \\
+& & & {}+ (0.1 + 1.9)G_i(t_a) + \frac{G^E_i(t_a)}{G^D_i(t_a)}\sigma^2_{G_i}(t_a)\bigg]\delta_{ij}\delta_{ab}.\nonumber
+\end{IEEEeqnarray}
+To simplify the notation, let us define a new function:
+\begin{equation} \label{eqn:DefinitionOfQ}
+q(i,a) := L_i(\vec{x}_a, t_a)E_a \bigg[\begin{aligned}[t]& \left[(0.1+1.9)G_i(t_a) + L_i(\vec{x}_a,t_a)\left(E_a - 1/c\right)\right]\frac{\sigma^2_{NU}}{\left(G^D_i(t_a)\right)^2} \\
+& {}+ (0.1 + 1.9)G_i(t_a) + \frac{G^E_i(t_a)}{G^D_i(t_a)}\sigma^2_{G_i}(t_a)\bigg]\end{aligned}
+%q(i,a) := \frac{G^E_i(t_a)}{G^D_i(t_a)}L_i(\vec{x}_a, t_a)E_a \begin{aligned}[t]
+%  \bigg( &\left[(0.1+1.9) + 1.9\cdot f_i(\vec{x}_a)\left(c E_a - 1\right)\right]\sigma^2_{NU} \\
+%  &+ (0.1 + 1.9)\left(G^D_i(t_a)\right)^2 + \sigma^2_{G_i}(t_a)\bigg)
+%\end{aligned}
+\end{equation}
+which we note should be strictly positive if measured correctly (because all gains and lightmap values should be strictly positive, and all variances are non-negative).  Using this shorthand, we re-write the expectation values of equation~\ref{eqn:DefnOfMFromE_long} in the more compact form:
+\begin{IEEEeqnarray}{cCll}\phantomsection\label{eqn:DefnOfMFromE}
 \left<M_{ia} \right> &=& L_i(\vec{x}_a, t_a) E_a \IEEEyesnumber\IEEEyessubnumber\label{eqn:DefnOfMFromE_Mean}\\
-\left<M_{ia}M_{jb}\right> &=& L_i(\vec{x}_a, t_a) L_j(\vec{x}_b, t_b) E_a E_b\left(1 + \frac{\sigma_{NU}^2}{\left(G_i^D(t_a)\right)^2} \delta_{ij}\delta_{ab}\right) \nonumber \\
+\left<M_{ia}M_{jb}\right> &=& L_i(\vec{x}_a, t_a) L_j(\vec{x}_b, t_b) E_a E_b \nonumber \\
 & & {}- L_i(\vec{x}_a, t_a) L_j(\vec{x}_a, t_a) E_a \delta_{ab}/c \IEEEyessubnumber\\
-& & {}+ L_i(\vec{x}_a, t_a)E_a \delta_{ij}\delta_{ab} \left[ (1.9 + 0.1)G_i(t_a) + \frac{G^E_i(t_a)}{G_i^D(t_a)}\sigma^2_{G_i}(t_a)\right].\nonumber
+& & {}+ q(i,a)\delta_{ij}\delta_{ab}.\nonumber
 \end{IEEEeqnarray}
 
 We will see in equation~\ref{eqn:SeparableLightmap} that the lightmap $L_i(\vec{x},t)$ is treated as a separable function, $L_i(\vec{x},t) = R_i(\vec{x})S_i(t)$.  The right hand side of equation~\ref{eqn:RelationLandF} has factors which depend strictly on either position or time, but not both; so we can separate the position-dependent and time-dependent factor from both sides and state:
@@ -351,21 +369,13 @@ We now proceed with the optimization.  We start by expanding $\epsilon^2_a$:
 &\quad + \left( \sum_{ifb} \left[A_{ia}[f] \widetilde{Y}_{ib}^R[f] + B_{ia}[f] \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) E_b \right)^2 - E^2_a \nonumber \\
 &\quad - \sum_b \left( \sum_{if} \left[A_{ia}[f] \widetilde{Y}_{ib}^R[f] + B_{ia}[f] \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) \right)^2 \frac{E_b}{c} \nonumber \\
 &\quad \begin{aligned}
-  + \sum_{ifgb} &\left[A_{ia}[f] \widetilde{Y}_{ib}^R[f] + B_{ia}[f] \widetilde{Y}_{ib}^I[f]\right]\left[A_{ia}[g] \widetilde{Y}_{ib}^R[g] + B_{ia}[g] \widetilde{Y}_{ib}^I[g]\right] \cdot \\
-  & \begin{aligned}
-    L_i(\vec{x}_b,t_b) E_b \bigg[ &(0.1 + 1.9) G^E_i(t_b) G^D_i(t_b) \\
-    & + \frac{G^E_i(t_b)}{G^D_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^D_i(t_b)\right)^2} \bigg]
-\end{aligned} \end{aligned} \\
+  + \sum_{ifgb} &\left[A_{ia}[f] \widetilde{Y}_{ib}^R[f] + B_{ia}[f] \widetilde{Y}_{ib}^I[f]\right]\left[A_{ia}[g] \widetilde{Y}_{ib}^R[g] + B_{ia}[g] \widetilde{Y}_{ib}^I[g]\right] q(i,b) \end{aligned} \\
 %
 & \begin{aligned}
   = \sum_{ijf} \bigg[ & A_{ia}[f]A_{ja}[f] \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + A_{ia}[f]B_{ja}[f] \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right> \\
   & + B_{ia}[f]A_{ja}[f] \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ia}[f]B_{ja}[f] \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\bigg] \end{aligned} \nonumber \\
 &\quad \begin{aligned}
-  + \sum_{ib} &\left( \sum_f \left[A_{ia}[f] \widetilde{Y}_{ib}^R[f] + B_{ia}[f] \widetilde{Y}_{ib}^I[f]\right]\right)^2 \cdot \\
-  & \begin{aligned}
-    L_i(\vec{x}_b,t_b) E_b \bigg[ &(0.1 + 1.9) G^E_i(t_b) G^D_i(t_b) \\
-    & + \frac{G^E_i(t_b)}{G^D_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^D_i(t_b)\right)^2} \bigg]
-\end{aligned} \end{aligned} \nonumber \\
+  + \sum_{ib} &\left( \sum_f \left[A_{ia}[f] \widetilde{Y}_{ib}^R[f] + B_{ia}[f] \widetilde{Y}_{ib}^I[f]\right]\right)^2 q(i,b) \end{aligned} \nonumber \\
 &\quad - \frac{E_a}{c}
 \end{align}
 
@@ -373,19 +383,11 @@ We are now in a position to evaluate the partial derivatives of $\epsilon^2_a$ w
 \begin{subequations}\begin{align}
 \frac{\partial \epsilon^2_a}{\partial A_{ia}[f]} &= 2 \sum_j \left[ A_{ja}[f] \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + B_{ja}[f] \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right>\right] \nonumber \\
 &\quad \begin{aligned}
-  + 2 \sum_{gb} & E_b\widetilde{Y}_{ib}^R[f] L_i(\vec{x}_b,t_b)\left[A_{ia}[g] \widetilde{Y}_{ib}^R[g] + B_{ia}[g] \widetilde{Y}_{ib}^I[g]\right] \cdot \\
-  & \begin{aligned}
-    \bigg[ &(0.1 + 1.9) G^E_i(t_b) G^D_i(t_b) \\
-  & + \frac{G^E_i(t_b)}{G^D_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^D_i(t_b)\right)^2} \bigg]
-\end{aligned} \end{aligned}\\
+ {} + 2 \sum_{gb} & \left[A_{ia}[g] \widetilde{Y}_{ib}^R[g] + B_{ia}[g] \widetilde{Y}_{ib}^I[g]\right] q(i,b) \widetilde{Y}_{ib}^R[f] \end{aligned}\\
 %
 \frac{\partial \epsilon^2_a}{\partial B_{ia}[f]} &= 2 \sum_j \left[ A_{ja}[f] \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ja}[f] \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\right] \nonumber \\
 &\quad \begin{aligned}
-  + 2 \sum_{gb} & E_b\widetilde{Y}_{ib}^I[f] L_i(\vec{x}_b,t_b)\left[A_{ia}[g] \widetilde{Y}_{ib}^R[g] + B_{ia}[g] \widetilde{Y}_{ib}^I[g]\right] \cdot \\
-  & \begin{aligned}
-    \bigg[ &(0.1 + 1.9) G^E_i(t_b) G^D_i(t_b) \\
-  & + \frac{G^E_i(t_b)}{G^D_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^D_i(t_b)\right)^2} \bigg]
-\end{aligned} \end{aligned}
+ {} + 2 \sum_{gb} & \left[A_{ia}[g] \widetilde{Y}_{ib}^R[g] + B_{ia}[g] \widetilde{Y}_{ib}^I[g]\right] q(i,b) \widetilde{Y}_{ib}^I[f] \end{aligned}
 \end{align}\end{subequations}
 
 We use Lagrange's method to minimize $\epsilon^2_a$ while satisfying our constraints; we define
@@ -403,41 +405,17 @@ Then, the partial derivatives of these constrained expressions are:
 \end{align}\end{subequations}
 
 Denoting the set of Lagrange multipliers for $\epsilon^2_a$ with $\lambda_{ab}$, where the indices are ordered, and allowing these parameters to absorb constant factors, we can at last identify the full set of linear equations describing the optimal energy estimator $\widehat{E}_a$:
-\begin{subequations}\begin{align}
+\begin{subequations}\label{eqn:SystemToSolve}\begin{align}
 &\sum_j \left[ A_{ja}[f] \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + B_{ja}[f] \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right>\right]\nonumber\\
-&+ \sum_{gb} \begin{aligned}[t]
-  & E_b\widetilde{Y}_{ib}^R[f] L_i(\vec{x}_b,t_b)\left[A_{ia}[g] \widetilde{Y}_{ib}^R[g] + B_{ia}[g] \widetilde{Y}_{ib}^I[g]\right] \cdot \\
-  & \left[ (0.1 + 1.9) G^E_i(t_b) G^D_i(t_b) + \frac{G^E_i(t_b)}{G^D_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^D_i(t_b)\right)^2} \right] \end{aligned} \nonumber \\
+&+ \sum_{gb} \left[A_{ia}[g] \widetilde{Y}_{ib}^R[g] + B_{ia}[g] \widetilde{Y}_{ib}^I[g]\right] q(i,b) \widetilde{Y}_{ib}^R[f] \nonumber\\
 &+ \sum_b \lambda_{ab} \widetilde{Y}^R_{ib}[f] L_i(\vec{x}_b,t_b) = 0 \qquad \qquad \qquad \qquad \quad \text{for each $i$, $f$}\\
 %
 &\sum_j \left[ A_{ja}[f] \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ja}[f] \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\right]\nonumber\\
-&+ \sum_{gb} \begin{aligned}[t]
-  & E_b\widetilde{Y}_{ib}^I[f] L_i(\vec{x}_b,t_b)\left[A_{ia}[g] \widetilde{Y}_{ib}^R[g] + B_{ia}[g] \widetilde{Y}_{ib}^I[g]\right] \cdot \\
-  & \left[ (0.1 + 1.9) G^E_i(t_b) G^D_i(t_b) + \frac{G^E_i(t_b)}{G^D_i(t_b)} \sigma^2_{G_i}(t_b) + L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^D_i(t_b)\right)^2} \right] \end{aligned} \nonumber\\
+&+ \sum_{gb} \left[A_{ia}[g] \widetilde{Y}_{ib}^R[g] + B_{ia}[g] \widetilde{Y}_{ib}^I[g]\right] q(i,b) \widetilde{Y}_{ib}^I[f] \nonumber\\
 &+ \sum_b \lambda_{ab} \widetilde{Y}^I_{ib}[f] L_i(\vec{x}_b,t_b) = 0 \qquad \qquad \qquad \qquad \quad \text{for each $i$, $f$}\\
 %
 &\sum_{if}\left[A_{ia}[f] \widetilde{Y}_{ib}^R[f] + B_{ia}[f] \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) = \delta_{ab} \qquad \text{for each $b$}
 \end{align}\end{subequations}
-
-To simplify the notation, let us define a new function:
-\begin{equation} \label{eqn:DefinitionOfQ}
-q(i,b) := \begin{aligned}[t]
-  \bigg( &(0.1 + 1.9) G^E_i(t_b) G^D_i(t_b) + \frac{G^E_i(t_b)}{G^D_i(t_b)} \sigma^2_{G_i}(t_b)\\
-  &+ L_i(\vec{x}_b,t_b) E_b \frac{\sigma^2_{NU}}{\left(G^D_i(t_b)\right)^2}\bigg)L_i(\vec{x}_b, t_b) E_b
-\end{aligned}
-\end{equation}
-which we note should be strictly positive if measured correctly (because all gains and lightmap values should be strictly positive, and all variances are non-negative).  Using this shorthand, we re-write our system of equations in the more compact form:
-\begin{subequations} \label{eqn:SystemToSolve} \begin{align}
-&\sum_j \left[ A_{ja}[f] \left<\widetilde{N}_i^R[f]\widetilde{N}_j^R[f]\right> + B_{ja}[f] \left<\widetilde{N}_i^R[f]\widetilde{N}_j^I[f]\right>\right] \notag \\
-&+ \sum_{gb} \widetilde{Y}_{ib}^R[f] q(i,b) \left[A_{ia}[g] \widetilde{Y}_{ib}^R[g] + B_{ia}[g] \widetilde{Y}_{ib}^I[g]\right] \notag \\
-&+ \sum_b \lambda_{ab} \widetilde{Y}^R_{ib}[f] L_i(\vec{x}_b,t_b) = 0 \qquad \qquad \qquad \qquad \quad \text{for each $i$, $f$}\\
-%
-&\sum_j \left[ A_{ja}[f] \left<\widetilde{N}_i^I[f]\widetilde{N}_j^R[f]\right> + B_{ja}[f] \left<\widetilde{N}_i^I[f]\widetilde{N}_j^I[f]\right>\right] \notag \\
-&+ \sum_{gb} \widetilde{Y}_{ib}^I[f] q(i,b) \left[A_{ia}[g] \widetilde{Y}_{ib}^R[g] + B_{ia}[g] \widetilde{Y}_{ib}^I[g]\right] \notag \\
-&+ \sum_b \lambda_{ab} \widetilde{Y}^I_{ib}[f] L_i(\vec{x}_b,t_b) = 0 \qquad \qquad \qquad \qquad \quad \text{for each $i$, $f$}\\
-%
-&\sum_{if}\left[A_{ia}[f] \widetilde{Y}_{ib}^R[f] + B_{ia}[f] \widetilde{Y}_{ib}^I[f]\right] L_i(\vec{x}_b,t_b) = \delta_{ab} \qquad \text{for each $b$}
-\end{align} \end{subequations}
 
 It is important to note here that energies $E_b$, which we are intending to measure, do in fact enter into this linear set of equations.  At first this would seem to demonstrate that the equations here are impossible to apply, but in fact they remind us that our Poissonian noise is dependent on the energy.  Statistical fluctuations in the number of photons observed on each APD, for instance, scale like the square root of the number of photons emitted.  This is in contrast to the electronic noise, which is not correlated with the energies
 
@@ -814,7 +792,7 @@ The last benefit to this approach is more technical: evaluating the lightmap for
 
 The current EXO-200 resolution is limited by the scintillation resolution of the APDs.  As a result, little benefit is anticipated from denoising the wires.  However, it is possible that a future detector could reduce the scintillation noise to a point where resolution of the wires is non-negligible; alternatively, a future detector could have noise which is correlated between wires and APDs, making it possible to use noise information from the wires to improve our scintillation resolution even though no direct benefit is expected to the wire resolution itself.
 
-In any case, it is possible to apply equations~\ref{eqn:SystemToSolve} to a system with a combination of wires and APDs without significant adjustment.  The template functions $Y[t]$ will of course be significantly different, and must include a time offset to account for the different time of arrival of the electrons and photons.  The ``lightmap'' of charge will be far less diffuse than for APDs because charge from any location generally drifts directly to only a small number of wires along externally imposed field lines.  And finally, because electron statistics should be negligible and pulse amplification should not be a noisy process, for wire channels we would modify equation~\ref{eqn:DefinitionOfQ} to state that $q(i_{wire}, b) = 0$.  In this sense, denoising of wires consists of minimizing the variance in the energy estimator due to electronic noise, and using the wires to improve our denoising of APDs consists of making use of correlations between wire and APD noise without expecting any correlations between APD and wire pulses, all while ensuring that the energy estimates are unbiased by retaining the same constraints.
+In any case, it is possible to apply equations~\ref{eqn:SystemToSolve} to a system with a combination of wires and APDs without significant adjustment.  The template functions $Y[t]$ will of course be significantly different, and must include a time offset to account for the different time of arrival of the electrons and photons.  The ``lightmap'' of charge will be far less diffuse than for APDs because charge from any location generally drifts directly to only a small number of wires along externally imposed field lines.  And finally, because electron statistics should be negligible and pulse amplification should not be a noisy process, for wire channels we would modify equation~\ref{eqn:DefinitionOfQ} to state that $q(i_{wire}, a) = 0$.  In this sense, denoising of wires consists of minimizing the variance in the energy estimator due to electronic noise, and using the wires to improve our denoising of APDs consists of making use of correlations between wire and APD noise without expecting any correlations between APD and wire pulses, all while ensuring that the energy estimates are unbiased by retaining the same constraints.
 
 \section{Summary}
 
