@@ -6,7 +6,7 @@ The dataset used for the present work extends from October 5, 2011 to September 
 
 \section{Simulation}\label{sec:ResultSimulation}
 
-Here we describe the simulation of radioactive sources in the EXO-200 detector.  We begin by describing the framework for simulating the deposition of energy from primary decay particles into the liquid xenon and surrounding materials.  From there, we continue to describe the simplified electric field model which permits us to model the trajectory of ionization drifting towards the anode wires.
+Here we describe the simulation of ionizing events in the EXO-200 detector.  We begin by describing the framework for simulating the deposition of energy from primary decay particles into the liquid xenon and surrounding materials.  From there, we continue to describe the simplified electric field model which permits us to model the trajectory of ionization drifting towards the anode wires.
 
 \subsection{Simulation of Particles using GEANT}
 
@@ -40,7 +40,7 @@ To simulate the deposition of energy from primary decay particles, version 4.9.3
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-A model of the EXO-200 detector is simulated in GEANT with a collection of simple geometric volumes which can be composed to form more complicated structures.  Simulation speed decreases as more volumes are generated, and we expect that it is unimportant to simulate details much smaller than the distance between the detail and the liquid xenon.  We attempt to find a balance between accurate modeling of detailed features and simplification of distant features~\cite{MCDocumentRun2a}.  In figure~\ref{fig:OGL_wireframevis} we see the full geometry described in GEANT, where distant objects are constructed from a small number of geometric pieces.  Figure~\ref{fig:RayTracer_TPConly} shows how the TPC is described in GEANT, and we can see the level of detail is much greater.
+A model of the EXO-200 detector is simulated in GEANT with a collection of simple geometric volumes which can be composed to form more complicated structures.  Simulation speed decreases as more volumes are generated, and we expect that it is unimportant to simulate fine geometrical details far away from the liquid xenon.  We attempt to find a balance between accurate modeling of detailed features and simplification of distant features~\cite{MCDocumentRun2a}.  In figure~\ref{fig:OGL_wireframevis} we see the full geometry described in GEANT, where distant objects are constructed from a small number of geometric pieces.  Figure~\ref{fig:RayTracer_TPConly} shows how the TPC is described in GEANT, and we can see the level of detail is much greater.
 
 To simulate particles, GEANT uses a Monte Carlo method.  This means that it models decay processes as a sequence of samples from a probability distribution which are chosen using a pseudorandom number generator.  The energy and direction of the emitted particle, its interaction locations  and quantity of deposited energy, and the formation of secondary particles are all generated randomly as choices from a set of options with known probabilities.  It is possible to override these probability distributions when necessary; for example, EXO-200 uses its own double-beta and forbidden beta decay spectra rather than the defaults provided by GEANT.  Generally, though, the existing options in GEANT are suitable for simulating nuclear and electromagnetic processes~\cite{MCDocumentRun2a}.
 
@@ -182,7 +182,7 @@ In this way, we are able to generate simulated data which in most respects resem
 
 \section{Cluster Reconstruction}\label{sec:ResultReconstruction}
 
-The first stage of data processing involves locating candidate pulses in its waveforms and fitting for the magnitude and time of any candidate pulses which are found.  The methods of accomplishing this are described in sections~\ref{sec:ReconPulseFinding} and~\ref{sec:ReconPulseFitting}.  We will complete our description of cluster reconstruction with a brief explanation of the approach to the clustering of waveform pulses into three-dimensional clusters in section~\ref{sec:ReconClustering}.
+The first stage of data processing involves locating candidate pulses in the waveforms and fitting for the magnitude and time of any candidate pulses which are found.  The methods of accomplishing this are described in sections~\ref{sec:ReconPulseFinding} and~\ref{sec:ReconPulseFitting}.  We will complete our description of cluster reconstruction with a brief explanation of the approach to the clustering of waveform pulses into three-dimensional clusters in section~\ref{sec:ReconClustering}.
 
 \subsection{Pulse Finding}\label{sec:ReconPulseFinding}
 
@@ -201,11 +201,11 @@ In other words, if a waveform is composed of only noise, the functional should r
 
 We omit the derivation, which is a standard result, and simply state that the linear functional which maximizes the expected signal-to-noise ratio can be expressed as:~\cite{MatchedFilterPaper}
 \begin{equation}
-L_0\left\{X[\tau]\right\} = \mathcal{F}^{-1}\left\{ \frac{\mathcal{F}\left\{X\right\}[k] \mathcal{F}\left\{s\right\}^{*}[k]}{\left<\mathcal{F}\left\{N\right\}[k]\mathcal{F}\left\{N\right\}^{*}[k]\right>}\right\}[0],
+L_0\left\{X[\tau]\right\} = \mathcal{F}^{-1}\left\{ \frac{\mathcal{F}\left\{X\right\}[f] \mathcal{F}\left\{s\right\}^{*}[f]}{\left<\mathcal{F}\left\{n\right\}[f]\mathcal{F}\left\{n\right\}^{*}[f]\right>}\right\}[0],
 \end{equation}
-where $\mathcal{F}$ represents the Fourier transform.  This expression has an added benefit that if instead we'd like to test the hypothesis that the translated pulse $s[\tau - \Delta]$ is contained in the waveform, substitution lets us show that we can do so with the related test statistic:
+where $\mathcal{F}$ represents the Fourier transform and $\mathcal{F}^{-1}$ represents the inverse Fourier transform.  (The $\tau = 0$ index in this test statistic indicates that here we are testing for a pulse at only one instant in time.)  This expression has an added benefit that if instead we'd like to test the hypothesis that the translated pulse $s[\tau - \Delta]$ is contained in the waveform, substitution lets us show that we can do so with the related test statistic:
 \begin{equation}
-L_\Delta\left\{X[\tau]\right\} = \mathcal{F}^{-1}\left\{ \frac{\mathcal{F}\left\{X\right\}[k] \mathcal{F}\left\{s\right\}^{*}[k]}{\left<\mathcal{F}\left\{N\right\}[k]\mathcal{F}\left\{N\right\}^{*}[k]\right>}\right\}[\Delta].
+L_\Delta\left\{X[\tau]\right\} = \mathcal{F}^{-1}\left\{ \frac{\mathcal{F}\left\{X\right\}[f] \mathcal{F}\left\{s\right\}^{*}[f]}{\left<\mathcal{F}\left\{n\right\}[f]\mathcal{F}\left\{n\right\}^{*}[f]\right>}\right\}[\Delta].
 \end{equation}
 Finally, we can define a test statistic $T$ for the waveform $X[\tau]$ to have a pulse anywhere with:
 \begin{equation}
@@ -316,7 +316,7 @@ Each cluster which is found can be assigned a preliminary energy estimate based 
 
 The preliminary charge cluster energy measurements come from the sum of the u-wire pulse magnitudes described in section~\ref{sec:ReconPulseFitting}.  These magnitudes reflect the quantity of charge which is collected by the u-wire.
 
-However, each u-wire channel has its own set of electronics, so pulse magnitudes must be adjusted by a gain correction which depends on the channel.  These gains are extracted from source data by selecting pair production events from the thorium source, in which a $2615$-keV gamma pair-produces an electron and positron, and the positron subsequently annihilates with another electron to emit two $511$-keV gammas.  The high multiplicity of these events makes it possible to select them accurately, and the process guarantees that a single $1593$-keV cluster at the site of the pair production must be truly single-site because it originates from a single energetic electron.  These properties make it ideal for producing an accurate u-wire gain measurement.  Using the resulting gain corrections, individual u-wire pulse magnitudes are corrected based on their gain, and the charge cluster energy measurements are corrected according to the corrections on their bundled u-wire pulses~\cite{EnergyDocumentRun2a}.
+However, each u-wire channel has its own set of electronics, so pulse magnitudes must be adjusted by a gain correction which depends on the channel.  These gains are extracted from source data by selecting pair production events from the thorium source, in which a $2615$-keV gamma pair-produces an electron and positron, and the positron subsequently annihilates with another electron to emit two $511$-keV gammas.  The high multiplicity of these events makes it possible to select them accurately, and the process guarantees that a single $1593$-keV cluster at the site of the pair production must be truly single-site because it originates from a single electron-positron pair.  These properties make it ideal for producing an accurate u-wire gain measurement.  Using the resulting gain corrections, individual u-wire pulse magnitudes are corrected based on their gain, and the charge cluster energy measurements are corrected according to the corrections on their bundled u-wire pulses~\cite{EnergyDocumentRun2a}.
 
 There are also two Z-dependent energy corrections which must be applied to clusters.  The first accounts for charge attenuation due to the imperfect purity of the xenon, as discussed in section~\ref{sec:DetectorOverview}.  As electrons drift, some will attach to electronegative impurities such as oxygen or nitrogen; the exact nature of the electronegative impurities in EXO-200 are not known.  The level of impurities in the xenon are time-dependent due to the strong effects which the xenon pump speed and periodic injections of additional xenon may have.
 
@@ -380,19 +380,19 @@ Although scintillation measurements are made from fitting the magnitudes of the 
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{A residual calibration offset and Z-dependent behavior is observed in the denoised scintillation measurements.  The top plots show the relative peak position of the scintillation-only $2615$-keV $^{208}$Tl peak (one-wire and two-wire) and average alpha energy from $^{222}$Rn versus Z (top left) and R (top right).  The bottom plot shows the absolute denoised scintillation energy from the $2615$-keV $^{208}$Tl peak for one and two wires, with the measured correction function overlaid~\cite{EnergyDocumentRun2ab}.}
+\caption{A residual calibration offset and Z-dependent behavior is observed in the denoised scintillation measurements.  The top plots show the relative peak position of the scintillation-only $2615$-keV $^{208}$Tl peak (one-wire and two-wire) and average alpha energy from $^{222}$Rn versus Z (top left) and R (top right).  The bottom plot shows the absolute denoised scintillation energy from the $2615$-keV $^{208}$Tl peak for one and two wires, with the measured correction function (equation~\ref{eqn:EmpiricalLightCorrection}) overlaid~\cite{EnergyDocumentRun2ab}.}
 \label{fig:ResidualLightZBias}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-When the denoising algorithm operates properly, it should be constrained to produce scintillation energy measurements calibrated in keV.  This calibration is accomplished by the lightmap, which retains information about the magnitude of pulses produced by $2615$-keV energy deposits.  However, in practice it is seen that the denoised scintillation measurements are not properly calibrated; this can be seen in figure~\ref{fig:ResidualLightZBias}, where it is clear that events of all types (alpha decays in low-background data and both one-wire and two-wire single-site gamma decays from an external source) measure a scintillation energy which is systematically too low and displays significant Z-dependence.  The thorium data, which provides more the best measurement statistics, shows a mis-calibration which ranges from $2.5\%$ near the anodes to $6.5\%$ at the cathode~\cite{EnergyDocumentRun2ab}.
+When the denoising algorithm operates properly, it should be constrained to produce scintillation energy measurements calibrated in keV.  This calibration is accomplished by the lightmap, which retains information about the magnitude of pulses produced by $2615$-keV energy deposits.  However, in practice it is seen that the denoised scintillation measurements are not properly calibrated; this can be seen in figure~\ref{fig:ResidualLightZBias}, where it is clear that events of all types (alpha decays in low-background data and both one-wire and two-wire single-site gamma decays from an external source) measure a scintillation energy which is systematically too low and displays significant Z-dependence.  The thorium data, which provides the best measurement statistics, shows a mis-calibration which ranges from $2.5\%$ near the anodes to $6.5\%$ at the cathode~\cite{EnergyDocumentRun2ab}.
 
 The cause for the discrepancy in scintillation energy measurements is not currently known.  One hypothesis is that the discrepancy in two-wire charge cluster measurements described in section~\ref{sec:ResultEnergyCharge} may lead to inaccurate event selection in the generation of the lightmap described in section~\ref{sec:LightmapEventSelection}; poor event selection would lead to a systematic error in the lightmap which could depend on Z, and would be capable of creating the observed bias.  Attempts to address this Z-bias within the generation of the lightmap or investigate alternative explanations for its origin have so far been unsuccessful, but these investigations continue, and it is hoped that this issue can be fixed for the next analysis.
 
 For the present analysis an empirical correction of the discrepancy is applied.  The scintillation correction function takes the form:
-\begin{equation}
+\begin{equation}\label{eqn:EmpiricalLightCorrection}
 E_{corr} = E_{meas}\cdot \begin{cases}
 \left[ (c_{-}) + (a_{-})\cdot |Z|^{b_{-}} \right]^{-1} & \text{if } Z < 0\\
 \left[ (c_{+}) + (a_{+})\cdot |Z|^{b_{+}} \right]^{-1} & \text{if } Z > 0,
@@ -439,7 +439,7 @@ where $E_C$ and $E_S$ are the measured charge and scintillation energies (with c
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-The result of this calibration is shown in figure~\ref{fig:LiangjianAnticorrelatedEnergy}.  We can see here that a projection is performed from the two-dimensional charge-light spectrum along an axis that minimizes the width of the thorium gamma line.  Figure~\ref{fig:LiangjianRotatedSpectrumImprovement} demonstrates the spectra we obtain from projections only in scintillation, only in ionization, and using the optimal linear combination we have described; the improvement in resolution from using an appropriate linear combination of scintillation and ionization is apparent, as the peak at $2615$ keV becomes sharper and additional low-energy features of the spectrum become apparent which were washed out with worse resolution.  The next section will describe the process of measuring the energy resolution.
+The result of this calibration for a particular thorium source calibration run is shown in figure~\ref{fig:LiangjianAnticorrelatedEnergy}.  We can see here that a projection is performed from the two-dimensional charge-light spectrum along an axis that minimizes the width of the thorium gamma line.  Figure~\ref{fig:LiangjianRotatedSpectrumImprovement} demonstrates the spectra we obtain from projections only in scintillation, only in ionization, and using the optimal linear combination we have described; the improvement in resolution from using an appropriate linear combination of scintillation and ionization is apparent, as the peak at $2615$ keV becomes sharper and additional low-energy features of the spectrum become apparent which were washed out with worse resolution.  The next section will describe the process of measuring the energy resolution.
 
 \subsection{Measurement of Rotated Energy Resolution}\label{sec:RotatedEnergyResMeasurement}
 
@@ -457,11 +457,11 @@ The resolutions of single-site and multi-site events differ, so there are separa
 
 \begin{table}
 \begin{center}
-\begin{tabular}{|c|c|c|}
-\hline Parameter & SS & MS \\
-\hline $p_0$ & 0.628 & 0.602 \\
-\hline $p_1$ & 20.8 & 25.8 \\
-\hline $p_2$ & 0.0011 & 0.0040 \\ \hline
+\begin{tabular}{|c|c|c|c|}
+\hline Parameter & SS & MS & Units\\
+\hline $p_0$ & 0.628 & 0.602 & $\sqrt{\text{keV}}$ \\
+\hline $p_1$ & 20.8 & 25.8 & keV\\
+\hline $p_2$ & 0.0011 & 0.0040 & 1 \\ \hline
 \end{tabular}
 \end{center}
 \caption{Time-averaged resolution parameters for the single-site and multi-site denoised dataset~\cite{AverageEnergyResolutionDocument}.}
@@ -806,6 +806,50 @@ The results presented in section~\ref{sec:ResultResults} are obtained using the 
 
 \subsection{Comparison of Energy Resolution and Calibration}\label{sec:ResultComparisonEnergy}
 
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{ThSourceSpectrumComparison.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{A comparison of the spectra before and after denoising for a set of representative thorium source runs (4758 and 4766).  The thickness of the lines indicate Poisson error bars on the number of counts in a bin; smoothing is applied to the spectra to permit easier comparison of peaks.  Important gamma lines are indicated.  Around 500-600 keV threshold effects become significant, making comparison difficult.}
+\label{fig:ThSourceSpectrumComparison}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{CoSourceSpectrumComparison.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{A comparison of the spectra before and after denoising for a representative cobalt source run (4787 and 4788).  The thickness of the lines indicate Poisson error bars on the number of counts in a bin; smoothing is applied to the spectra to permit easier comparison of peaks.  The two gamma lines of $^{60}$Co are indicated.}
+\label{fig:CoSourceSpectrumComparison}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{CsSourceSpectrumComparison.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{A comparison of the spectra before and after denoising for a representative cesium source run (4777-4781).  The thickness of the lines indicate Poisson error bars on the number of counts in a bin; smoothing is applied to the spectra to permit easier comparison of peaks.  The gamma line of $^{137}$Cs is indicated.  Threshold effects are significant at this energy and the calibration is extrapolated from higher-energy sources, but the spectra illustrate the fact that resolution improves dramatically at low energy.}
+\label{fig:CsSourceSpectrumComparison}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+The process of denoising visibly sharpens source spectra, leading to easier extraction of peak positions and widths.  Single-site source spectra for representative runs are shown in figures \ref{fig:ThSourceSpectrumComparison}, \ref{fig:CoSourceSpectrumComparison}, \ref{fig:CsSourceSpectrumComparison}, all of which show significantly sharper peaks after denoising.  The rest of this section will contrast the calibrations of energy and resolution for the two datasets.
+
 \begin{table}
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|}
@@ -1001,13 +1045,13 @@ Figure~\ref{fig:DenoisedComparison_DataTotalPdf} shows the denoised and undenois
 
 \begin{figure}
 \begin{center}
-\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_SSPdf_ThOnly.pdf}
+\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_TotalPdfsWithData_k40range.pdf}
 \end{center}
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Denoised (red) and undenoised (blue) single-site PDF contributions from $^{232}$Th and its daughter products, where we constrain $\beta\beta 0\nu$ to have no decays in both fits.}
-\label{fig:DenoisedComparison_PdfComponentsTh}
+\caption{Denoised (red) and undenoised (blue) single-site low-background data and pdfs in the energy window from 1200 to 1800 keV.  The thick lines indicate the total single-site pdfs; thin lines indicate contributions from $^{40}$K.  Both fits are constrained to have no contribution from $\beta\beta 0\nu$.}
+\label{fig:DenoisedComparison_K40SS}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
@@ -1015,13 +1059,83 @@ Figure~\ref{fig:DenoisedComparison_DataTotalPdf} shows the denoised and undenois
 
 \begin{figure}
 \begin{center}
-\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_SSPdf_UOnly.pdf}
+\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_TotalPdfsWithData_k40range_MS.pdf}
 \end{center}
 \renewcommand{\baselinestretch}{1}
 \small\normalsize
 \begin{quote}
-\caption{Denoised (red) and undenoised (blue) single-site PDF contributions from $^{238}$U and its daughter products, where we constrain $\beta\beta 0\nu$ to have no decays in both fits.}
-\label{fig:DenoisedComparison_PdfComponentsU}
+\caption{Denoised (red) and undenoised (blue) multi-site low-background data and pdfs in the energy window from 1200 to 1800 keV.  The thick lines indicate the total multi-site pdfs; thin lines indicate contributions from $^{40}$K.  Both fits are constrained to have no contribution from $\beta\beta 0\nu$.}
+\label{fig:DenoisedComparison_K40MS}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_TotalPdfsWithData_co60range_MS.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Denoised (red) and undenoised (blue) multi-site low-background data and pdfs in the energy window from 1000 to 1600 keV.  The thick lines indicate the total multi-site pdfs; thin lines indicate contributions from $^{60}$Co.  Both fits are constrained to have no contribution from $\beta\beta 0\nu$.}
+\label{fig:DenoisedComparison_Co60MS}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_TotalPdfsWithData_rnrange_withlines.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Denoised (red) and undenoised (blue) single-site low-background data and pdfs in the energy window from 2000 to 2600 keV.  The thick lines indicate the total single-site pdfs; thin lines indicate contributions from isotopes in the $^{238}$U decay chain.  Dashed vertical lines indicate the $2\sigma$ region of interest around the $Q$-value.  Both fits are constrained to have no contribution from $\beta\beta 0\nu$.  The uranium decay chain contributes 10.0 (8.9) mean expected counts in the $2\sigma$ region of interest for denoised (undenoised) data.}
+\label{fig:DenoisedComparison_rnSS}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_TotalPdfsWithData_rnrange_MS.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Denoised (red) and undenoised (blue) multi-site low-background data and pdfs in the energy window from 1600 to 2800 keV.  The thick lines indicate the total multi-site pdfs; thin lines indicate contributions from isotopes in the $^{238}$U decay chain.  Both fits are constrained to have no contribution from $\beta\beta 0\nu$.}
+\label{fig:DenoisedComparison_rnMS}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_TotalPdfsWithData_thrange_withlines2.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Denoised (red) and undenoised (blue) single-site low-background data and pdfs in the energy window from 2200 to 2800 keV.  The thick lines indicate the total single-site pdfs; thin lines indicate contributions from isotopes in the $^{232}$Th decay chain.  Dashed vertical lines indicate the $2\sigma$ region of interest around the $Q$-value.  Both fits are constrained to have no contribution from $\beta\beta 0\nu$.  The thorium decay chain contributes 18.7 (34.5) mean expected counts in the $2\sigma$ region of interest for denoised (undenoised) data.}
+\label{fig:DenoisedComparison_thSS}
+\end{quote}
+\end{figure}
+\renewcommand{\baselinestretch}{2}
+\small\normalsize
+
+\begin{figure}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=\textwidth]{DenoisedVsUndenoised_TotalPdfsWithData_thrange_MS.pdf}
+\end{center}
+\renewcommand{\baselinestretch}{1}
+\small\normalsize
+\begin{quote}
+\caption{Denoised (red) and undenoised (blue) multi-site low-background data and pdfs in the energy window from 2200 to 2800 keV.  The thick lines indicate the total multi-site pdfs; thin lines indicate contributions from isotopes in the $^{232}$Th decay chain.  Both fits are constrained to have no contribution from $\beta\beta 0\nu$.}
+\label{fig:DenoisedComparison_thMS}
 \end{quote}
 \end{figure}
 \renewcommand{\baselinestretch}{2}
@@ -1041,9 +1155,11 @@ Figure~\ref{fig:DenoisedComparison_DataTotalPdf} shows the denoised and undenois
 \renewcommand{\baselinestretch}{2}
 \small\normalsize
 
-In figures~\ref{fig:DenoisedComparison_PdfComponentsTh}, \ref{fig:DenoisedComparison_PdfComponentsU}, and \ref{fig:DenoisedComparison_PdfComponentsXe137} we show the independent contributions from $^{232}$Th and its daughter products, $^{238}$U and its daughter products, and $^{137}$Xe, respectively; these three backgrounds account for most of the background counts in our $2\sigma$ region of interest for both denoised and undenoised data.  We can see, as expected, that denoising has the most significant impact on the expected number of $^{232}$Th backgrounds because the improvement in resolution moves our $2\sigma$ region of interest off of the $^{208}$Tl peak at 2615 keV.  We also see a moderate reduction in the expected contribution from $^{137}$Xe.  Regarding $^{238}$U, figure~\ref{fig:BackgroundVsResolution} leads us to expect no significant change in the $^{238}$U contribution to our $2\sigma$ region of interest; in reality, the denoised fit resulted in 864 expected $^{238}$U counts over the entire fit window, compared to only 724 expected counts from the undenoised fit, so the difference comes from the change in the best-fit background levels.
+We also show a number of features in the single-site and multi-site low-background spectra and contrast the data, total pdfs, and pdf contributions from individual components.  Figures~\ref{fig:DenoisedComparison_K40SS} and \ref{fig:DenoisedComparison_K40MS} illustrate the $^{40}$K gamma line at 1461 keV.  Figure~\ref{fig:DenoisedComparison_Co60MS} shows the multi-site contribution from $^{60}$Co with gamma lines at 1173 and 1332 keV.  Figures~\ref{fig:DenoisedComparison_rnSS} and \ref{fig:DenoisedComparison_rnMS} show contributions from daughter products of $^{238}$U.  Figures~\ref{fig:DenoisedComparison_thSS} and \ref{fig:DenoisedComparison_thMS} show contributions from daughter products of $^{232}$Th.  The change in contribution from $^{137}$Xe is shown in figure~\ref{fig:DenoisedComparison_PdfComponentsXe137}.
 
-These fit results give some indication of how easily we could discover $\beta\beta 0\nu$ decay with the denoised and undenoised analysis because we expect background fluctuations to be similar to the square root of the number of expected counts, and to discover $\beta\beta 0\nu$ decay it must produce more counts than can be attributed to a typical background fluctuation.  The number of expected background counts in denoised data is 32\% lower than in undenoised data, so the number of $\beta\beta 0\nu$ counts required for a discovery of similar strength is $\sqrt(32\%) = 17\%$ lower for denoised data than undenoised data.  Since the neutrino mass $\left<m_{\beta\beta}\right>$ is proportional to the square root of the half-life $T_{1/2}^{0\nu}$, we can expect that denoising typically permits us to discover neutrino masses 9\% lower than without denoising.
+The observation that all of these features become sharper gives us confidence that the resolution improvements observed in source data are also seen in the low-background spectrum; they also improve the ability of the fit to reduce correlations between different background components.  These fits also permit us to gauge the change in expected background due to each background component.  In particular, we see that background in the $2\sigma$ region of interest due to thorium decreases dramatically after denoising, as expected.  Background due to $^{137}$Xe decreases moderately.  We expect no change in the expected background due to the uranium chain; in fact the expected number of background counts due to uranium increases slightly, but this is due to a shift in the best-fit rate of uranium components to 864 expected counts over the entire fit window, compared to only 724 in the undenoised dataset.  The uranium decay chain, thorium decay chain, and $^{137}$Xe are our dominant backgrounds in both the denoised and undenoised data.
+
+The mean expected number of background counts drawn from these fit results give some indication of how easily we could discover $\beta\beta 0\nu$ decay with the denoised and undenoised analysis because we expect background fluctuations to be similar to the square root of the number of expected counts, and to discover $\beta\beta 0\nu$ decay it must produce more counts than can be attributed to a typical background fluctuation.  The number of expected background counts in denoised data is 32\% lower than in undenoised data, so the number of $\beta\beta 0\nu$ counts required for a discovery of similar strength is $\sqrt{32\%} = 17\%$ lower for denoised data than undenoised data.  Since the neutrino mass $\left<m_{\beta\beta}\right>$ is proportional to the square root of the half-life $T_{1/2}^{0\nu}$, we can expect that denoising typically permits us to discover neutrino masses 9\% lower than without denoising.
 
 \section{Summary}\label{sec:ResultSummary}
 

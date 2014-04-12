@@ -2,6 +2,20 @@ Don't forget to search again for \textcolor!!
 
 Tighten up discussion of why noise at different frequencies is "uncorrelated" (ie. to lowest order it is uncorrelated, higher-order correlations not considered).
 
+Get lots of data&pdf comparison plots:
+	K40 SS				Done
+	K40 MS				Done
+	Co60 MS				Done
+	Th SS				In progress.
+	Th MS				Done.
+	U/Rn SS				In progress.
+	U/Rn MS				Done. (could be a bit cleaner.)
+	bb2n SS edge? (1600-2200)	Not interesting.  Oh well.
+
+
+
+
+
 
 
 
